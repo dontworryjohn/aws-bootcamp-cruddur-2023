@@ -58,7 +58,6 @@ https://calculator.aws/#/
 
 # Architecture
 
-In the image below you find the architecture of the app
+In the image below you find the architecture of the app 
 
-
-![My Remote Image](https://lucid.app/lucidchart/0916f541-fda7-4be3-b13d-9c4f6b2200a3/edit?viewport_loc=-535%2C165%2C3383%2C1624%2C0_0&invitationId=inv_f913a5bf-8fe4-43b1-86ea-060bde784dfb)
+![Architecture image](../../../../Downloads/Blank%20diagram.jpeg)
