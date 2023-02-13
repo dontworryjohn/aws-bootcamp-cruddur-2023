@@ -30,4 +30,3 @@ There are 2 ways to set the billing alerts.
 - Using Budget.
 - Using Cloudwatch Alarm. In this case, you need to create an alarm on us-east-1 (since it is the only region you can create an alarm)
 
-#![alt text](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/f56ec107d740762398353f6783fc7aa0ae90cf82/billing%20allerts.png?raw=true)
