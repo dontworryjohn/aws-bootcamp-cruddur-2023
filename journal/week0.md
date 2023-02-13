@@ -60,4 +60,4 @@ https://calculator.aws/#/
 
 The image below is the architecture of the app
 
-![Architecture image](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/abd5ad7622aa479df480e48b55655781eddf0b5f/Blank%20diagram.jpeg)
+![Architecture image](https://raw.githubusercontent.com/dontworryjohn/aws-bootcamp-cruddur-2023/main/Blank%20diagram.jpeg)
