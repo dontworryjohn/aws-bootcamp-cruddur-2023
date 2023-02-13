@@ -23,6 +23,8 @@ This week the team will be discussing about the billing for the services we will
 Princing of aws services is vary depending of the region. Make sure to use the region close to you and see if all service you will utilise are available for the region.
 And also make sure you set the billing allarm so you dont have unexpected cost. Since my account is more than 1 year old, I can not use anymore the free tier but I have plenty of AWS credit I can use against all services (check always if your aws credit is usable for the specific aws service)
 
+If you are using an IAM user, make sure to attach a billing policy otherwise you wont be able to access this part of the console and you will get an error as you dont have permission.
+
 ## Info about billing alerts, Tags, Cost Explorer
 
 In this section, we will be discussing the billing dashboard and all its component such as Cost Explorer, Billing Alerts, Tags, AWS calculator etc.
