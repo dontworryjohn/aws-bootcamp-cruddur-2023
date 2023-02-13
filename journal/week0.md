@@ -17,16 +17,17 @@ Once you have registered with all of the services, you can go for the assignemen
 
 
 # Week 0 — Billing and Architecture
-This week the team be discussing about the billing for the services that I will spin during the bootcamp.
+
+This week the team will be discussing about the billing for the services we will spin during the bootcamp.
 
 Princing of aws services is vary depending of the region. Make sure to use the region close to you.
 And also make sure you set the billing allarm so you dont have unexpected cost. Since my account is more than 1 year old, I can not use anymore the free tier but I have plenty of AWS credit I can use against all services (check always if your aws credit is usable for the specific aws service)
 
-
+## Creation of the billing alerts
 
 There are 2 ways to set the billing alerts.
 
-![alt text](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/f56ec107d740762398353f6783fc7aa0ae90cf82/billing%20allerts.png?raw=true)
+- Using Budget.
+- Using Cloudwatch Alarm. In this case, you need to create an alarm on us-east-1 (since it is the only region you can create an alarm)
 
-- Using budget
-- Using Cloudwatch alarm
+#![alt text](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/f56ec107d740762398353f6783fc7aa0ae90cf82/billing%20allerts.png?raw=true)
