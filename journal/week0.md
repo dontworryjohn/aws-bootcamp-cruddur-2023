@@ -26,11 +26,9 @@ And also make sure you set the billing allarm so you dont have unexpected cost. 
 If you are using an IAM user, make sure to attach a billing policy otherwise you wont be able to access this part of the console and you will get an error as you dont have permission.
 
 ## Info about billing alerts, Tags, Cost Explorer
-
 In this section, we will be discussing the billing dashboard and all its component such as Cost Explorer, Billing Alerts, Tags, AWS calculator etc.
 
 ### Billing Alerts
-
 There are 2 ways to set the billing alerts.
 
 - Using Budget.
