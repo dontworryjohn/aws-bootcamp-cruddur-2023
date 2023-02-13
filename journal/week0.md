@@ -13,14 +13,14 @@ You will need to register to the following services:
 - Create Honeycomb.io account.
 - Create Rollbar account.
 
-Once you have registered with all of the services, you can go for the assignement for the week 0.
+Once you registered with all of the services, you can go for the assignement for the week 0.
 
 
 # Week 0 — Billing and Architecture
 
 This week the team will be discussing about the billing for the services we will spin during the bootcamp.
 
-Princing of aws services is vary depending of the region. Make sure to use the region close to you.
+Princing of aws services is vary depending of the region. Make sure to use the region close to you and see if all service you will utilise are available for the region.
 And also make sure you set the billing allarm so you dont have unexpected cost. Since my account is more than 1 year old, I can not use anymore the free tier but I have plenty of AWS credit I can use against all services (check always if your aws credit is usable for the specific aws service)
 
 ## Creation of the billing alerts
@@ -28,5 +28,7 @@ And also make sure you set the billing allarm so you dont have unexpected cost. 
 There are 2 ways to set the billing alerts.
 
 - Using Budget.
-- Using Cloudwatch Alarm. In this case, you need to create an alarm on us-east-1 (since it is the only region you can create an alarm)
+- Using Cloudwatch Alarm. In this case, you need to create an alarm on us-east-1 (since it is the only region you can create an alarm). You can create up to 10 free cloudwatch alarm
+
+Tags (Key/Value pair) are necessary to identify the cost allocation for each month and divide for each environment/project 
 
