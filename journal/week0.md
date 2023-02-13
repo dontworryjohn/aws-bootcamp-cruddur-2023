@@ -56,7 +56,7 @@ This is the section when you submit your credit that you have obtain during an e
 This is a tool where you want to estimate the cost of one or more services. Useful when someone asks you to give an estimate cost of the service you are going to use. I used this tool in several learning plan during the Skillbuilder.
 https://calculator.aws/#/
 
-# Architecture
+# Architecture Diagram
 
 The image below is the architecture of the app
 
