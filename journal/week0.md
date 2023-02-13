@@ -25,7 +25,7 @@ And also make sure you set the billing allarm so you dont have unexpected cost. 
 
 ## Info about billing alerts, Tags, Cost Explorer
 
-In this section, we will be discussing the billing dashboard and all its component such as Cost Explorer, Billing Alerts, Tags etc.
+In this section, we will be discussing the billing dashboard and all its component such as Cost Explorer, Billing Alerts, Tags, AWS calculator etc.
 
 ### Billing Alerts
 
