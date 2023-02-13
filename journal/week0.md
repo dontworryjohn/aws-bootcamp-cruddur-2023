@@ -23,12 +23,15 @@ This week the team will be discussing about the billing for the services we will
 Princing of aws services is vary depending of the region. Make sure to use the region close to you and see if all service you will utilise are available for the region.
 And also make sure you set the billing allarm so you dont have unexpected cost. Since my account is more than 1 year old, I can not use anymore the free tier but I have plenty of AWS credit I can use against all services (check always if your aws credit is usable for the specific aws service)
 
-## Creation of the billing alerts
+## Info about billing alerts, Tags, Cost Explorer
 
 There are 2 ways to set the billing alerts.
 
 - Using Budget.
-- Using Cloudwatch Alarm. In this case, you need to create an alarm on us-east-1 (since it is the only region you can create an alarm). You can create up to 10 free cloudwatch alarm
+- Using Cloudwatch Alarm. In this case, you need to create an alarm on us-east-1 region (since it is the only region you can create an alarm). You can create up to 10 free cloudwatch alarm
 
-Tags (Key/Value pair) are necessary to identify the cost allocation for each month and divide  each environment/project 
+Those 2 alarms will help you identify if your account is over spending.
 
+Tags (are Key/Value pair) are useful when you want to know how your cost is allocated. For example if your want to identify all the services you used under the tag enviromenrt: dev (for example)
+
+Cost explorer is a service which visualise, understand and manage your AWS costs usage over time.
