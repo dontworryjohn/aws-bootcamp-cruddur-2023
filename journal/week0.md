@@ -30,5 +30,5 @@ There are 2 ways to set the billing alerts.
 - Using Budget.
 - Using Cloudwatch Alarm. In this case, you need to create an alarm on us-east-1 (since it is the only region you can create an alarm). You can create up to 10 free cloudwatch alarm
 
-Tags (Key/Value pair) are necessary to identify the cost allocation for each month and divide for each environment/project 
+Tags (Key/Value pair) are necessary to identify the cost allocation for each month and divide  each environment/project 
 
