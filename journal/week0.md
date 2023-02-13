@@ -25,18 +25,16 @@ And also make sure you set the billing allarm so you dont have unexpected cost. 
 
 ## Info about billing alerts, Tags, Cost Explorer
 
-In this section, we will be discussing the billing dashboard and all its component.
+In this section, we will be discussing the billing dashboard and all its component such as Cost Explorer, Billing Alerts, Tags etc.
 
 ### Billing Alerts
-
-Better tp 
 
 There are 2 ways to set the billing alerts.
 
 - Using Budget.
 - Using Cloudwatch Alarm. In this case, you need to create an alarm on us-east-1 region (since it is the only region you can create an alarm). You can create up to 10 free cloudwatch alarm
 
-Those 2 alarms will help you identify if your account is over spending.
+Those 2 alarms will be helpful to identify if your account is over spending.
 
 Tags (are Key/Value pair) are useful when you want to know how your cost is allocated. For example if your want to identify all the services you used under the tag enviromenrt: dev (for example)
 
