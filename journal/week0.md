@@ -36,8 +36,12 @@ There are 2 ways to set the billing alerts.
 - Using Budget.
 - Using Cloudwatch Alarm. In this case, you need to create an alarm on us-east-1 region (since it is the only region you can create an alarm). You can create up to 10 free cloudwatch alarm
 
-Those 2 alarms will be helpful to identify if your account is over spending.
+Those 2 alarms will be helpful to identify if you are underspending/overspending.
 
+### Free Tier
+This section will show all the usage of your free tier. It will show all the services free for the 12 months (starting with the registration) its usage and forcast. After the 12 months, they are still some services are always free.
+
+### Tags
 Tags (are Key/Value pair) are useful when you want to know how your cost is allocated. For example if your want to identify all the services you used under the tag enviromenrt: dev (for example)
 
 Cost explorer is a service which visualise, understand and manage your AWS costs usage over time.
