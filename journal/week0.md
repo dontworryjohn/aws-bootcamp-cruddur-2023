@@ -26,8 +26,7 @@ And also make sure you set the billing allarm so you dont have unexpected cost. 
 
 There are 2 ways to set the billing alerts.
 
-
-https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/f56ec107d740762398353f6783fc7aa0ae90cf82/billing%20allerts.png?raw=true
+![alt text](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/f56ec107d740762398353f6783fc7aa0ae90cf82/billing%20allerts.png?raw=true)
 
 - Using budget
 - Using Cloudwatch alarm
