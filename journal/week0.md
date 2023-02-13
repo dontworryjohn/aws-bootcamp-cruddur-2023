@@ -25,6 +25,12 @@ And also make sure you set the billing allarm so you dont have unexpected cost. 
 
 ## Info about billing alerts, Tags, Cost Explorer
 
+In this section, we will be discussing the billing dashboard and all its component.
+
+### Billing Alerts
+
+Better tp 
+
 There are 2 ways to set the billing alerts.
 
 - Using Budget.
