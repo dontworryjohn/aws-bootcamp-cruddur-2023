@@ -58,7 +58,17 @@ https://calculator.aws/#/
 
 # Architecture Diagram
 
-The image below is the architecture of the app
+The image below is the architecture of the micro bloggin app
+
+
+## Requirements
+- Application using micro services
+- The frontend is in JS and the backend is in Python
+- Using api to communicate
+- Authetnication using Cognito
+- Use as much as possible the aws free tier
+- Momento as a third party caching system
 
 ![Architecture image](https://raw.githubusercontent.com/dontworryjohn/aws-bootcamp-cruddur-2023/main/Blank%20diagram.jpeg)
 
+please see the url from Ludic chart https://lucid.app/lucidchart/0916f541-fda7-4be3-b13d-9c4f6b2200a3/edit?viewport_loc=-535%2C-57%2C3383%2C1508%2C0_0&invitationId=inv_f913a5bf-8fe4-43b1-86ea-060bde784dfb
