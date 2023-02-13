@@ -37,10 +37,17 @@ There are 2 ways to set the billing alerts.
 Those 2 alarms will be helpful to identify if you are underspending/overspending.
 
 ### Free Tier
-This section will show all the usage of your free tier. It will show all the services free for the 12 months (starting with the registration) its usage and forcast. After the 12 months, they are still some services are always free.
+This section will show all the usage of your free tier. It will show all the services free for the 12 months (starting with the registration) and its usage and forcast. After the 12 months, they are still some services are always free.
 
 ### Tags
 Tags (are Key/Value pair) are useful when you want to know how your cost is allocated. For example if your want to identify all the services you used under the tag enviromenrt: dev (for example)
 
 ### Cost Explorer
 Cost explorer is a service which visualise, understand and manage your AWS costs usage over time.
+
+### Report
+The section report allows to generate reports. there are some reports already created by AWS that you can use
+
+### Credit
+This is the section when you submit your credit that you have obtain during an event (for example after submitting a feedback questionnaires). And also it shows when the expiration date.
+
