@@ -44,4 +44,5 @@ This section will show all the usage of your free tier. It will show all the ser
 ### Tags
 Tags (are Key/Value pair) are useful when you want to know how your cost is allocated. For example if your want to identify all the services you used under the tag enviromenrt: dev (for example)
 
+### Cost Explorer
 Cost explorer is a service which visualise, understand and manage your AWS costs usage over time.
