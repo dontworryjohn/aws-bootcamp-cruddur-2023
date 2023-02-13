@@ -55,3 +55,9 @@ This is the section when you submit your credit that you have obtain during an e
 ### AWS Calculator
 This is a tool where you want to estimate the cost of one or more services. Useful when someone asks you to give an estimate cost of the service you are going to use. I used this tool in several learning plan during the Skillbuilder.
 https://calculator.aws/#/
+
+# Architecture
+
+In the image below you find the architecture of the app
+
+![Alt text](https://lucid.app/lucidchart/0916f541-fda7-4be3-b13d-9c4f6b2200a3/edit?invitationId=inv_f913a5bf-8fe4-43b1-86ea-060bde784dfb "Architecture Diagram")
