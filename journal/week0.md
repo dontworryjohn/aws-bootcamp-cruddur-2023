@@ -38,6 +38,7 @@ Those 2 alarms will be helpful to identify if you are underspending/overspending
 
 ### Free Tier
 This section will show all the usage of your free tier. It will show all the services free for the 12 months (starting with the registration) and its usage and forcast. After the 12 months, they are still some services are always free.
+And also there are some service are "Trial" which means that is available for a short period such as 30 days.
 
 ### Tags
 Tags (are Key/Value pair) are useful when you want to know how your cost is allocated. For example if your want to identify all the services you used under the tag enviromenrt: dev (for example)
@@ -52,5 +53,5 @@ The section report allows to generate reports. there are some reports already cr
 This is the section when you submit your credit that you have obtain during an event (for example after submitting a feedback questionnaires). And also it shows when the expiration date.
 
 ### AWS Calculator
-This is a tool where you want to estimate the cost of one or more services. Useful when your manager asks you to give an estimate cost of the service you are going to use.
+This is a tool where you want to estimate the cost of one or more services. Useful when someone asks you to give an estimate cost of the service you are going to use. I used this tool in several learning plan during the Skillbuilder.
 https://calculator.aws/#/
