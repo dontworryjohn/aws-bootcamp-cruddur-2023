@@ -51,3 +51,6 @@ The section report allows to generate reports. there are some reports already cr
 ### Credit
 This is the section when you submit your credit that you have obtain during an event (for example after submitting a feedback questionnaires). And also it shows when the expiration date.
 
+### AWS Calculator
+This is a tool where you want to estimate the cost of one or more services. Useful when your manager asks you to give an estimate cost of the service you are going to use.
+https://calculator.aws/#/
