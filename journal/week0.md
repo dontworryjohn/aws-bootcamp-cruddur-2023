@@ -74,7 +74,7 @@ The image below is the architecture of the micro bloggin app
 To view the chart please check the following link https://lucid.app/lucidchart/0916f541-fda7-4be3-b13d-9c4f6b2200a3/edit?viewport_loc=-535%2C-57%2C3383%2C1508%2C0_0&invitationId=inv_f913a5bf-8fe4-43b1-86ea-060bde784dfb
 
 # Security
-Important thing when it come to security. Always inform the business of the techcnical risk that can exist of open vulnerabilties that has not resolved and can potentially can affect the business and how will be solved.
+Important thing when it comes to security. Always inform the business of the techcnical risk that can exist of open vulnerabilties that has not resolved and can potentially can affect the business and how will be solved.
 
 ### Definition of the cloud security
 Cybersecurity that protects data, application and services associated with cloud enviroments from both external and internal security threats.
@@ -91,13 +91,14 @@ Cybersecurity that protects data, application and services associated with cloud
 
 
 
-
+#### MFA for root account
 Root user is the most powerful user in aws enviroment. I consider it the key of your kingdom.
 Once it is compromise, hackers can spin any services on your AWS account (for example creating a bitcoin mining)
 
 Enable the MFA for the root account gives you an extra layer of security.
 Could be virtual or physical.
 
+#### AWS Organization
 Create an organization unit (AWS Organization)
 AWS Organization allows you to create and manage multiple account. Also it allows to apply governance policies to accounts or group.
 
