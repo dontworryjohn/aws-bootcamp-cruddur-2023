@@ -100,8 +100,11 @@ Could be virtual or physical.
 #### AWS Organization
 Create an organization unit (AWS Organization)
 AWS Organization allows you to create and manage multiple account. Also it allows to apply governance policies to accounts or group.
-There are 2 ways to create the organization:
-1) 
+There are 2 approce to create the organization:
+- Creating business unit (HR Ou, Finance Ou, Engineering Ou)
+- Creating a Standby and Active Pool. 
+
+#### AWS Cloud Trail
 
 
 
