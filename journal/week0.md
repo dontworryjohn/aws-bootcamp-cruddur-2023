@@ -76,7 +76,8 @@ To view the chart please check the following link https://lucid.app/lucidchart/0
 # Security
 Important thing when it come to security. Always inform the business of the techcnical risk that can exist for open vulnerabilties that has not resolved and can potentially can affect the business and how will be solved.
 
-## Definition of the cloud security
+### Definition of the cloud security
+
 Cybersecurity that protects data, application and services associated with cloud enviroments from both external and inerla security threats.
 
 
