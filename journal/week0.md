@@ -16,9 +16,10 @@ You will need to register for the following services:
 Once you registered with all of the services, you can go for the assignment for week 0.
 
 
-# Week 0 — Billing and Architecture
+# Week 0 — Billing, Architecture, Security
 
-This week the team will be discussing the billing for the services we will spin during the bootcamp.
+This week the team will be discussing the billing architecture security.
+
 The pricing of aws services is vary depending on the region. Make sure to use the region close to you and see if all services you will utilise are available for the region.
 And also make sure you set the billing alarm so you don't have unexpected costs. Since my account is more than 1 year old, I can not use anymore the free tier but I have plenty of AWS credit I can use against all services (check always if your aws credit is usable for the specific aws service)
 
@@ -52,7 +53,8 @@ The section report allows for generating reports. there are some reports already
 This is the section where you submit the credit that you have to obtain during an event (for example after submitting a feedback questionnaire). And also it shows when the expiration date.
 
 ### AWS Calculator
-This is a tool where you want to estimate the cost of one or more services. Useful when someone asks you to give an estimated cost of the service you are going to use. I used this tool in several learning plan during the Skillbuilder.
+This is a tool where you want to estimate the cost of one or more services. Useful when someone asks you to give an estimated cost of the service you are going to use. I used this tool during some exercise on skillbuilder.
+
 https://calculator.aws/#/
 
 # Architecture Diagram
