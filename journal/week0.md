@@ -74,3 +74,10 @@ The image below is the architecture of the micro bloggin app
 To view the chart please check the following link https://lucid.app/lucidchart/0916f541-fda7-4be3-b13d-9c4f6b2200a3/edit?viewport_loc=-535%2C-57%2C3383%2C1508%2C0_0&invitationId=inv_f913a5bf-8fe4-43b1-86ea-060bde784dfb
 
 # Security
+
+Important thing when it come to security. Always inform the business of the techcnical risk that can exist for open vulnerabilties that has not resolved and can potentially can affect the business and how will be solved.
+
+##Definition of the cloud security
+Cybersecurity that protects data, application and services associated with cloud enviroments from both external and inerla security threats.
+
+
