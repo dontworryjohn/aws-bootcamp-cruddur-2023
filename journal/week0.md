@@ -77,13 +77,13 @@ To view the chart please check the following link https://lucid.app/lucidchart/0
 
 
 # Security
-The important thing when it comes to security. Always inform the business of the techcnical risk that can exist of open vulnerabilties that has not resolved and can potentially can affect the business and how will be solved.
+The important thing when it comes to security. Always inform the business of the technical risk that can exist of open vulnerabilities that have not been resolved and can potentially affect the business and how will be solved.
 
 ### Definition of the cloud security
-Cybersecurity that protects data, application and services associated with cloud enviroments from both external and internal security threats.
+Cybersecurity protects data, applications and services associated with cloud environments from both external and internal security threats.
 
 ### Why care about cloud security
-- Reducing the impact of breach
+- Reducing the impact of the breach
 - Protecting all the system (application, network etc) against malicious data theft
 - Reducing the human error responsible for data leaks
 
@@ -124,7 +124,7 @@ Always Give the least privilege to the users. Don't give more than what it is ne
 When you are working on AWS, it is a best practice to use the IAM user instead of the Root account.
 If for some reason the IAM user is compromised, it is simple to solve the problem by removing the policy attached to it/deleting the user himself.
 
-Policies are assigned to either a IAM user or IAM role or IAM group and consist of what the entity can/can not do. For example, a policy could be the possibility to read the content of the s3 bucket.
+Policies are assigned to either an IAM user or IAM role or IAM group and consist of what the entity can/can not do. For example, a policy could be the possibility to read the content of the s3 bucket.
 
 Access Key and Secret Access key are similar to the user and password (keep it always secret). One reason you need to use it is for example you need to do some calls using CLI. Never hardcode this information on services that it is public expose (for example code on github with access key and secret access key) as bad actors could reuse those access to do bad actions (exploit your application and get sensible information or spin services)In some cases you need to use an IAM Role and attach it to a service or even a user. the difference between Iam user and Iam role is once the entity assumes the IAM role, it is valid for a short time and temporarily loses the previous privilege.
 
@@ -132,8 +132,7 @@ Make sure to create the IAM role as simply as possible.
 
 ### Share Responsibility
 This diagram shows what is the responsibility of the customer and what is the responsibility of AWS.
-For example, AWS is responsible for the global infrastructure. It takes care of everything works accordingly and is secure. Meanwhile, the customer is responsible for the application, eventually configuration (NACL/SG), and encryption at rest and in transit.
-
+For example, AWS is responsible for the global infrastructure. they care about everything work accordingly and are secure. Meanwhile, the customer is responsible for the application, eventually configuration (NACL/SG), and encryption at rest and in transit.
 
 
 ![Share responsibility](https://d1.awsstatic.com/security-center/Shared_Responsibility_Model_V2.59d1eccec334b366627e9295b304202faf7b899b.jpg)
