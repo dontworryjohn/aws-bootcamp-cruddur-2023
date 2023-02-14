@@ -105,6 +105,17 @@ There are 2 approce to create the organization:
 - Creating a Standby and Active Pool. 
 
 #### AWS Cloud Trail
+Auditing Service in AWS. Most all the api will be recorded in this service.
+Cloudtrail will record only the activity in the region you will operete.
+This service is not free
 
+#### IAM 
+Ability to access using user and password
+3 kind of users:
+- IAM user with user and password (make sure MFA is active as well as you activated on root account)
+- Federated user are user federated from an on premise environment without a password
+- Web Token User
 
+Always Give the least privilege for the users.
 
+When you are working on AWS, it is a best practice to use the IAM user instead of the Root account.
