@@ -127,5 +127,9 @@ Access Key and Secret Access key are similar to the user and password (keep it a
 Make sure to create the IAM role as simply as possible.
 
 ### Share Responsibility
+This diagram shows what is the responsibility of the customer and what is the responsibility of AWS.
+For example, AWS is responsible for the global infrastructure. It takes care of everything works accordingly and is secure. Meanwhile, the customer is responsible for the application, eventually configuration (NACL/SG), and encryption at rest and in transit.
+
+
 
 ![Share responsibility](https://d1.awsstatic.com/security-center/Shared_Responsibility_Model_V2.59d1eccec334b366627e9295b304202faf7b899b.jpg)
