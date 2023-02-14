@@ -89,6 +89,9 @@ Cybersecurity that protects data, application and services associated with cloud
 - Always keep updated with the new services announce
 - Bad hackers are improving as well.
 
+
+
+
 Root user is the most powerful user in aws enviroment. I consider it the key of your kingdom.
 Once it is compromise, hackers can spin any services on your AWS account (for example creating a bitcoin mining)
 
