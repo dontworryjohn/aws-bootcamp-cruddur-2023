@@ -53,7 +53,7 @@ The section report allows for generating reports. there are some reports already
 This is the section where you submit the credit that you have to obtain during an event (for example after submitting a feedback questionnaire). And also it shows when the expiration date.
 
 ### AWS Calculator
-This is a tool where you want to estimate the cost of one or more services. Useful when someone asks you to give an estimated cost of the service you are going to use. I used this tool during some exercise on skillbuilder.
+This is a tool where you want to estimate the cost of one or more services. Useful when someone asks you to give an estimated cost of the service you are going to use. I used this tool during some exercises on skillbuilder.
 
 https://calculator.aws/#/
 
@@ -73,6 +73,8 @@ The image below is the architecture of the micro blogging app
 ![Architecture image](https://raw.githubusercontent.com/dontworryjohn/aws-bootcamp-cruddur-2023/main/Blank%20diagram.jpeg)
 
 To view the chart please check the following link https://lucid.app/lucidchart/0916f541-fda7-4be3-b13d-9c4f6b2200a3/edit?viewport_loc=-535%2C-57%2C3383%2C1508%2C0_0&invitationId=inv_f913a5bf-8fe4-43b1-86ea-060bde784dfb
+
+
 
 # Security
 The important thing when it comes to security. Always inform the business of the techcnical risk that can exist of open vulnerabilties that has not resolved and can potentially can affect the business and how will be solved.
