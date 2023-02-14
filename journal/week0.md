@@ -116,6 +116,8 @@ Ability to access using user and password
 - Federated user are user federated from an on premise environment without a password
 - Web Token User
 
-Always Give the least privilege for the users.
+Always Give the least privilege for the users. Dont give more than what it is necessary.
 
 When you are working on AWS, it is a best practice to use the IAM user instead of the Root account.
+If for some reason the IAM user is compromised, it is simple to solve the problem by removing the policy attached on it/deleting the user.
+
