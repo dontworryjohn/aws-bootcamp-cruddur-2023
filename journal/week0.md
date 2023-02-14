@@ -94,12 +94,14 @@ Cybersecurity that protects data, application and services associated with cloud
 #### MFA for root account
 Root user is the most powerful user in aws enviroment. I consider it the key of your kingdom.
 Once it is compromise, hackers can spin any services on your AWS account (for example creating a bitcoin mining)
-
 Enable the MFA for the root account gives you an extra layer of security.
 Could be virtual or physical.
 
 #### AWS Organization
 Create an organization unit (AWS Organization)
 AWS Organization allows you to create and manage multiple account. Also it allows to apply governance policies to accounts or group.
+There are 2 ways to create the organization:
+1) 
+
 
 
