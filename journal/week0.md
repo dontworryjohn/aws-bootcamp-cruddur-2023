@@ -122,3 +122,5 @@ When you are working on AWS, it is a best practice to use the IAM user instead o
 If for some reason the IAM user is compromised, it is simple to solve the problem by removing the policy attached on it/deleting the user himself.
 
 Access Key and Secret Access key are similar of the user and password (keep it always secret). One reason you need to use it is for example you need to do some call using CLI. Never hardcode this information on services that it is public expose (for example code on github with access key and secret access key) as bad actors could reuse those access to do bad actions (exploit your appplication and get sensible information or spin services)
+
+In some case you need to use an IAM Role and attach is to a service or even a user. the difference between Iam user and Iam role is once the entity assume the IAM role, it is valid for a short period time and temporarly lose the previous priviladge.
