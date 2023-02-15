@@ -152,3 +152,9 @@ A  trick that I learnt from Andrew is to activate the auto prompt. This helped m
 aws --cli-auto-prompt
 
 if you want to put the pipe sign just type the following command "alt+124"
+
+
+    aws sns subscribe \
+    --topic-arn=$(aws sns create-topic --name billing-alarm --output text) \
+    --protocol email \
+    --notification-endpoint=myemail@email.com
