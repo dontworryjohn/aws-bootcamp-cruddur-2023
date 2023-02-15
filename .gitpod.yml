@@ -11,4 +11,3 @@ tasks:
 vscode:
   extensions:
     - 42Crunch.vscode-openapi
-e-openapi
