@@ -150,3 +150,5 @@ Note that not all the region are available for this functionality. Please check 
 A  trick that I learnt from Andrew is to activate the auto prompt. This helped me a lot to complete the command that i wanted to launch and give you an overview of the command all on the terminal.
 
 aws --cli-auto-prompt
+
+if you want to put the pipe sign just type the following command "alt+124"
