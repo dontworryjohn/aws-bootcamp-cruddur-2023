@@ -66,7 +66,7 @@ The image below is the architecture of the micro blogging app
 - Application using micro services
 - The frontend is in JS and the backend is in Python
 - Using api to communicate
-- Authetnication using Cognito
+- Authentication using Cognito
 - Use as much as possible the aws free tier
 - Momento as a third party caching system
 
@@ -136,3 +136,17 @@ For example, AWS is responsible for the global infrastructure. they care about e
 
 
 ![Share responsibility](https://d1.awsstatic.com/security-center/Shared_Responsibility_Model_V2.59d1eccec334b366627e9295b304202faf7b899b.jpg)
+
+### AWS CLI
+
+There are 2 types to access aws via CLI.
+One is installing the aws CLi from you terminal and after providing the secret key and secret access key and the region where you will call the api.
+
+Another way is to use cloudshell from your the aws console.
+Note that not all the region are available for this functionality. Please check the icon close to the name of you IAM User.
+
+![Cloudshell Example](https://media.amazonwebservices.com/blog/2020/cs_open_3.png)
+
+A  trick that I learnt from Andrew is to activate the auto prompt. This helped me a lot to complete the command that i wanted to launch and give you an overview of the command all on the terminal.
+
+aws --cli-auto-prompt
