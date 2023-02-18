@@ -74,6 +74,9 @@ The image below is the architecture of the micro blogging app
 
 To view the chart please check the following link https://lucid.app/lucidchart/0916f541-fda7-4be3-b13d-9c4f6b2200a3/edit?viewport_loc=-535%2C-57%2C3383%2C1508%2C0_0&invitationId=inv_f913a5bf-8fe4-43b1-86ea-060bde784dfb
 
+https://lucid.app/lucidchart/1fdd751b-230d-4006-82bd-2238edd5d5cf/edit?viewport_loc=-115%2C34%2C2133%2C973%2C0_0&invitationId=inv_3364d26b-b661-435d-b1f9-c24149c8bda9
+
+
 
 
 # Security
