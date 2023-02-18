@@ -144,10 +144,10 @@ For example, AWS is responsible for the global infrastructure. they care about e
 ### AWS CLI
 
 There are 2 types to access aws via CLI.
-One is installing the aws CLi from you terminal and after providing the secret key and secret access key and the region where you will call the api.
+One is installing the aws CLI from you terminal and after providing the secret key and secret access key and the region where you will call the api.
 
 Another way is to use cloudshell from your the aws console.
-Note that not all the region are available for this functionality. Please check the icon close to the name of you IAM User.
+Note that not all the regions are available for this functionality. Please check the icon close to the name of your IAM User.
 
 ![Cloudshell Example](https://media.amazonwebservices.com/blog/2020/cs_open_3.png)
 
@@ -157,6 +157,10 @@ aws --cli-auto-prompt
 
 if you want to put the pipe sign just type the following command "alt+124"
 
+
+This command create an sns subcription and the same time create the arn sns topic.
+
+I took inspiration from the book AWS Cookbooks by John Culkin & Mike Zazon.
 
     aws sns subscribe \
     --topic-arn=$(aws sns create-topic --name billing-alarm --output text) \
