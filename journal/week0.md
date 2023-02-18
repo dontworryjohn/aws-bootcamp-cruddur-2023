@@ -174,6 +174,16 @@ This command is used to search environment variables that we have created
 
 ```
 env | grep AWS_
-
 ```
 
+
+```
+To save the env var in Gitpod
+gp env AWS_ACCESS_KEY_ID="insert the access key"
+gp env AWS_SECRET_ACCESS_KEY=" insert the secret key "
+gp env AWS_ACCOUNT_ID="insert the number of your account"
+gp env AWS_DEFAULT_REGION="insert the region"
+```
+
+
+To check the region, you can see from the aws console, beside the IAM role/IAM user
