@@ -169,3 +169,11 @@ This command create a sns subcription and the same time create the arn sns topic
     --protocol email \
     --notification-endpoint=myemail@email.com
 ```
+
+This command is used to search environment variables that we have created
+
+```
+env | grep AWS_
+
+```
+
