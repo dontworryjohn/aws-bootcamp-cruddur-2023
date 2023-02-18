@@ -157,11 +157,11 @@ aws --cli-auto-prompt
 if you want to put the pipe sign just type the following command "alt+124"
 
 
-This command create an sns subcription and the same time create the arn sns topic.
+This command create a sns subcription and the same time create the arn sns topic.
 
-I took inspiration from the book AWS Cookbooks by John Culkin & Mike Zazon.
-
+```
     aws sns subscribe \
     --topic-arn=$(aws sns create-topic --name billing-alarm --output text) \
     --protocol email \
     --notification-endpoint=myemail@email.com
+```
