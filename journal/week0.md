@@ -190,6 +190,7 @@ To check the region, you can see from the aws console, beside the IAM role/IAM u
 
 ```
 This command create the budget and the same time retrive the account number
+
 aws budgets create-budget \
     --account-id=$(aws sts get-caller-identity --query Account --output text) \
     --budget file://aws/budget.json \
