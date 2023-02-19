@@ -193,6 +193,6 @@ This command create the budget and the same time retrive the account number
 aws budgets create-budget \
     --account-id=$(aws sts get-caller-identity --query Account --output text) \
     --budget file://aws/budget.json \
-    --notifications-with-subscribers file://aws/notifications-with-subscribers.json
+    --notifications-with-subscribers file://aws/budget-notifications-with-subscribers.json
     ```
 
