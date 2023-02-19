@@ -198,3 +198,7 @@ aws budgets create-budget \
     
 ```
 
+```
+This command create a cloudwatch alarm
+aws cloudwatch put-metric-alarm --cli-input-json file://aws/json/alarm_config.json
+```
