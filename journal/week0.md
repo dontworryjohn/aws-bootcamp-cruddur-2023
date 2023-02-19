@@ -187,3 +187,12 @@ gp env AWS_DEFAULT_REGION="insert the region"
 
 
 To check the region, you can see from the aws console, beside the IAM role/IAM user
+
+```
+This command create the budget and the same time retrive the account number
+aws budgets create-budget \
+    --account-id=$(aws sts get-caller-identity --query Account --output text) \
+    --budget file://aws/budget.json \
+    --notifications-with-subscribers file://aws/notifications-with-subscribers.json
+    ```
+
