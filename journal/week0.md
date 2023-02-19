@@ -70,7 +70,7 @@ The image below is the architecture of the micro blogging app
 - Use as much as possible the aws free tier
 - Momento as a third party caching system
 
-![Architecture image](images/Blank diagram.jpeg)
+![Architecture image](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/Blank%20diagram.jpeg)
 
 
 To view the chart please check the following link https://lucid.app/lucidchart/0916f541-fda7-4be3-b13d-9c4f6b2200a3/edit?viewport_loc=-535%2C-57%2C3383%2C1508%2C0_0&invitationId=inv_f913a5bf-8fe4-43b1-86ea-060bde784dfb
