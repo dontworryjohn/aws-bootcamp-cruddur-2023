@@ -54,3 +54,5 @@ AWS Inspector/ Clair tool for image vulnerabilty scanning
 '''
 docker images
 '''
+
+from docker, click the container image and go to  **attach shell** this open the shell on the contianer
