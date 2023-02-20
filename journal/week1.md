@@ -50,3 +50,7 @@ Aws Secret Manager
 
 AWS Inspector/ Clair tool for image vulnerabilty scanning
 
+
+'''
+docker images
+'''
