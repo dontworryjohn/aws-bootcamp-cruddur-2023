@@ -93,6 +93,8 @@ To check the remain credit, click to your Icon > billing
 - Covered under free tier if you use the T2.micro instance'
 - Avoid using Cloud9 in case of free tier instance in use for other purpose.
 
+
+
 ## Docker
 
 '''
