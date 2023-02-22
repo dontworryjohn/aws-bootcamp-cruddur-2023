@@ -89,6 +89,9 @@ To check the remain credit, click to your Icon > billing
  - Up to 60 Hours of usage with 2 core 4GB RAM and 15GB of Storage
 - Up to 30 Hours of usage with 4 core 8GB RAM and 15GB of Storage
 
+### AWS Cloud9
+- Covered under free tier if you use the T2.micro instance'
+- Avoid using Cloud9 in case of free tier instance in use for other purpose.
 
 ## Docker
 
