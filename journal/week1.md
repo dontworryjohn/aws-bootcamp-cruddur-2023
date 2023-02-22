@@ -73,6 +73,23 @@ Reason to run containers on the cloud
 - Integration with AWS Services
 - Using automation to provision containers at sale with speed and security
 
+
+
+## Pricing Consideration for CDE
+
+### Gitpod
+- Up To 50 Hours of Usage/Month
+- Standard: 4 Cores, 8GB Ram and 30GB Storage
+- Avoid spinning multiple enviroment at the time as it consume your 50Hours free tier quicker.
+
+To check the remain credit, click to your Icon > billing
+ 
+ ### Github Codespaces
+ 2 flavours:
+ - Up to 60 Hours of usage with 2 core 4GB RAM and 15GB of Storage
+- Up to 30 Hours of usage with 4 core 8GB RAM and 15GB of Storage
+
+
 ## Docker
 
 '''
