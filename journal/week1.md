@@ -46,15 +46,32 @@ Registry is a location of the images available on internet (an exampple is docke
 - Ensure all code is tested for vulnerabilities before production use
 
 
+#### **Docker Compose** 
+It is a tool for defining and running multi container Docker Applications (It uses yml file).
 
+### Tool to indefity vulnerability on your Docker Compose
+Snyk OpenSource Security
 
+### Tools to Store and Manage Secrets
+- Aws Secret Manager
+- Hashicorp Vault
 
-Use Snyk OpenSource Security to check vulnarabilities 
+### Tools to scan Image Vulnerability
+- AWS Inspector
+- Clair
+- Snyk COntainer Security
 
-Aws Secret Manager
+### Running Containers in AWS
+Problem with docker compose and Docker Containers: If you need to change, you need to stop the machine update the file and restart.
 
-AWS Inspector/ Clair tool for image vulnerabilty scanning
+For the Managed Containers you can use the following AWS service
+- AWS ECS
+- AWS EKS
+- AWS Fargate
 
+Reason to run containers on the cloud
+- Integration with AWS Services
+- Using automation to provision containers at sale with speed and security
 
 ## Docker
 
