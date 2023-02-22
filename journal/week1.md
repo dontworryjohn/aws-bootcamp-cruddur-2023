@@ -11,7 +11,8 @@ Container Security is the practice of protecting your application hosted on comp
 
 ### **Why container is popular?**
 It is a angnostic way to run application.
-Most people started developing apps on container due to the simplicity to the package without considering eventually requirements.
+Most people started developing apps on container due to the simplicity to pass the package without considering requirements.
+
 
 **Managed Vs Unmanaged Container**
 
@@ -22,11 +23,15 @@ Unmanaged Containers means you are running your container on your servers and yo
 (Please refer to the Share responsability diagram on the journal Week0.md).
 
 
+
+
 ### **Docker Components**
 ![Docker Component](https://docs.docker.com/engine/images/architecture.svg)
 
-Client is basically is installed your docker locally
-Server is the location where is running the container  
+- Client is basically is installed your docker locally (build, pull, run features)
+- Server is the location where is running the container
+
+Registry is a location of the images available on internet (an exampple is docker hub). you could have a private registry inside of your organisation.
 
 #### **Security Best Practice**
 - Keep Host & Docker Updated to latest security patches.
@@ -51,7 +56,7 @@ Aws Secret Manager
 AWS Inspector/ Clair tool for image vulnerabilty scanning
 
 
-##Docker
+## Docker
 
 '''
 docker images
