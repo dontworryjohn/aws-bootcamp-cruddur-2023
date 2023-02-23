@@ -97,15 +97,18 @@ To check the remain credit, click to your Icon > billing
 
 ## Docker
 
-'''
+
+
+```
 docker images
-'''
+```
 
 from docker, click the container image and go to  **attach shell** this open the shell on the contianer
 
 
 I got problem commiting as I did some changes on github and the same time on gitpod. to solve 
-'''
+
+```
 git pull --rebase
 git push
-'''
+```
