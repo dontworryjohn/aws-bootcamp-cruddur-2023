@@ -9,7 +9,6 @@ services:
       - "4567:4567"
     volumes:
       - ./backend-flask:/backend-flask
-      - /frontend-react-js/node_modules
   frontend-react-js:
     environment:
       REACT_APP_BACKEND_URL: "https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
