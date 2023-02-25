@@ -97,6 +97,7 @@ To check the remain credit, click to your Icon > billing
 
 ## Docker
 
+### Creating docker backend
 To create the docker configuration for the backend-flask, create a file called **Dockerfile** and copy the following code
 
 ```
@@ -115,12 +116,93 @@ EXPOSE ${PORT}
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=4567"]
 ```
 
+from the project directory type the following code to build the image
+```
+docker build -t backend-flask ./backend-flask
+```
 
+typing this command to run the image of the container
+```
+docker run --rm -p 4567:4567 -it backend-flask
+```
+
+
+this code create the 2 var env and run the container
+
+```
+docker run --rm -p 4567:4567 -it -e FRONTEND_URL='*' -e BACKEND_URL='*' backend-flask
+```
+
+#### Creating docker frontend
+move to the frontend folder and install npm
+```
+cd frontend-react-js
+npm i
+```
+
+To create the docker configuration for the frontend-react-js, create a file called **Dockerfile** and copy the following code
+```
+FROM node:16.18
+
+ENV PORT=3000
+
+COPY . /frontend-react-js
+WORKDIR /frontend-react-js
+RUN npm install
+EXPOSE ${PORT}
+CMD ["npm", "start"]
+```
+
+### Create docker compose
+
+Create the file called docker-compose.yml from the main root and copy the following code.
+```
+version: "3.8"
+services:
+  backend-flask:
+    environment:
+      FRONTEND_URL: "https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+      BACKEND_URL: "https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+    build: ./backend-flask
+    ports:
+      - "4567:4567"
+    volumes:
+      - ./backend-flask:/backend-flask
+  frontend-react-js:
+    environment:
+      REACT_APP_BACKEND_URL: "https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+    build: ./frontend-react-js
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend-react-js:/frontend-react-js
+
+# the name flag is a hack to change the default prepend folder
+# name when outputting the image names
+networks: 
+  internal-network:
+    driver: bridge
+    name: cruddur
+```
+
+
+to run the docker compose, go to the docker compose and click ***docker up***
+
+### Troubleshooting
+
+This command check the images what image are on the local machine
 ```
 docker images
 ```
 
-from docker, click the container image and go to  **attach shell** this open the shell on the contianer
+this  command check the status of the container. good to see if it is running
+```
+docker ps
+```
+
+
+from docker extention, click the container image and go to  **attach shell** this open the shell on the contianer. use this tool for troubleshooting
+
 
 
 I got problem commiting as I did some changes on github and the same time on gitpod. to solve 
