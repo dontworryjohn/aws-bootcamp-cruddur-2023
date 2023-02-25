@@ -212,3 +212,8 @@ I got problem commiting as I did some changes on github and the same time on git
 git pull --rebase
 git push
 ```
+
+to enter to postgres on container type the following command
+```
+psql -Upostgres --host localhost
+```
