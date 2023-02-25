@@ -135,6 +135,7 @@ docker run --rm -p 4567:4567 -it -e FRONTEND_URL='*' -e BACKEND_URL='*' backend-
 
 #### Creating docker frontend
 move to the frontend folder and install npm
+this command will be execute every time you launch the gitpod session
 ```
 cd frontend-react-js
 npm i
