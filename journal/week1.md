@@ -189,7 +189,44 @@ networks:
 
 to run the docker compose, go to the docker compose and click ***docker up***
 
-### Troubleshooting
+add this code on the docker compose yml to prepare the image for dyanodb and postgres
+
+```
+ dynamodb-local:
+    # https://stackoverflow.com/questions/67533058/persist-local-dynamodb-data-in-volumes-lack-permission-unable-to-open-databa
+    # We needed to add user:root to get this working.
+    user: root
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    image: "amazon/dynamodb-local:latest"
+    container_name: dynamodb-local
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./docker/dynamodb:/home/dynamodblocal/data"
+    working_dir: /home/dynamodblocal
+  db:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
+```
+
+on docker compose file, add this code after networks
+```
+volumes:
+  db:
+    driver: local    
+```
+
+to check the if postgres, check the command in the section troubleshooting.
+to check the if dyanodb works, check the command in the section troubleshooting.
+
+### Troubleshooting commands
 
 This command check the images what image are on the local machine
 ```
@@ -213,7 +250,8 @@ git pull --rebase
 git push
 ```
 
-to enter to postgres on container type the following command
+To test postgres, enter to postgres on container type the following command
 ```
 psql -Upostgres --host localhost
 ```
+
