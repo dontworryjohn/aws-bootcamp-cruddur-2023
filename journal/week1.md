@@ -228,12 +228,12 @@ to check the if dyanodb works, check the command in the section troubleshooting.
 
 ### Troubleshooting commands
 
-This command check the images what image are on the local machine
+This command check the images on the local machine
 ```
 docker images
 ```
 
-this  command check the status of the container. good to see if it is running
+this  command check the status of the container. good to see if it is not running
 ```
 docker ps
 ```
