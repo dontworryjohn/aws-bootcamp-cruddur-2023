@@ -48,3 +48,11 @@ Obeservability services in AWS
 ***Instrumentation*** is what helps you to create or produce logs metrics traces.
 
 ![AWS Obesvability options](https://static.us-east-1.prod.workshops.aws/public/6b1b482b-5ecd-4e4a-a136-ed0427c17586/static/images/intro/aws-observability.png)
+
+
+### Central Obeservability Platform - Security
+
+- AWS Security Hub with Amazon Event Bridge
+- Open Source Dashboard
+- SIEM (Security Icident and Event Management)
+- Event Driven Architecture with AWS Services
