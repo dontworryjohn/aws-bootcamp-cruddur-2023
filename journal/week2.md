@@ -56,3 +56,9 @@ Obeservability services in AWS
 - Open Source Dashboard
 - SIEM (Security Icident and Event Management)
 - Event Driven Architecture with AWS Services
+
+## Install Honeycomb
+
+
+### Tools to troubleshooting
+https://honeycomb-whoami.glitch.me/
