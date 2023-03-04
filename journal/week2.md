@@ -161,7 +161,7 @@ LOGGER.addHandler(cw_handler)
 LOGGER.info("test log")
 ```
 
-
+Insert 
 ```
 @app.after_request
 def after_request(response):
@@ -179,6 +179,11 @@ add this on home_activities.py
 ```
 LOGGER.info("HomeActivities")
 
+```
+And change with the following code
+```
+#def run(Logger):
+   #Logger.info("HomeActivities")
 ```
 
 from the docker-compose.yml, add the following code for the env variables
@@ -346,7 +351,7 @@ def rollbar_test():
 ```
 
 ## Cost HoneyComb, Rollbar, AWS Xray and cloudwatch logs
-Honeycomb: 2.000.000  events free notification
+Honeycomb: 20.000.000  events free notification
 
 Rollbar: 5000 event per month
 
