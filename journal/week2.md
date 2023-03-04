@@ -59,7 +59,7 @@ Obeservability services in AWS
 
 ## Install Honeycomb
 
-Add the following on the on the app.py
+Add the following on the app.py
 ```
 # Honeycomb
 from opentelemetry import trace
@@ -92,11 +92,11 @@ opentelemetry-instrumentation-flask
 opentelemetry-instrumentation-requests
 ```
 
-from the docker-compose.yml, add the following code
+from the docker-compose.yml, add the following code for the env variables
 ```
 OTEL_SERVICE_NAME: 'backend-flask'
-      OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io"
-      OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=${HONEYCOMB_API_KEY}"
+OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io"
+OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=${HONEYCOMB_API_KEY}"
 ```
 
 To create span and attribute, add the following code on the home_activities.py
@@ -117,6 +117,54 @@ span.set_attribute("app.now", now.isoformat())
 span.set_attribute("app.result_lenght", len(results))
 
  ```
+
+## Install Cloudwatch
+
+add the following code on the app.py on our backend-flask
+```
+# Cloudwatch
+import watchtower
+import logging
+from time import strftime
+
+# Configuring Logger to Use CloudWatch
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.DEBUG)
+console_handler = logging.StreamHandler()
+cw_handler = watchtower.CloudWatchLogHandler(log_group='cruddur')
+LOGGER.addHandler(console_handler)
+LOGGER.addHandler(cw_handler)
+LOGGER.info("test log")
+```
+
+
+```
+@app.after_request
+def after_request(response):
+    timestamp = strftime('[%Y-%b-%d %H:%M]')
+    LOGGER.error('%s %s %s %s %s %s', timestamp, request.remote_addr, request.method, request.scheme, request.full_path, response.status)
+    return response
+```
+
+add code to the requirements.text on the backend-flask folder
+```
+opentelemetry-instrumentation-requests
+watchtower
+```
+
+add this on home_activities.py
+```
+LOGGER.info("HomeActivities")
+
+```
+
+from the docker-compose.yml, add the following code for the env variables
+
+```
+AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
+AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+```
 
 
 ### Tools to troubleshooting
