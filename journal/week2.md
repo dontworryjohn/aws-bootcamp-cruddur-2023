@@ -59,6 +59,65 @@ Obeservability services in AWS
 
 ## Install Honeycomb
 
+Add the following on the on the app.py
+```
+# Honeycomb
+from opentelemetry import trace
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
+from opentelemetry.instrumentation.requests import RequestsInstrumentor
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+
+# Honeycomb
+# Initialize tracing and an exporter that can send data to Honeycomb
+provider = TracerProvider()
+processor = BatchSpanProcessor(OTLPSpanExporter())
+provider.add_span_processor(processor)
+trace.set_tracer_provider(provider)
+tracer = trace.get_tracer(__name__)
+
+# Honeycomb
+# Initialize automatic instrumentation with Flask
+FlaskInstrumentor().instrument_app(app)
+RequestsInstrumentor().instrument()
+```
+
+On the backend-flask/requirements.text, add the following code
+```
+opentelemetry-api 
+opentelemetry-sdk 
+opentelemetry-exporter-otlp-proto-http 
+opentelemetry-instrumentation-flask 
+opentelemetry-instrumentation-requests
+```
+
+from the docker-compose.yml, add the following code
+```
+OTEL_SERVICE_NAME: 'backend-flask'
+      OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io"
+      OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=${HONEYCOMB_API_KEY}"
+```
+
+To create span and attribute, add the following code on the home_activities.py
+```
+from opentelemetry import trace
+tracer = trace.get_tracer("home.activities")
+```
+
+```
+with tracer.start_as_current_span("home-activities-mock-data"):
+    span = trace.get_current_span()
+```
+```
+span.set_attribute("app.now", now.isoformat())
+ ```
+ at the end of the code, put the following
+ ```
+span.set_attribute("app.result_lenght", len(results))
+
+ ```
+
 
 ### Tools to troubleshooting
 https://honeycomb-whoami.glitch.me/
