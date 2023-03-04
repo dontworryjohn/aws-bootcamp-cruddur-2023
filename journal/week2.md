@@ -59,6 +59,20 @@ Obeservability services in AWS
 
 ## Install Honeycomb
 
+On the backend-flask/requirements.text, add the following code
+```
+opentelemetry-api 
+opentelemetry-sdk 
+opentelemetry-exporter-otlp-proto-http 
+opentelemetry-instrumentation-flask 
+opentelemetry-instrumentation-requests
+```
+
+install the dependency. this will necessary just this time as it will be run via docker compose
+```
+pip install -r requirements.txt
+```
+
 Add the following on the app.py
 ```
 # Honeycomb
@@ -83,14 +97,7 @@ FlaskInstrumentor().instrument_app(app)
 RequestsInstrumentor().instrument()
 ```
 
-On the backend-flask/requirements.text, add the following code
-```
-opentelemetry-api 
-opentelemetry-sdk 
-opentelemetry-exporter-otlp-proto-http 
-opentelemetry-instrumentation-flask 
-opentelemetry-instrumentation-requests
-```
+
 
 from the docker-compose.yml, add the following code for the env variables
 ```
@@ -98,6 +105,12 @@ OTEL_SERVICE_NAME: 'backend-flask'
 OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io"
 OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=${HONEYCOMB_API_KEY}"
 ```
+
+from honeycomb.io, grab the unique code and create the gitpod env var
+```
+gp env HONEYCOMB_API_KEY=""
+```
+
 
 To create span and attribute, add the following code on the home_activities.py
 ```
