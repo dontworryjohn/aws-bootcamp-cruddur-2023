@@ -345,5 +345,20 @@ def rollbar_test():
     return "Hello World!"
 ```
 
+## Cost HoneyComb, Rollbar, AWS Xray and cloudwatch logs
+Honeycomb: 2.000.000  events free notification
+
+Rollbar: 5000 event per month
+
+Xray 100.000 per month and always free tier  even after the 12 months after the registration
+
+
+Cloudwatch (always free tier):
+- 10 custom metrics and alarm
+- 1.000.000 API request
+- 5GB of log dataingestion and 5 GB of log Data Archive
+- 3 Dashboards with up to 50 Metrics each per month
+
+
 ### Tools to troubleshooting
 https://honeycomb-whoami.glitch.me/
