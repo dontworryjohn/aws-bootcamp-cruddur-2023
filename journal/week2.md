@@ -191,6 +191,41 @@ AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
 
 ## Install Xray
 
+ check the env var for the AWS region using the following command
+ ```
+ env | grep AWS_REGION
+ ```
+
+ If there is no result
+ ```
+export AWS_REGION="ca-central-1"
+gp env AWS_REGION="ca-central-1"
+
+ ```
+
+from the backend-flask requirements.text, insert the following
+```
+aws-xray-sdk
+```
+
+install the dependency. this will necessary just this time as it will be run via docker compose
+```
+pip install -r requirements.txt
+```
+
+Insert the following code inside the app.py
+
+```
+# Xray
+from aws_xray_sdk.core import xray_recorder
+from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
+```
+```
+# Xray
+xray_url = os.getenv("AWS_XRAY_URL")
+xray_recorder.configure(service='backend-flask', dynamic_naming=xray_url)
+```
+
 Create xray.json inside the folder of /aws/json/ and insert the following code
 
 ```
@@ -211,33 +246,16 @@ Create xray.json inside the folder of /aws/json/ and insert the following code
   }
 ```
 
-  Insert the following code inside the app.py
-
+launch the following command from to create the group on xray from the backend-flask folder
 ```
-# Xray
-from aws_xray_sdk.core import xray_recorder
-from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
-
-```
-```
-# Xray
-xray_url = os.getenv("AWS_XRAY_URL")
-xray_recorder.configure(service='backend-flask', dynamic_naming=xray_url)
+aws xray create-group \
+   --group-name "Cruddur" \
+   --filter-expression "service(\"backend-flask")"
 ```
 
+from the main folder type the following command to create the sample rule
 ```
-simple_processor = SimpleSpanProcessor(ConsoleSpanExporter())
-provider.add_span_processor(simple_processor)
-```
-
-```
-# xray
-XRayMiddleware(app, xray_recorder)
-```
-
-from the backend-flask requirements.text, insert the following
-```
-aws-xray-sdk
+aws xray create-sampling-rule --cli-input-json file://aws/json/xray.json
 ```
 
 add this line for the dockercompose.yml
@@ -245,7 +263,7 @@ add this line for the dockercompose.yml
 AWS_XRAY_URL: "*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*"
 AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
 ```
-this code will create the demon necessary for Xray
+this code will create the daemon necessary for Xray
 ```
 xray-daemon:
     image: "amazon/aws-xray-daemon"
@@ -259,6 +277,15 @@ xray-daemon:
       - 2000:2000/udp
 ```
 
+```
+simple_processor = SimpleSpanProcessor(ConsoleSpanExporter())
+provider.add_span_processor(simple_processor)
+```
+
+```
+# xray
+XRayMiddleware(app, xray_recorder)
+```
 
 
 ### Tools to troubleshooting
