@@ -16,7 +16,7 @@ tasks:
       sudo apt install -y postgresql-client-13 libpq-dev   
   - name: react-js
     command: |
-      cd ./front-react-js
+      cd frontend-react-js
       npm i
 vscode:
   extensions:
