@@ -133,6 +133,17 @@ span.set_attribute("app.result_lenght", len(results))
 
 ## Install Cloudwatch
 
+
+from the backend-flask requirements.text, insert the following
+```
+watchtower
+```
+
+install the dependency. this will necessary just this time as it will be run via docker compose
+```
+pip install -r requirements.txt
+```
+
 add the following code on the app.py on our backend-flask
 ```
 # Cloudwatch
@@ -162,7 +173,6 @@ def after_request(response):
 add code to the requirements.text on the backend-flask folder
 ```
 opentelemetry-instrumentation-requests
-watchtower
 ```
 
 add this on home_activities.py
