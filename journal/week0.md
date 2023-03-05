@@ -201,3 +201,7 @@ aws budgets create-budget \
 This command create a cloudwatch alarm
 aws cloudwatch put-metric-alarm --cli-input-json file://aws/json/alarm_config.json
 ```
+
+### Note
+If you are going to use your company aws account, you might have problem using the repo. This is might caused by the SCP policy in place.
+Still underinvestigation the root cause of this problem.
