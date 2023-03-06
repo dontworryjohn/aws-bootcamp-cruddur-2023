@@ -65,8 +65,8 @@ xray_recorder.configure(service='backend-flask', dynamic_naming=xray_url)
 
 #otel honeycomb
 # show this in the logs within backend flask
-simple_processor = SimpleSpanProcessor(ConsoleSpanExporter())
-provider.add_span_processor(simple_processor)
+#simple_processor = SimpleSpanProcessor(ConsoleSpanExporter())
+#provider.add_span_processor(simple_processor)
 
 trace.set_tracer_provider(provider)
 tracer = trace.get_tracer(__name__)
