@@ -22,6 +22,7 @@ class UserActivities:
         }]
       model['data'] = results  
 
+# subsegments xray
       subsegment = xray_recorder.begin_subsegment('mock-data')
       # xray
       dict = {

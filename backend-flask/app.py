@@ -14,7 +14,7 @@ from services.messages import *
 from services.create_message import *
 from services.show_activity import *
 
-# Xray
+# Xray 
 from aws_xray_sdk.core import xray_recorder
 from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 
@@ -57,13 +57,13 @@ provider = TracerProvider()
 processor = BatchSpanProcessor(OTLPSpanExporter())
 provider.add_span_processor(processor)
 
-# Xray
+# Xray recorder
 xray_url = os.getenv("AWS_XRAY_URL")
 xray_recorder.configure(service='backend-flask', dynamic_naming=xray_url)
 
 
 
-
+#otel honeycomb
 # show this in the logs within backend flask
 simple_processor = SimpleSpanProcessor(ConsoleSpanExporter())
 provider.add_span_processor(simple_processor)
@@ -73,7 +73,7 @@ tracer = trace.get_tracer(__name__)
 
 app = Flask(__name__)
 
-# xray
+# xray middleware
 XRayMiddleware(app, xray_recorder)
 
 # Honeycomb
@@ -92,6 +92,7 @@ cors = CORS(
   methods="OPTIONS,GET,HEAD,POST"
 )
 
+#Cloudwatch Logs
 #@app.after_request
 #def after_request(response):
 #   timestamp = strftime('[%Y-%b-%d %H:%M]')
