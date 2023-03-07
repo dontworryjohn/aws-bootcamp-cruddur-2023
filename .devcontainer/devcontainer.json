@@ -12,7 +12,7 @@
 				"ms-python.python",
 			],
 			"settings": {
-				"workbench.colorTheme": "Default Light+ Experimental",
+				"workbench.colorTheme": "Default Dark+ Experimental",
 				"terminal.integrated.fontSize": 20,
 				"editor.fontSize": 20
 			}
