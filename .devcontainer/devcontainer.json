@@ -33,11 +33,11 @@
 	"portsAttributes": {
 		"3000": {
 			"label": "frontend",
-			"visibility": "public"
+			"visibility": "Public"
 		},
 		"4567": {
 			"label": "backend",
-			"visibility": "public"
+			"visibility": "Public"
 		}
 	}
 }
