@@ -5,6 +5,9 @@
 	"features": {
 		"ghcr.io/devcontainers/features/aws-cli:1": {}
 	},
+	"remoteEnv": {
+		"AWS_CLI_AUTOPROMPT": "on-partial"
+	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
