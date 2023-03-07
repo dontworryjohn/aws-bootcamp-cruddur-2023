@@ -19,7 +19,6 @@ This week the team will be talking about Decentralized Authentication, in partic
  **Cognito Identity Pool**
   ![Cognito Identity Pool](https://td-mainsite-cdn.tutorialsdojo.com/wp-content/uploads/2020/05/Cognito-Identity-Pools-Federated-Identities.png)
 
-##How to create a Cognito User pool
 
 
 
