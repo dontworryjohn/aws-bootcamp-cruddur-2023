@@ -35,6 +35,6 @@
     "portsAttributes": {
         "3000": {
 	    "visibility": "public"
-	}
+		}
     }
 }
