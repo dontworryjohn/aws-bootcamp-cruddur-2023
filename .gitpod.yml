@@ -17,7 +17,9 @@ tasks:
   - name: react-js
     command: |
       cd frontend-react-js
+      npm update -g
       npm i
+      cd $THEIA_WORKSPACE_ROOT
 vscode:
   extensions:
     - 42Crunch.vscode-openapi
