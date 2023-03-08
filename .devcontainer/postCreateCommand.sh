@@ -1,7 +1,7 @@
 #!/user/bin/env bash
 
 # upgrade npm and install frontend
-cd frontend-react-js && npm update -g && npm i && cd ..
+cd frontend-react-js && npm update -g && npm install
 
 # postgresql
 curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
