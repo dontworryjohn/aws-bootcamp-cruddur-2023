@@ -12,7 +12,8 @@
 		"vscode": {
 			"extensions": [
 				"ms-azuretools.vscode-docker",
-				"ms-python.python"
+				"ms-python.python",
+				"42Crunch.vscode-openapi"
 			],
 			"settings": {
 				"workbench.colorTheme": "Default Dark+ Experimental",
@@ -29,5 +30,5 @@
 
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "devcontainer"
-	"postCreateCommand": "cd frontend-react-js && npm install"
+	"postCreateCommand": "cd frontend-react-js && npm update -g && npm i"
 }
