@@ -30,5 +30,11 @@
 
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "devcontainer"
-	"postCreateCommand": "cd frontend-react-js && npm update -g && npm i"
+	"postCreateCommand": "cd frontend-react-js && npm update -g && npm i",
+    "forwardPorts": [3000],
+    "portsAttributes": {
+        "3000": {
+	    "visibility": "public"
+	}
+    }
 }
