@@ -21,7 +21,7 @@ This week the team will be talking about Decentralized Authentication, in partic
 
   how to force password change for your user created in cognito
 
-  aws cognito-idp admin-set-user-password --username "ifnotidentify please use the id on the console" --password Testing1234! --user-pool-id eu-west-2_numberletter --permanent
+  aws cognito-idp admin-set-user-password --username "nameofusername" --password Testing1234! --user-pool-id "${AWS_USER_POOLS_ID}" --permanent
 
 
 
