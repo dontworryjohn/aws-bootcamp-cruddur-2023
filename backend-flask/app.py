@@ -15,7 +15,7 @@ from services.messages import *
 from services.create_message import *
 from services.show_activity import *
 
-# Xray 
+# Xray
 from aws_xray_sdk.core import xray_recorder
 from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 
@@ -86,7 +86,7 @@ frontend = os.getenv('FRONTEND_URL')
 backend = os.getenv('BACKEND_URL')
 origins = [frontend, backend]
 cors = CORS(
-  app, 
+  app,
   resources={r"/api/*": {"origins": origins}},
   expose_headers="location,link",
   allow_headers="content-type,if-modified-since",
@@ -123,7 +123,7 @@ def init_rollbar():
         allow_logging_basic_config=False)
 
     # send exceptions from `app` to rollbar, using flask's signal system.
-    got_request_exception.connect(rollbar.contrib.flask.report_exception, app) 
+    got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
 
 @app.route("/api/message_groups", methods=['GET'])
 def data_message_groups():
