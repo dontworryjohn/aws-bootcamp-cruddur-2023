@@ -92,6 +92,7 @@ class CognitoToken:
     def _check_audience(self, claims):
         # and the Audience  (use claims['client_id'] if verifying an access token)
         audience = claims["aud"] if "aud" in claims else claims["client_id"]
+        print('@@@@@@@')
         if audience != self.user_pool_client_id:
             raise TokenVerifyError("Token was not issued for this audience")
 
