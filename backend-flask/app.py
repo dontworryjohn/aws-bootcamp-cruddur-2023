@@ -19,7 +19,7 @@ from services.show_activity import *
 from aws_xray_sdk.core import xray_recorder
 from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 
-
+from lib.cognito_token import CognitoToken, extract_access_token, TokenVerifyError
 
 # Honeycomb
 from opentelemetry import trace
@@ -73,6 +73,12 @@ trace.set_tracer_provider(provider)
 tracer = trace.get_tracer(__name__)
 
 app = Flask(__name__)
+
+cognito_token = CognitoToken(
+  user_pool_id=os.getenv("AWS_COGNITO_USER_POOL_ID"),
+  user_pool_client_id=os.getenv("AWS_COGNITO_USER_POOL_CLIENT_ID"),
+  region=os.getenv("AWS_DEFAULT_REGION")
+)
 
 # xray middleware
 XRayMiddleware(app, xray_recorder)
@@ -163,6 +169,17 @@ def data_create_message():
 @app.route("/api/activities/home", methods=['GET'])
 @xray_recorder.capture('activities_home')
 def data_home():
+  access_token = extract_access_token(request.headers)
+  try:
+    claims = cognito_token.verify(access_token)
+    # authenticated request
+    app.logger.debug("authenticated")
+    app.logger.debug('claims')
+    app.logger.debug(claims)
+  except TokenVerifyError as e:
+    # unauthenticated request
+    app.logger.debug("unauthenticated")
+  
   data = HomeActivities.run()
   return data, 200
 
