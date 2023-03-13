@@ -16,9 +16,11 @@ Decentralised authentication is an extension of the concept of services above. I
  Amazon Cognito is an aws service that allows users to authenticate. credentials are stored in cognito. it is similar of a directory under the aws hood.
 
  **Amazon Cognito User Pool**
+
  ![Amazon Cognito User Pool](https://td-mainsite-cdn.tutorialsdojo.com/wp-content/uploads/2020/05/Cognito-User-Pool-for-Authentication.png)
 
  **Cognito Identity Pool**
+ 
   ![Cognito Identity Pool](https://td-mainsite-cdn.tutorialsdojo.com/wp-content/uploads/2020/05/Cognito-Identity-Pools-Federated-Identities.png)
 
 Reason for using Amazon Cognito
