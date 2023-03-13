@@ -78,8 +78,58 @@ REACT_APP_AWS_COGNITO_REGION: "${AWS_DEFAULT_REGION}"
 REACT_APP_AWS_USER_POOLS_ID: "${AWS_USER_POOLS_ID}"
 REACT_APP_CLIENT_ID: "${APP_CLIENT_ID}"
 ```
-Make sure to create the env var  **AWS_USER_POOLS_ID** and **APP_CLIENT_ID** on gitpod and codespace. (N.B: Since these env vars have not been loaded during the booting, you might get an error. either you rebuild your workspace or you pass the variable via terminal. I do not hardcoded the env vars for security reasons and for simplicity)
+Make sure to create the env var  **AWS_USER_POOLS_ID** and **APP_CLIENT_ID** on gitpod and codespace. (N.B: Since these env vars have not been loaded during the booting, you might get an error. either you rebuild your workspace or you pass the variable via the terminal. I do not hardcode the env vars for security reasons and for simplicity)
 The AWS_USER_POOLS_ID and APP_CLIENT_ID you find when you configure the cognito user pool.
+
+
+# Showing the components based on logged in/logged out
+
+from the **homefeedpage.js** insert the following command
+```
+import { Auth } from 'aws-amplify';
+```
+
+this instruction is already implemented so you can skip this part
+```
+const [user, setUser] = React.useState(null);
+```
+
+replace the code with the  cookies 
+```
+  const checkAuth = async () => {
+    console.log('checkAuth')
+    // [TODO] Authenication
+    if (Cookies.get('user.logged_in')) {
+        display_name: Cookies.get('user.name'),
+        handle: Cookies.get('user.username')
+    }
+  };
+```
+
+with the following that used cognito
+```
+// check if we are authenicated
+const checkAuth = async () => {
+  Auth.currentAuthenticatedUser({
+    // Optional, By default is false. 
+    // If set to true, this call will send a 
+    // request to Cognito to get the latest user data
+    bypassCache: false 
+  })
+  .then((user) => {
+    console.log('user',user);
+    return Auth.currentAuthenticatedUser()
+  }).then((cognito_user) => {
+      setUser({
+        display_name: cognito_user.attributes.name,
+        handle: cognito_user.attributes.preferred_username
+      })
+  })
+  .catch((err) => console.log(err));
+};
+
+```
+
 
 
 
