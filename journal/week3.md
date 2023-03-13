@@ -39,7 +39,49 @@ For reference click [Here](https://aws.amazon.com/cognito/pricing/).
 
 # Setup Cognito User Pool
 
-Please follow the configuration on [here](https://scribehow.com/shared/How_to_Create_a_User_Pool_in_AWS_Cognito__KfU7GrqHS2ex3SW-xNLcSw)
+Please  click [here](https://scribehow.com/shared/How_to_Create_a_User_Pool_in_AWS_Cognito__KfU7GrqHS2ex3SW-xNLcSw) to create the user pool using the console
+
+# Configuration Amplify
+
+ Using the terminal go to the dictory by typing the following command:
+``` 
+cd front-react-js 
+npm i aws-amplyfy --save
+```
+this command will install amplify library and  will be added to the package.json
+
+from the **app.js**, add the following codes:
+```
+import { Amplify } from 'aws-amplify';
+
+Amplify.configure({
+  "AWS_PROJECT_REGION": process.env.REACT_APP_AWS_PROJECT_REGION,
+  //"aws_cognito_identity_pool_id": process.env.REACT_APP_AWS_COGNITO_IDENTITY_POOL_ID,
+  "aws_cognito_region": process.env.REACT_APP_AWS_COGNITO_REGION,
+  "aws_user_pools_id": process.env.REACT_APP_AWS_USER_POOLS_ID,
+  "aws_user_pools_web_client_id": process.env.REACT_APP_CLIENT_ID,
+  "oauth": {},
+  Auth: {
+    // We are not using an Identity Pool
+    // identityPoolId: process.env.REACT_APP_IDENTITY_POOL_ID, // REQUIRED - Amazon Cognito Identity Pool ID
+    region: process.env.REACT_APP_AWS_PROJECT_REGION,           // REQUIRED - Amazon Cognito Region
+    userPoolId: process.env.REACT_APP_AWS_USER_POOLS_ID,         // OPTIONAL - Amazon Cognito User Pool ID
+    userPoolWebClientId: process.env.REACT_APP_AWS_USER_POOLS_WEB_CLIENT_ID,   // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
+  }
+});
+```
+
+from the **docker-compose.yml** on the frontend-react-js under environment:, add the following code
+```
+REACT_APP_AWS_PROJECT_REGION: "${AWS_DEFAULT_REGION}"
+REACT_APP_AWS_COGNITO_REGION: "${AWS_DEFAULT_REGION}"
+REACT_APP_AWS_USER_POOLS_ID: "${AWS_USER_POOLS_ID}"
+REACT_APP_CLIENT_ID: "${APP_CLIENT_ID}"
+```
+Make sure to create the env var  **AWS_USER_POOLS_ID** and **APP_CLIENT_ID** on gitpod and codespace. (N.B: Since these env vars have not been loaded during the booting, you might get an error. either you rebuild your workspace or you pass the variable via terminal. I do not hardcoded the env vars for security reasons and for simplicity)
+The AWS_USER_POOLS_ID and APP_CLIENT_ID you find when you configure the cognito user pool.
+
+
 
 # Troubleshoot
 
