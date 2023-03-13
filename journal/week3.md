@@ -227,7 +227,151 @@ const onsubmit = async (event) => {
 
 To try, just launch the container up on **"docker-compose.yml"**  and see if the login page works. to troubleshoot open "developer tools" or use inspect (browser) if you receive "NotAuthorizedException: Incorrect user or password".This means everything is set properly. if you got an error "auth not defined", the problem is the cognito user pool configuration. need to recreate.
 
-Create a user on the cognito user pool and force change the password using the command on troubleshooting (there is no way to change on password via console). the password to login will be Testing1234! (as in the commandline shows)
+Create a user on the cognito user pool and force change the password using the command on troubleshooting (there is no way to change on password via console). the password to login will be Testing1234! (as the commandline shows)
+
+# Implement the signup page
+Since you have managed to access using the credential created via console, it is time to delete it cos it is no anymore needed.
+
+From the **signuppage.js** remove the following code
+```
+import Cookies from 'js-cookie'
+
+```
+
+and replace with the following
+```
+import { Auth } from 'aws-amplify';
+```
+
+delete the following command
+```
+  const onsubmit = async (event) => {
+    event.preventDefault();
+    console.log('SignupPage.onsubmit')
+    // [TODO] Authenication
+    Cookies.set('user.name', name)
+    Cookies.set('user.username', username)
+    Cookies.set('user.email', email)
+    Cookies.set('user.password', password)
+    Cookies.set('user.confirmation_code',1234)
+    window.location.href = `/confirm?email=${email}`
+    return false
+  }
+```
+
+and add the new code
+```
+const onsubmit = async (event) => {
+    event.preventDefault();
+    setErrors('')
+    try {
+      const { user } = await Auth.signUp({
+        username: email,
+        password: password,
+        attributes: {
+          name: name,
+          email: email,
+          preferred_username: username,
+        },
+        autoSignIn: { // optional - enables auto sign in after user is confirmed
+          enabled: true,
+        }
+      }) ;
+      console.log(user);
+      window.location.href = `/confirm?email=${email}`
+    } catch (error) {
+        console.log(error);
+        setErrors(error.message)
+    }
+    return false
+  }
+```
+
+# Implementation of the confirmation page
+from the confirmationpage.js, remove the following code
+
+ ```
+import Cookies from 'js-cookie'
+
+```
+
+and replace with the following
+```
+import { Auth } from 'aws-amplify';
+```
+
+and remove the following code
+```
+  const resend_code = async (event) => {
+    console.log('resend_code')
+    // [TODO] Authenication
+  }
+```
+and replace with the following
+``` 
+const resend_code = async (event) => {
+ 
+    setErrors('')
+    try {
+      await Auth.resendSignUp(email);
+      console.log('code resent successfully');
+      setCodeSent(true)
+    } catch (err) {
+      // does not return a code
+      // does cognito always return english
+      // for this to be an okay match?
+      console.log(err)
+      if (err.message == 'Username cannot be empty'){
+        setCognitoErrors("You need to provide an email in order to send Resend Activiation Code")   
+      } else if (err.message == "Username/client id combination not found."){
+        setCognitoErrors("Email is invalid or cannot be found.")   
+      }
+    }
+  }
+
+```
+
+and remove the following code
+```
+ const onsubmit = async (event) => {
+    event.preventDefault();
+    console.log('ConfirmationPage.onsubmit')
+    // [TODO] Authenication
+    if (Cookies.get('user.email') === undefined || Cookies.get('user.email') === '' || Cookies.get('user.email') === null){
+      setErrors("You need to provide an email in order to send Resend Activiation Code")   
+    } else {
+      if (Cookies.get('user.email') === email){
+        if (Cookies.get('user.confirmation_code') === code){
+          Cookies.set('user.logged_in',true)
+          window.location.href = "/"
+        } else {
+          setErrors("Code is not valid")
+        }
+      } else {
+        setErrors("Email is invalid or cannot be found.")   
+      }
+    }
+    return false
+  }
+```
+
+and replace with the cognito code
+```
+const onsubmit = async (event) => {
+  event.preventDefault();
+  setCognitoErrors('')
+  try {
+    await Auth.confirmSignUp(email, code);
+    window.location.href = "/"
+  } catch (error) {
+    setCognitoErrors(error.message)
+  }
+  return false
+}
+```
+
+
+
 
 
 # Troubleshoot
