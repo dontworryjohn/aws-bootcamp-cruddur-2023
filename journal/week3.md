@@ -189,7 +189,7 @@ and replace with the following
 import { Auth } from 'aws-amplify';
 ```
 
-remove the following code
+remove the following code 
 ```
   const onsubmit = async (event) => {
     event.preventDefault();
@@ -204,29 +204,30 @@ remove the following code
     return false
   }
 ```
-
-and replace with the new one
+and replace it with the new one
 ```
 const onsubmit = async (event) => {
     setErrors('')
     event.preventDefault();
-    try {
-      Auth.signIn(email, password)
-        .then(user => {
-          localStorage.setItem("access_token", user.signInUserSession.accessToken.jwtToken)
-          window.location.href = "/"
-        })
-        .catch(err => { console.log('Error!', err) });
-    } catch (error) {
+    Auth.signIn(email, password)
+    .then(user => {
+      console.log('user',user)
+      localStorage.setItem("access_token", user.signInUserSession.accessToken.jwtToken)
+      window.location.href = "/"
+    })
+    .catch(error => {
       if (error.code == 'UserNotConfirmedException') {
         window.location.href = "/confirm"
       }
       setErrors(error.message)
-    }
+      });
     return false
   }
-
 ```
+
+To try, just launch the container up on **"docker-compose.yml"**  and see if the login page works. to troubleshoot open "developer tools" or use inspect (browser) if you receive "NotAuthorizedException: Incorrect user or password".This means everything is set properly. if you got an error "auth not defined", the problem is the cognito user pool configuration. need to recreate.
+
+Create a user on the cognito user pool and force change the password using the command on troubleshooting (there is no way to change on password via console)
 
 
 # Troubleshoot
