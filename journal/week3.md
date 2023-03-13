@@ -94,7 +94,7 @@ this instruction is already implemented so you can skip this part
 const [user, setUser] = React.useState(null);
 ```
 
-replace the code with the  cookies 
+delete the code with the  cookies 
 ```
   const checkAuth = async () => {
     console.log('checkAuth')
@@ -106,7 +106,7 @@ replace the code with the  cookies
   };
 ```
 
-with the following that used cognito
+and replace with the following that used cognito
 ```
 // check if we are authenicated
 const checkAuth = async () => {
@@ -129,6 +129,55 @@ const checkAuth = async () => {
 };
 
 ```
+
+this instruction is already implemented so you can skip this part
+```
+// check when the page loads if we are authenicated
+React.useEffect(()=>{
+  loadData();
+  checkAuth();
+}, [])
+```
+
+This instruction is already implemented so you can skip this part as well.
+```
+<DesktopNavigation user={user} active={'home'} setPopped={setPopped} />
+<DesktopSidebar user={user} />
+```
+On profileinfo.js, delete the following code
+```
+import Cookies from 'js-cookie'
+```
+and replace with the following
+```
+import { Auth } from 'aws-amplify';
+```
+
+remove the following code
+```
+    console.log('signOut')
+    // [TODO] Authenication
+    Cookies.remove('user.logged_in')
+    //Cookies.remove('user.name')
+    //Cookies.remove('user.username')
+    //Cookies.remove('user.email')
+    //Cookies.remove('user.password')
+    //Cookies.remove('user.confirmation_code')
+    window.location.href = "/"
+```
+
+and we replace with the new signout
+```
+const signOut = async () => {
+    try {
+        await Auth.signOut({ global: true });
+        window.location.href = "/"
+    } catch (error) {
+        console.log('error signing out: ', error);
+}
+```
+
+# Implementation of the logging page
 
 
 
