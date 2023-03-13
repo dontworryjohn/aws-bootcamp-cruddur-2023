@@ -177,9 +177,56 @@ const signOut = async () => {
 }
 ```
 
-# Implementation of the logging page
+# Implementation of the sign in page
+From the **signinpage.js** remove the following code
+```
+import Cookies from 'js-cookie'
 
+```
 
+and replace with the following
+```
+import { Auth } from 'aws-amplify';
+```
+
+remove the following code
+```
+  const onsubmit = async (event) => {
+    event.preventDefault();
+    setErrors('')
+    console.log('onsubmit')
+    if (Cookies.get('user.email') === email && Cookies.get('user.password') === password){
+      Cookies.set('user.logged_in', true)
+      window.location.href = "/"
+    } else {
+      setErrors("Email and password is incorrect or account doesn't exist")
+    }
+    return false
+  }
+```
+
+and replace with the new one
+```
+const onsubmit = async (event) => {
+    setErrors('')
+    event.preventDefault();
+    try {
+      Auth.signIn(email, password)
+        .then(user => {
+          localStorage.setItem("access_token", user.signInUserSession.accessToken.jwtToken)
+          window.location.href = "/"
+        })
+        .catch(err => { console.log('Error!', err) });
+    } catch (error) {
+      if (error.code == 'UserNotConfirmedException') {
+        window.location.href = "/confirm"
+      }
+      setErrors(error.message)
+    }
+    return false
+  }
+
+```
 
 
 # Troubleshoot
