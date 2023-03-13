@@ -22,8 +22,19 @@ Decentralised authentication is an extension of the concept of services above. I
  **Cognito Identity Pool**
   ![Cognito Identity Pool](https://td-mainsite-cdn.tutorialsdojo.com/wp-content/uploads/2020/05/Cognito-Identity-Pools-Federated-Identities.png)
 
+Reason for using Amazon Cognito
+- User directory for Customer
+- Ability to access aws resources for the application being built
+- Identity broker for AWS Resources with temporary credentials
+- It can extend users to AWS Resources easily.
 
-  # Troubleshoot
+
+## Cost
+This Week Cirag did not post any video about cost so I did some research this what I found:
+> The Cognito Your User Pool feature has a free tier of 50,000 MAUs ( monthly active users) per account for users who sign in directly to Cognito User Pools and 50 MAUs for users federated through SAML 2.0 based identity providers. The free tier does not automatically expire at the end of your 12 month AWS Free Tier term, and it is available to both existing and new AWS customers indefinitely. Please note - the free tier pricing isn’t available for both Your User Pool feature and SAML or OIDC federation in the AWS GovCloud regions.
+ For reference click [Here](https://aws.amazon.com/cognito/pricing/).
+
+# Troubleshoot
 
   ###how to force password change for your user created in cognito
 
