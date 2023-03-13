@@ -227,7 +227,7 @@ const onsubmit = async (event) => {
 
 To try, just launch the container up on **"docker-compose.yml"**  and see if the login page works. to troubleshoot open "developer tools" or use inspect (browser) if you receive "NotAuthorizedException: Incorrect user or password".This means everything is set properly. if you got an error "auth not defined", the problem is the cognito user pool configuration. need to recreate.
 
-Create a user on the cognito user pool and force change the password using the command on troubleshooting (there is no way to change on password via console)
+Create a user on the cognito user pool and force change the password using the command on troubleshooting (there is no way to change on password via console). the password to login will be Testing1234! (as in the commandline shows)
 
 
 # Troubleshoot
