@@ -133,12 +133,27 @@ psql $NO_DB_CONNECTION_URL -c "create database cruddur;"
 
 from the file db-schema-load add the following command
 ```
-echo "db-schema-load"
+#echo "== db-schema-load"
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="db-schema-load"
+printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
+
 schema_path="$(realpath .)/db/schema.sql"
+
 echo $schema_path
 
-psql $CONNECTION_URL cruddur < $schema_path
+if [ "$1" = "prod" ]; then
+  echo "Running in production mode"
+  URL=$PROD_CONNECTION_URL
+else
+  URL=$CONNECTION_URL
+fi
+
+psql $URL cruddur < $schema_path
 ```
+
+for the coloring the echo refer to the following [link](https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux)
 
 #Troubleshooting
 
