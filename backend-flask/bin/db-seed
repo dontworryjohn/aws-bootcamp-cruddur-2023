@@ -5,7 +5,7 @@ NO_COLOR='\033[0m'
 LABEL="db-seed-load"
 printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
 
-seed_path="$(realpath .)/db/schema.sql"
+seed_path="$(realpath .)/db/seed.sql"
 
 echo $seed_path
 

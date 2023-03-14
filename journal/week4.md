@@ -157,22 +157,27 @@ for the coloring the echo refer to the following [link](https://stackoverflow.co
 
  on schema.sql insert the code to create the table users and table activities
  ```
+
 DROP TABLE IF EXISTS public.users;
 DROP TABLE IF EXISTS public.activities;
 
 CREATE TABLE public.users (
   uuid UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   display_name text,
-  handle text
+  handle text,
   cognito_user_id text,
   created_at TIMESTAMP default current_timestamp NOT NULL
 );
 
-CREATE TABLE public.users (
+CREATE TABLE public.activities (
   uuid UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-  display_name text,
-  handle text
-  cognito_user_id text,
+  user_uuid UUID not null,
+  message text NOT NULL,
+  replies_count integer DEFAULT 0,
+  reposts_count integer DEFAULT 0,
+  likes_count integer DEFAULT 0,
+  reply_to_activity_uuid integer,
+  expires_at TIMESTAMP,
   created_at TIMESTAMP default current_timestamp NOT NULL
 );
  ```
@@ -192,10 +197,10 @@ chmod u+x bin/db-connection
  create a file on db called seed.sql and create inside bin a file called db-seed with following code
  ```
 #! /usr/bin/bash
-#echo "== db-seed-path"
+#echo "== db-seed-load"
 CYAN='\033[1;36m'
 NO_COLOR='\033[0m'
-LABEL="db-seed-path"
+LABEL="db-seed-load"
 printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
 
 seed_path="$(realpath .)/db/seed.sql"
@@ -229,6 +234,8 @@ VALUES
     current_timestamp + interval '10 day'
   )
 ```
+
+
 
 #Troubleshooting
 
