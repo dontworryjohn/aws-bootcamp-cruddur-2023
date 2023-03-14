@@ -116,9 +116,16 @@ chmod u+x bin/db-drop
 chmod u+x bin/db-schema-load
 ```
 
+from the file db-drop add the following code
+```
+echo "db-drop"
+NO_DB_CONNECTION_URL=$(sed 's/\/cruddur//g' <<<"$CONNECTION_URL")
+```
+For more information about sed visit the following [link](https://www.geeksforgeeks.org/sed-command-in-linux-unix-with-examples/)
 
 #Troubleshooting
 
 This command see if the connection is estabilished
 ```
 echo $CONNECTION_URL
+```
