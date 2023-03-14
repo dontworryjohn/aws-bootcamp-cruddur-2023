@@ -123,6 +123,23 @@ NO_DB_CONNECTION_URL=$(sed 's/\/cruddur//g' <<<"$CONNECTION_URL")
 ```
 For more information about sed visit the following [link](https://www.geeksforgeeks.org/sed-command-in-linux-unix-with-examples/)
 
+from the file db-create add the following command
+```
+echo "db-create"
+NO_DB_CONNECTION_URL=$(sed 's/\/cruddur//g' <<<"$CONNECTION_URL")
+psql $NO_DB_CONNECTION_URL -c "create database cruddur;"
+
+```
+
+from the file db-schema-load add the following command
+```
+echo "db-schema-load"
+schema_path="$(realpath .)/db/schema.sql"
+echo $schema_path
+
+psql $CONNECTION_URL cruddur < $schema_path
+```
+
 #Troubleshooting
 
 This command see if the connection is estabilished
