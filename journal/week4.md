@@ -47,3 +47,58 @@ aws rds create-db-instance \
 ```
 Note:
 - For the availability zone check the console so the everything match according on where you are working
+-
+
+Once the rds is running, make sure to put it in stop so you dont incure with extra cost. Note that this is valid only for 7 days so it is not permanent.
+
+from the terminal type the following code
+```
+psql -Upostgres --host localhost
+```
+
+**Common Psql commands**
+```
+\x on -- expanded display when looking at data
+\q -- Quit PSQL
+\l -- List all databases
+\c database_name -- Connect to a specific database
+\dt -- List all tables in the current database
+\d table_name -- Describe a specific table
+\du -- List all users and their roles
+\dn -- List all schemas in the current database
+CREATE DATABASE database_name; -- Create a new database
+DROP DATABASE database_name; -- Delete a database
+CREATE TABLE table_name (column1 datatype1, column2 datatype2, ...); -- Create a new table
+DROP TABLE table_name; -- Delete a table
+SELECT column1, column2, ... FROM table_name WHERE condition; -- Select data from a table
+INSERT INTO table_name (column1, column2, ...) VALUES (value1, value2, ...); -- Insert data into a table
+UPDATE table_name SET column1 = value1, column2 = value2, ... WHERE condition; -- Update data in a table
+DELETE FROM table_name WHERE condition; -- Delete data from a table
+```
+
+# create local database 
+
+Type the following command to create the database within the PSQL client
+```
+CREATE database cruddur;
+```
+
+from backend flask, create a folder called db and inside a file called schema.sql
+
+and insert the following sql command on the schema.sql created before
+```
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+```
+exit from the psql command by typing the following command
+```
+\q
+```
+and type the following command
+```
+psql cruddur < backend-flask/db/schema.sql -h localhost -U postgres
+```
+and type the password and type the following command to create the env var
+```
+export CONNECTION_URL="postgresql://postgres:password@localhost:5432/cruddur"
+gp env CONNECTION_URL="postgresql://postgres:password@localhost:5432/cruddur"
+```
