@@ -45,4 +45,5 @@ aws rds create-db-instance \
   --performance-insights-retention-period 7 \
   --no-deletion-protection
 ```
-
+Note:
+- For the availability zone check the console. some region like london region does not have eu-west-1a 
