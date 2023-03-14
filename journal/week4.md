@@ -157,6 +157,9 @@ for the coloring the echo refer to the following [link](https://stackoverflow.co
 
  on schema.sql insert the code to create the table users and table activities
  ```
+DROP TABLE IF EXISTS public.users;
+DROP TABLE IF EXISTS public.activities;
+
 CREATE TABLE public.users (
   uuid UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   display_name text,
@@ -174,6 +177,17 @@ CREATE TABLE public.users (
 );
  ```
 
+ create a script inside the folder bin called **db-connect** 
+ ```
+#! /usr/bin/bash
+
+psql $CONNECTION_URL
+ ```
+
+and change the permission of the file
+ ```
+chmod u+x bin/db-connection
+ ```
 #Troubleshooting
 
 This command see if the connection is estabilished
