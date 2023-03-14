@@ -46,4 +46,4 @@ aws rds create-db-instance \
   --no-deletion-protection
 ```
 Note:
-- For the availability zone check the console. some region like london region does not have eu-west-1a 
+- For the availability zone check the console so the everything match according on where you are working
