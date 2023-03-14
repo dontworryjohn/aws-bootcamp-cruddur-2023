@@ -102,3 +102,23 @@ and type the password and type the following command to create the env var
 export CONNECTION_URL="postgresql://postgres:password@localhost:5432/cruddur"
 gp env CONNECTION_URL="postgresql://postgres:password@localhost:5432/cruddur"
 ```
+do the same steps for the rds (not necessary at this point unless you start connecting with the rds)
+
+from backend-flask create a folder call bin and inside create 3 files called"db-create" "db-drop" and "db-schema-load" and inside for each file created, insert the following command
+```
+#! /usr/bin/bash
+```
+
+to change the executable of the file created before, type the following code:
+```
+chmod u+x bin/db-create
+chmod u+x bin/db-drop
+chmod u+x bin/db-schema-load
+```
+
+
+#Troubleshooting
+
+This command see if the connection is estabilished
+```
+echo $CONNECTION_URL
