@@ -260,6 +260,24 @@ changed the permission of the file:
 ```
 
 
+create a file called **db-setup** under backend-flask/bin 
+
+```
+bin_path="$(realpath .)/bin"
+
+source "$bin_path/db-drop"
+source "$bin_path/db-create"
+source "$bin_path/db-schema-load"
+source "$bin_path/db-seed"
+```
+
+changed the permission of the file:
+```
+ chmod u+x ./db-setup
+```
+
+
+
 
 
 
