@@ -298,9 +298,54 @@ and run the for this time the following command:
 pip install -r requirements.txt
 ```
 
+create a file under lib called **db.py**. this will be the connection for your backend
+```
+from psycopg_pool import ConnectionPool
+import os
 
+def query_wrap_object(template):
+  sql = '''
+  (SELECT COALESCE(row_to_json(object_row),'{}'::json) FROM (
+  {template}
+  ) object_row);
+  '''
 
+def query_wrap_array(template):
+  sql = '''
+  (SELECT COALESCE(array_to_json(array_agg(row_to_json(array_row))),'[]'::json) FROM (
+  {template}
+  ) array_row);
+  '''
 
+connection_url = os.getenv("CONNECTION_URL")
+pool = ConnectionPool(connection_url)
+```
+
+and insert the library on **home_activities**
+```
+from lib.db import pool,query_wrap_array
+```
+
+and add the following code
+```
+sql = """
+      SELECT * FROM activities
+      """
+      print(sql)
+      span.set_attribute("app.result_length", len(results))
+      with pool.connection() as conn:
+        with conn.cursor() as cur:
+          cur.execute(sql)
+          # this will return a tuple
+          # the first field being the data
+          json = cur.fetchall()
+      return json[0]
+```
+
+from the file docker-compose change the **CONNECTIONS_URL** with the following
+```
+      CONNECTION_URL: "postgresql://postgres:password@db:5432/cruddur"
+```
 
 
 
