@@ -285,6 +285,20 @@ changed the permission of the file:
  chmod u+x ./db-setup
 ```
 
+## Install driver for psql
+
+Add the following libraries into the requirements.txt of the backend flask
+```
+psycopg[binary]
+psycopg[pool]
+```
+
+and run the for this time the following command:
+```
+pip install -r requirements.txt
+```
+
+
 
 
 

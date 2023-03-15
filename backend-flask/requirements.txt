@@ -14,3 +14,6 @@ rollbar
 aws-xray-sdk
 
 Flask-AWSCognito
+
+psycopg[binary]
+psycopg[pool]
