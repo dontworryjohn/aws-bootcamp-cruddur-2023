@@ -235,12 +235,12 @@ VALUES
   )
 ```
 
-#Creation connection with RDS
+# Creation connection with RDS
 
 If you have stopped and rerun you gitpod/codespace enviroment, make sure to rerun the **db-create**, **db-schema-load** and **db-seed** in the order mention before running the db-connect. Make sure the containers are up and running first before making the connection!
 There will be an instruction later how to implement the automazation once you launch the CDE enviroment without launching.
 
-## How to see the connection
+**How to see the connection**
 
 create a file called **db-sessions** under backend-flask/bin 
 ```
@@ -367,6 +367,18 @@ from the file docker-compose change the **CONNECTIONS_URL** with the following
       CONNECTION_URL: "postgresql://postgres:password@db:5432/cruddur"
 ```
 
+From the console active the RDS if it is in pause mode
+
+create the PROD_CONNECTION_URL that will point to the RDS
+```
+postgresql://nameofthedb:masterpassword@endpointofthedb:5432/cruddur
+```
+create the local env and on gitpod/codespace
+```
+export PROD_CONNECTION_URL="postgresql://nameofthedb:masterpassword@endpointofthedb:5432/cruddur"
+gp env PROD_CONNECTION_URL="postgresql://nameofthedb:masterpassword@endpointofthedb:5432/cruddur"
+```
+note: the password should not ending with ! as the url will be !@ and it could cause some error during the launching the command. if you experience an error "bash bla bla cruddur" you need to change the password for the DB of rds 
 
 
 #Troubleshooting
