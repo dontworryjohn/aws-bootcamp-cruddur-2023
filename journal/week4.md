@@ -235,6 +235,32 @@ VALUES
   )
 ```
 
+#Creation connection with RDS
+
+If you have stopped and rerun you gitpod/codespace enviroment, make sure to rerun the **db-create**, **db-schema-load** and **db-seed** in the order mention before running the db-connect. Make sure the containers are up and running first before making the connection!
+There will be an instruction later how to implement the automazation once you launch the CDE enviroment without launching.
+
+## How to see the connection
+
+create a file called **db-sessions** under backend-flask/bin 
+```
+NO_DB_CONNECTION_URL=$(sed 's/\/cruddur//g' <<<"$CONNECTION_URL")
+psql $NO_DB_CONNECTION_URL -c "select pid as process_id, \
+       usename as user,  \
+       datname as db, \
+       client_addr, \
+       application_name as app,\
+       state \
+from pg_stat_activity;"
+```
+
+changed the permission of the file:
+```
+ chmod u+x ./db-sessions
+```
+
+
+
 
 
 #Troubleshooting
