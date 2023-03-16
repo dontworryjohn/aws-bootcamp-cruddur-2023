@@ -404,7 +404,7 @@ on the file *gitpod.yml** add this line so it will get the ip of the instance
 ```
     command: |
       export GITPOD_IP=$(curl ifconfig.me)
-      source  "$THEIA_WORKSPACE_ROOT/backend-flask/rds-update-sg-rule"
+      source  "$THEIA_WORKSPACE_ROOT/backend-flask/bin/rds-update-sg-rule"
 ```
 
 #Troubleshooting
