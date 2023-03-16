@@ -380,6 +380,25 @@ gp env PROD_CONNECTION_URL="postgresql://nameofthedb:masterpassword@endpointofth
 ```
 note: the password should not ending with ! as the url will be !@ and it could cause some error during the launching the command. if you experience an error "bash bla bla cruddur" you need to change the password for the DB of rds 
 
+In order to connect to the RDS instance we need to provide our Gitpod IP and whitelist for inbound traffic on port 5432.
+
+GITPOD_IP=$(curl ifconfig.me)
+
+create the env var for the security group and the security group rule
+```
+export DB_SG_ID="sg-sdfsdf"
+gp env DB_SG_ID="sg-sdfsdf"
+export DB_SG_RULE_ID="sgr-sdfsdfsdf"
+gp env DB_SG_RULE_ID="sgr-sdfsdfsdf"
+```
+
+Since the ip address changes everytime, you need to change the ip on the security group of the rds instance
+here is the script to add
+```
+aws ec2 modify-security-group-rules \
+    --group-id $DB_SG_ID \
+    --security-group-rules "SecurityGroupRuleId=$DB_SG_RULE_ID,SecurityGroupRule={Description=GITPOD,IpProtocol=tcp,FromPort=5432,ToPort=5432,CidrIpv4=$GITPOD_IP/32}"
+```
 
 #Troubleshooting
 
