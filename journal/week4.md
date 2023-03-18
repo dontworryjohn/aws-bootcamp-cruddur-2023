@@ -463,7 +463,7 @@ arn:aws:lambda:your region:898466741470:layer:psycopg2-py38:1
 now it is time to create the trigger for cognito.
 from cognito,  select the user pool and go to the user pool properties to find the lambda triggers
 
-![lambda triggers](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/lambda%20triggers.jpeg)
+![lambda triggers](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/lambda%20triggers.png)
 
 #Troubleshooting
 
