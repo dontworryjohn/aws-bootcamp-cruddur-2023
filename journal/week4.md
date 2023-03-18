@@ -407,6 +407,64 @@ on the file *gitpod.yml** add this line so it will get the ip of the instance
       source  "$THEIA_WORKSPACE_ROOT/backend-flask/bin/rds-update-sg-rule"
 ```
 
+# Create Lambda
+Create a lambda in the region where are your services and create the same file under aws/lambdas calling the file cruddur-post-confirmation.py
+
+```
+import json
+import psycopg2
+
+def lambda_handler(event, context):
+    user = event['request']['userAttributes']
+    printer('userAttributes')
+    print(user)
+    user_display_name = user['name']
+    user_email        = user['email']
+    user_handle       = user['preferred_username']
+    user_cognito_id   = user['sub']
+    try:
+        conn = psycopg2.connect(os.getenv('CONNECTION_URL'))
+        cur = conn.cursor()
+        sql = f"""
+            "INSERT INTO users (
+                display_name,
+                email,
+                handle,
+                cognito_user_id
+            ) 
+            VALUES(
+                {user_display_name},
+                {user_email},
+                {user_handle},
+                {user_cognito_id}
+            )"
+        """            
+        cur.execute(sql)
+        conn.commit() 
+
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            cur.close()
+            conn.close()
+            print('Database connection closed.')
+
+    return event
+```
+
+the env var for the lambda will be **CONNECTION_URL** which has the variable of the **PROD_CONNECTION_URL** set on gitpod/codespace (example: PROD_CONNECTION_URL="postgresql://nameofthedb:masterpassword@endpointofthedb:5432/cruddur)
+
+Once you create the env var, create also the layer>add layers> select specify arn
+```
+arn:aws:lambda:your region:898466741470:layer:psycopg2-py38:1
+```
+
+now it is time to create the trigger for cognito.
+from cognito,  select the user pool and go to the user pool properties to find the lambda triggers
+
+![lambda triggers](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/lambda%20triggers.jpeg)
+
 #Troubleshooting
 
 This command see if the connection is estabilished
