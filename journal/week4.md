@@ -321,11 +321,6 @@ def query_wrap_array(template):
 
 connection_url = os.getenv("CONNECTION_URL")
 pool = ConnectionPool(connection_url)
-
-  '''
-
-connection_url = os.getenv("CONNECTION_URL")
-pool = ConnectionPool(connection_url)
 ```
 
 and insert the library on **home_activities**
@@ -371,18 +366,19 @@ From the console active the RDS if it is in pause mode
 
 create the PROD_CONNECTION_URL that will point to the RDS
 ```
-postgresql://nameofthedb:masterpassword@endpointofthedb:5432/cruddur
+postgresql://userofthedb:masterpassword@endpointofthedb:5432/cruddur
 ```
 create the local env and on gitpod/codespace
 ```
-export PROD_CONNECTION_URL="postgresql://nameofthedb:masterpassword@endpointofthedb:5432/cruddur"
-gp env PROD_CONNECTION_URL="postgresql://nameofthedb:masterpassword@endpointofthedb:5432/cruddur"
+export PROD_CONNECTION_URL="postgresql://userofthedb:masterpassword@endpointofthedb:5432/cruddur"
+gp env PROD_CONNECTION_URL="postgresql://userofthedb:masterpassword@endpointofthedb:5432/cruddur"
 ```
-note: the password should not ending with ! as the url will be !@ and it could cause some error during the launching the command. if you experience an error "bash bla bla cruddur" you need to change the password for the DB of rds 
+**Note**: the password should not ending with ! as the url will be !@ and it could cause some error during the launching the command. if you experience an error "bash bla bla cruddur" you need to change the password for the DB of rds 
 
 In order to connect to the RDS instance we need to provide our Gitpod IP and whitelist for inbound traffic on port 5432.
-
+```
 export GITPOD_IP=$(curl ifconfig.me)
+```
 
 create the env var for the security group and the security group rule
 ```
@@ -393,7 +389,7 @@ gp env DB_SG_RULE_ID="sgr-sdfsdfsdf"
 ```
 
 Since the ip address changes everytime, you need to change the ip on the security group of the rds instance
-here is the script to add to the file**rds-update-sg-rule** under bin
+here is the script to add to the file **rds-update-sg-rule** under bin
 ```
 aws ec2 modify-security-group-rules \
     --group-id $DB_SG_ID \
@@ -402,7 +398,7 @@ aws ec2 modify-security-group-rules \
 
 on the file *gitpod.yml** add this line so it will get the ip of the instance
 ```
-    command: |
+    before: |
       export GITPOD_IP=$(curl ifconfig.me)
       source  "$THEIA_WORKSPACE_ROOT/backend-flask/bin/rds-update-sg-rule"
 ```
@@ -453,7 +449,7 @@ def lambda_handler(event, context):
     return event
 ```
 
-the env var for the lambda will be **CONNECTION_URL** which has the variable of the **PROD_CONNECTION_URL** set on gitpod/codespace (example: PROD_CONNECTION_URL="postgresql://nameofthedb:masterpassword@endpointofthedb:5432/cruddur)
+the env var for the lambda will be **CONNECTION_URL** which has the variable of the **PROD_CONNECTION_URL** set on gitpod/codespace (example: PROD_CONNECTION_URL="postgresql://userofthedb:masterpassword@endpointofthedb:5432/cruddur)
 
 Once you create the env var, create also the layer>add layers> select specify arn
 ```
@@ -464,6 +460,14 @@ now it is time to create the trigger for cognito.
 from cognito,  select the user pool and go to the user pool properties to find the lambda triggers. follow the configuration according to the image below:
 
 ![lambda triggers](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/lambda%20triggers.png)
+
+Make sure to attach the following policy **AWSLambdaVPCAccessExecutionRole** to the lambda role by going to configuration>permission> link under the Role name.
+
+Once attached the policy, go to VPC and select the VPC where resides the RDS,
+the subnet mask (i suggest selecting just 1 as you could have timeout error during the execution of the lambda) and select the same security group of the rds. In my case i took the default vpc for my region as i deployed there, the subnetmask in my case eu-west-2a (make sure to verify where reside your rds by going to EC2>Network Interface under network & security)
+and security group please make sure to insert the new inbound rule
+
+![Security Group](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/newSG.png)
 
 #Troubleshooting
 
