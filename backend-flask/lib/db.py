@@ -10,7 +10,7 @@ class Db:
     connection_url = os.getenv("CONNECTION_URL")
     self.pool = ConnectionPool(connection_url)
 
-  def query_commit_return_id(self,sql,*kwargs):
+  def query_commit_id(self,sql,*kwargs):
     print("SQL STATEMENT---[commit with id returning]--")
     try:
       conn = self.pool.connection()
@@ -86,6 +86,4 @@ class Db:
     # print the pgcode and pgerror exceptions
     print ("pgerror:", err.pgerror)
     print ("pgcode:", err.pgcode, "\n")
-
-
 db = Db()
