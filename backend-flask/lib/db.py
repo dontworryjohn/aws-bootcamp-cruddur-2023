@@ -5,11 +5,11 @@ class Db:
   def __init__(self):
     self.init_pool()
 
-  def init_pool():
+  def init_pool(self):
     connection_url = os.getenv("CONNECTION_URL")
     self.pool = ConnectionPool(connection_url)
   # commit data such as an insert
-  def query_commit():
+  def query_commitself():
     try:
       conn = self.pool.connection()
       cur =  conn.cursor()
@@ -19,7 +19,7 @@ class Db:
       self.print_sql_err(err)
       #conn.rollback()
   # return an array of a json objects
-  def query_array_json():
+  def query_array_json(self):
     print("SQL STATEMENT---[array]--")
     print(sql + "\n")
     wrapped_sql = self.query_wrap_array(sql)
@@ -29,7 +29,7 @@ class Db:
         json = cur.fetchone()
         return json [0]
   # return json object
-  def query_object_json(sql):
+  def query_object_json(self,sql):
     print("SQL STATEMENT---[object]--")
     print(sql + "\n")
     wrapped_sql = self.query_wrap_object(sql)
@@ -39,7 +39,7 @@ class Db:
           json = cur.fetchone()
           return json [0]
 
-  def query_wrap_object(template):
+  def query_wrap_object(self,template):
     sql = f"""
     (SELECT COALESCE(row_to_json(object_row),'{{}}'::json) FROM (
     {template}
@@ -47,7 +47,7 @@ class Db:
     """
     return sql
 
-  def query_wrap_array(template):
+  def query_wrap_array(self,template):
     sql = f"""
     (SELECT COALESCE(array_to_json(array_agg(row_to_json(array_row))),'[]'::json) FROM (
     {template}
@@ -55,7 +55,7 @@ class Db:
     """
     return sql
     # define a function that handles and parses psycopg2 exceptions
-  def print_sql_err(err):
+  def print_sql_err(self,err):
     # get details about the exception
     err_type, err_obj, traceback = sys.exc_info()
 
