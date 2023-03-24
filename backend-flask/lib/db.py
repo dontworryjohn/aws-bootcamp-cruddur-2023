@@ -49,9 +49,9 @@ class Db:
     wrapped_sql = self.query_wrap_object(sql)
     with self.pool.connection() as conn:
       with conn.cursor() as cur:
-          cur.execute(wrapped_sql)
-          json = cur.fetchone()
-          return json [0]
+        cur.execute(wrapped_sql)
+        json = cur.fetchone()
+        return json [0]
 
   def query_wrap_object(self,template):
     sql = f"""

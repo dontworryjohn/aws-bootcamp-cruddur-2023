@@ -13,7 +13,7 @@ class HomeActivities:
       #span.set_attribute("app.now", now.isoformat())
 
   
-      results = db.query_array_json ("""
+    results = db.query_array_json ("""
       SELECT
         activities.uuid,
         users.display_name,
@@ -30,5 +30,5 @@ class HomeActivities:
       ORDER BY activities.created_at DESC
       """)
       #span.set_attribute("app.result_length", len(results))
-      return results
+    return results
     
