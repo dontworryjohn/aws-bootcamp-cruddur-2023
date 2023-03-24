@@ -20,7 +20,7 @@ class Db:
       self.print_sql_err(err)
       #conn.rollback()
   # return an array of a json objects
-  def query_array_json(self):
+  def query_array_json(self,sql):
     print("SQL STATEMENT---[array]--")
     print(sql + "\n")
     wrapped_sql = self.query_wrap_array(sql)

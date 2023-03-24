@@ -13,7 +13,7 @@ class HomeActivities:
       #span.set_attribute("app.now", now.isoformat())
 
   
-      results = db.query_array_json("""
+      results = db.query_array_json ("""
       SELECT
         activities.uuid,
         users.display_name,
