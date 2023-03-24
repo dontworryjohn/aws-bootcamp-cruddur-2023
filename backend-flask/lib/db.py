@@ -1,6 +1,7 @@
 from psycopg_pool import ConnectionPool
 import os
 
+#rebuild db library
 class Db:
   def __init__(self):
     self.init_pool()
