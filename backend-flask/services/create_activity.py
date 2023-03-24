@@ -54,7 +54,7 @@ class CreateActivity:
     return model
 
   def create_activity(handle,message,expires_at):
-     sql = f"""
+    sql = f"""
     INSERT INTO (
       user_uuid,
       message,
@@ -70,9 +70,9 @@ class CreateActivity:
       %(expires_at)s
     ) RETURNING uuid;
     """
-   uuid = db.query_commit_return_id(sql
+    uuid = db.query_commit_return_id(sql,
     handle=handle,
     message=message,
     expires_at=expires_at
-   )
+    )
   #def query_object_activity():

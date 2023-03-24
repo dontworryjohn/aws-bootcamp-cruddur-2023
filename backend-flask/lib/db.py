@@ -11,8 +11,8 @@ class Db:
     self.pool = ConnectionPool(connection_url)
 
   def query_commit_return_id(self,sql,*kwargs):
-   print("SQL STATEMENT---[commit with id returning]--")
-   try:
+    print("SQL STATEMENT---[commit with id returning]--")
+    try:
       conn = self.pool.connection()
       cur =  conn.cursor()
       cur.execute(sql,kwargs)
@@ -21,7 +21,7 @@ class Db:
       return returning_id
     except Exception as err:
       self.print_sql_err(err)
-  # commit data such as an insert
+  #commit data such as an insert
   def query_commit(self,sql):
     print("SQL STATEMENT---[commit]--")
     try:
