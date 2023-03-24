@@ -1,5 +1,6 @@
 from psycopg_pool import ConnectionPool
 import os
+import sys
 
 #rebuild db library
 class Db:
