@@ -28,7 +28,7 @@ class HomeActivities:
       FROM public.activities
       LEFT JOIN public.users ON users.uuid = activities.user_uuid
       ORDER BY activities.created_at DESC
-      """)
+    """)
       #span.set_attribute("app.result_length", len(results))
     return results
     
