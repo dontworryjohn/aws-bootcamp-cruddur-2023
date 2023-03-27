@@ -434,6 +434,10 @@ const onsubmit_confirm_code = async (event) => {
  aws cognito-idp admin-set-user-password --username nameofusername --password Testing1234! --user-pool-id "${AWS_USER_POOLS_ID}" --permanent
 
 
+ Reference
+ - Tutorial Dojo
+
+
 
 
 

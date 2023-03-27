@@ -367,3 +367,7 @@ Cloudwatch (always free tier):
 
 ### Tools to troubleshooting
 https://honeycomb-whoami.glitch.me/
+
+Reference
+- Google Website
+- AWS Website
