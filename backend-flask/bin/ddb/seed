@@ -2,9 +2,42 @@
 
 import boto3
 from datetime import datetime, timedelta, timezone
+import os
 
-def create_message()
+current_path = os.path.dirname(os.path.abspath(__file__))
+parent_path = os.path.abspath(os.path.join(current_path, '..', '..'))
+sys.path.append(parent_path)
+from lib.db import db
 
+attrs = {
+  'endpoint_url': 'http://localhost:8000'
+}
+# unset endpoint url for use with production database
+if len(sys.argv) == 2:
+  if "prod" in sys.argv[1]:
+    attrs = {}
+dynamodb = boto3.client('dynamodb',**attrs)
+sql = """
+  SELECT 
+    users.uuid,
+    users.display_name,
+    users.handle
+  FROM users
+  WHERE
+    users.handle IN(
+    %(my_handle)s,
+    %(other_handle)s
+    )
+  """
+users = db.query_array_json(sql,{
+  'my_handle':  'andrewbrown',
+  'other_handle': 'bayko'
+})
+print("users============")
+print(users)
+
+def create_message(client,message_group_uuid, created_at, message, my_user_uuid, my_user_display_name, my_user_handle):
+  print("")
 
 conversation = """
 Person 1: Have you ever watched Babylon 5? It's one of my favorite TV shows!
@@ -128,12 +161,12 @@ for i in range(len(lines)):
     raise 'invalid line'
 created_at = (now + timedelta(minutes=I).isoformat())
   
-  create_message(
-    client=ddb,
-    message_group_uuid=message_group_uuid,
-    created_at=created_at,
-    message=message,
-    my_user_uuid=users[key]['uuid'],
-    my_user_display_name=users[key]['display_name'],
-    my_user_handle=users[key]['handle']
-  )
+create_message(
+  client=ddb,
+  message_group_uuid=message_group_uuid,
+  created_at=created_at,
+  message=message,
+  my_user_uuid=users[key]['uuid'],
+  my_user_display_name=users[key]['display_name'],
+  my_user_handle=users[key]['handle']
+)
