@@ -135,7 +135,7 @@ def init_rollbar():
 def data_message_groups():
   user_handle  = 'andrewbrown'
   model = MessageGroups.run(user_handle=user_handle)
-  if model['errors'] is not None:
+  if model['errors'] is not None:hin
     return model['errors'], 422
   else:
     return model['data'], 200
