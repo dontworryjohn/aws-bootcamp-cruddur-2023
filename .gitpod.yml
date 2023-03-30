@@ -23,6 +23,10 @@ tasks:
       npm update -g
       npm i
       cd $THEIA_WORKSPACE_ROOT
+  - name: flask 
+    command: |
+      cd backend-flask
+      pip install -r requirements.txt
 vscode:
   extensions:
     - 42Crunch.vscode-openapi
