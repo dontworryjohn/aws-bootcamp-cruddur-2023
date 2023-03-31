@@ -24,7 +24,7 @@ def update_users_with_cognito_user_id(handle,sub):
   })
 
 def get_cognito_user_ids():
-  userpool_id = os.getenv("AWS_COGNITO_USER_POOL_ID")
+  userpool_id = os.getenv("AWS_USER_POOLS_ID")
   client = boto3.client('cognito-idp')
   params = {
     'UserPoolId': userpool_id,
