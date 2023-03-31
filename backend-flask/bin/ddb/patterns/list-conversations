@@ -35,7 +35,7 @@ def get_my_user_uuids():
 
 myuser_uuid = get_my_user_uuids()
 print(f"my-uuid: {myuser_uuid}")
-current_year = datetime.datetime.now().year
+year = str(datetime.now().year)
 
 # define the query parameters
 query_params = {
