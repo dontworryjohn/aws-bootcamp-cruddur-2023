@@ -22,6 +22,8 @@ export default function SigninPage() {
     .then(user => {
       console.log('user',user)
       localStorage.setItem("access_token", user.signInUserSession.accessToken.jwtToken)
+      // Store email in local storage to use it in confirmation & sign-in page
+      localStorage.setItem('email', email); 
       window.location.href = "/"
     })
     .catch(error => {
@@ -44,6 +46,15 @@ export default function SigninPage() {
   if (errors){
     el_errors = <div className='errors'>{errors}</div>;
   }
+
+  React.useEffect(() => {
+    const storedEmail = localStorage.getItem('email');
+    if (storedEmail) {
+      setEmail(storedEmail);
+  // Remove the email from local storage because we're done with it.
+      localStorage.removeItem('email'); 
+    }
+  }, []);
 
   return (
     <article className="signin-article">

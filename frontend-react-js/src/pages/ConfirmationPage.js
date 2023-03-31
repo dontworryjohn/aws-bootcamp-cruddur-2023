@@ -45,7 +45,7 @@ export default function ConfirmationPage() {
     setErrors('')
     try {
       await Auth.confirmSignUp(email, code);
-      window.location.href = "/"
+      window.location.href = "/signin"
     } catch (error) {
       setErrors(error.message)
     }
@@ -66,8 +66,9 @@ export default function ConfirmationPage() {
   }
 
   React.useEffect(()=>{
-    if (params.email) {
-      setEmail(params.email)
+    const storedEmail  = localStorage.getItem('email');
+    if (storedEmail ) {
+      setEmail(storedEmail)
     }
   }, [])
 
