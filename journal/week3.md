@@ -425,17 +425,95 @@ const onsubmit_confirm_code = async (event) => {
 
 ```
 
+# Retrive submitted values across different pages in React.js
+
+In our application, there are 2 user experience problems:
+- During the confirmation, user needs to write the email manually. this could cause possible human error.
+- After the registration, user gets redirected to the home page but not signed in yet. this could create confusion and user can create a new account accidentally.
+
+The solution is to store the value using localstorage (many thanks to Abdassalam Hashnode) and use this across other pages.
+
+The changes will be between the signuppage.js, confirmationpage.js and signinpage.js
+
+
+From the signup page, add the following code this will store the email to the local storage
+```
+// SignupPage.js
+const onsubmit = async (event) => {
+// ...
+    try {
+// ...
+// Store email in local storage to use it in confirmation & sign-in page
+        localStorage.setItem('email', email);
+// redirect user to confirmation page after signing up
+        window.location.href = `/confirm`
+    } 
+// ...
+
+```
+
+from the confirmation page, add the following code. this checks if the local storage contains email
+
+```
+// ConfirmationPage.js
+// ...
+// Get email from the signup page where we stored the email in localStorage
+React.useEffect(() => {
+  const storedEmail = localStorage.getItem('email');
+// check if the email is set, if it's not set then we will ignore it, and use the vlaue we type in the email box
+  if (storedEmail) {
+// Filling the Email
+    setEmail(storedEmail);
+  }
+}, []);
+
+const onsubmit = async (event) => {
+// ...
+
+```
+
+from the signup page, add the following code. this set the email from the local storage to the confirmation page
+```
+// SigninPage.js
+// Get email from the signup page where we stored the email in localStorage
+React.useEffect(() => {
+  const storedEmail = localStorage.getItem('email');
+  if (storedEmail) {
+    setEmail(storedEmail);
+// Remove the email from local storage because we're done with it.
+    localStorage.removeItem('email'); 
+  }
+}, []);
+```
+
+To redirect the home page already logged in, insert the following code
+```
+// ConfirmationPage.js
+const onsubmit = async (event) => {
+// ...
+  try {
+    await Auth.confirmSignUp(email, code);
+// Redirect user to sign-in page instead of home page.
+    window.location.href = "/signin"
+// ...
+}
+
+```
+
+
 
 
 # Troubleshoot
 
-  ###how to force password change for your user created in cognito
+  ### how to force password change for your user created in cognito
 
  aws cognito-idp admin-set-user-password --username nameofusername --password Testing1234! --user-pool-id "${AWS_USER_POOLS_ID}" --permanent
 
 
  Reference
  - Tutorial Dojo
+ - abdassalam.hashnode.dev
+
 
 
 
