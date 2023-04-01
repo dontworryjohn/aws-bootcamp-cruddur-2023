@@ -5,7 +5,7 @@ cd frontend-react-js && npm update -g && npm install;
 
 # backend pip requirements
 
-cd backend-flask && pip3 install -r requirements.txt;
+cd /workspaces/aws-bootcamp-cruddur-2023/backend-flask && pip3 install -r requirements.txt;
 
 # postgresql
 curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
