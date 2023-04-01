@@ -14,6 +14,5 @@ sudo apt update
 sudo apt install -y postgresql-client-13 libpq-dev 
 
 #set ip for security group to connect with the gitpod/codespace
-export GITPOD_IP=$(curl ifconfig.me)
 source  "/workspaces/aws-bootcamp-cruddur-2023/backend-flask/bin/rds/update-sg-rule"
 
