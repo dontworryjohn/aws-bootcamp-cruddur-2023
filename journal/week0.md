@@ -203,8 +203,7 @@ aws cloudwatch put-metric-alarm --cli-input-json file://aws/json/alarm_config.js
 ```
 
 ### Note
-If you are going to use your company aws account, you might have problem using the repo. This is might caused by the SCP policy in place.
-Still underinvestigation the root cause of this problem.
+If you are going to use your company aws account, you might have a problem using the repo. This is might caused by the SCP policy in place.Still under investigation the root cause of this problem.
 
-Reference
+References
 - AWS Website

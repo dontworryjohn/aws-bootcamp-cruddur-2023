@@ -46,6 +46,8 @@ In these 2 diagrams, the communication with dyanomodb is within the aws network 
  - Client Side encryption for sensitive information on dynamodb (recommended by amazon)
 
 
+# Implementations
+
 
 
 
