@@ -207,3 +207,4 @@ If you are going to use your company aws account, you might have a problem using
 
 References
 - AWS Website
+- ![Ashish Video Cloud Security Podcast]()
