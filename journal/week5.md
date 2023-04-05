@@ -83,16 +83,99 @@ The first 1 million invocations per month are free and up to 3.2million seconds 
 
 # Implementations
 
-## Implementation Dynamo Data Stream
+## Implementation DynamoDB Data Stream to update message groups
+ 
+Before creating the new DynamoDB table, replace the new code for the script **/bin/ddb/schema-load**
+
+```
+#!/usr/bin/env python3
+
+import boto3
+import sys
+
+attrs = {
+    'endpoint_url':'http://localhost:8000'
+}
+
+if len(sys.argv) == 2:
+    if "prod" in sys.argv[1]:
+        attrs={}
+
+ddb = boto3.client('dynamodb',**attrs)
+
+table_name = 'cruddur-messages'
+
+response = ddb.create_table(
+    TableName=table_name,
+    AttributeDefinitions=[
+        {
+            'AttributeName': 'message_group_uuid',
+            'AttributeType': 'S'
+        },
+        {
+            'AttributeName': 'pk',
+            'AttributeType': 'S'
+        },
+        {
+            'AttributeName': 'sk',
+            'AttributeType': 'S'
+        },
+    ],
+    KeySchema=[
+        {
+            'AttributeName': 'pk',
+            'KeyType': 'HASH'
+        },
+          {
+            'AttributeName': 'sk',
+            'KeyType': 'RANGE'
+        },
+    ],
+    GlobalSecondaryIndexes=[{
+    'IndexName':'message-group-sk-index',
+    'KeySchema':[{
+      'AttributeName': 'message_group_uuid',
+      'KeyType': 'HASH'
+    },{
+      'AttributeName': 'sk',
+      'KeyType': 'RANGE'
+    }],
+    'Projection': {
+      'ProjectionType': 'ALL'
+    },
+    'ProvisionedThroughput': {
+      'ReadCapacityUnits': 5,
+      'WriteCapacityUnits': 5
+    },
+    }],
+    BillingMode='PROVISIONED',
+    ProvisionedThroughput={
+        'ReadCapacityUnits': 5,
+        'WriteCapacityUnits': 5
+    },
+    Tags=[
+        {
+            'Key': 'PROJECT',
+            'Value': 'CRUDDER'
+        },
+    ],
+)
+print(response)
+```
 
 Create the table using the script. This will create the dynamodb in your aws account. 
+
 ```
 /bin/ddb/schema-load prod
 ```
-Note: If you returns the error **table already exists: cruddur-messages**, that means the table is already created in your account. if you dont ses the table, make sure you are in the right region.
+Note: If you returns the error **table already exists: cruddur-messages**, that means the table is already created in your account. if you dont see the table, make sure you are in the right region.
+Once created the table, active the **DynamoDB Stream**.
+From the table, go to the tab **Exports and streams**>Section **DynamoDB stream details** click active>Select **New image**
+**
+
 
 The next steps is to create the endpoint.
-To do please follow the follwing [link](https://scribehow.com/shared/Amazon_Workflow__9knsACwST_equLV8dYYa9A).
+To do please follow the instruction in the [link](https://scribehow.com/shared/Amazon_Workflow__9knsACwST_equLV8dYYa9A).
 
 Once you create the endpoint, next to do is to create the lambda fuction.
 
@@ -150,6 +233,8 @@ def lambda_handler(event, context):
 ```
 Note: from the following  region_name='YOURREGION',
  endpoint_url="http://dynamodb.YOURREGION.amazonaws.com" insert the region where you have deployed your resources.
+
+ To do please follow the instruction to create the in the [link](https://scribehow.com/shared/How_to_create_a_Lambda_function_with_VPC_and_DynamoDB_triggers__EPcZPPH8T7SW8Yn5zsdAqw).
 
 
 
