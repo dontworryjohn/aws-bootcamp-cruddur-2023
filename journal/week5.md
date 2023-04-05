@@ -101,4 +101,4 @@ To do please follow the follwing [link](https://scribehow.com/shared/Amazon_Work
 Reference
 - Contino.Io
 - AWS Documentation
-![Ashish Video Cloud Security Podcast](https://www.youtube.com/watch?v=gFPljPNnK2Q&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=51)
+- ![Ashish Video Cloud Security Podcast](https://www.youtube.com/watch?v=gFPljPNnK2Q&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=51)
