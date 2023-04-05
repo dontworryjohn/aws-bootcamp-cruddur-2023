@@ -234,7 +234,7 @@ def lambda_handler(event, context):
 Note: from the following  region_name='YOURREGION',
  endpoint_url="http://dynamodb.YOURREGION.amazonaws.com" insert the region where you have deployed your resources.
 
- To do please follow the instruction to create the in the [link](https://scribehow.com/shared/How_to_create_a_Lambda_function_with_VPC_and_DynamoDB_triggers__EPcZPPH8T7SW8Yn5zsdAqw).
+Follow the instruction to create the [lambda, role and trigger](https://scribehow.com/shared/How_to_create_a_Lambda_function_with_VPC_and_DynamoDB_triggers__EPcZPPH8T7SW8Yn5zsdAqw).
 
 
 
