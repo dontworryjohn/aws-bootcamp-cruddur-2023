@@ -48,7 +48,7 @@ In these 2 diagrams, the communication with dyanomodb is within the aws network 
 # Cost
 This Week Cirag did not post any video about cost so I did some research.
 
-## DynamoDB
+#### DynamoDB
 The pricing for dynamo db are in 2 flavours:
 
 **Pricing for on demand capacity mode**: Amazon will charge you depeding of your data read and write of your application performs on your table.
@@ -71,11 +71,11 @@ The first 25GB are free
 The 2.5 million DynamoDB Streams read request are free
  [Resource](https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all&all-free-tier.q=dynamo%2Bdb&all-free-tier.q_operator=AND)
 
-## Gateway Endpoint
+#### Gateway Endpoint
 As in our implementation, Lambda needs to connect with DynamoDB, we need to use Gateway endpoint.
 On amazon web service documentations, it says there is no additional charge. [Resource](https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html)
 
-## Lambda
+#### Lambda
 Since we are going to use Lambda in our application to write to the DynamoDB, this service is always free up to a certain limit.
 
 The first 1 million invocations per month are free and up to 3.2million seconds of compute time per month [resource](https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all&all-free-tier.q=lambda&all-free-tier.q_operator=AND)
@@ -89,7 +89,7 @@ Create the table using the script. This will create the dynamodb in your aws acc
 ```
 /bin/ddb/schema-load prod
 ```
-Note: If you returns the error **table already exists: cruddur-messages**, thats mean the table is already created into your account. if you dont se the table, make sure you are in the right region.
+Note: If you returns the error **table already exists: cruddur-messages**, that means the table is already created in your account. if you dont ses the table, make sure you are in the right region.
 
 The next steps is to create the endpoint.
 To do please follow the follwing [link](https://scribehow.com/shared/Amazon_Workflow__9knsACwST_equLV8dYYa9A).
