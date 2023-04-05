@@ -72,20 +72,39 @@ The 2.5 million DynamoDB Streams read request are free
  [Resource](https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all&all-free-tier.q=dynamo%2Bdb&all-free-tier.q_operator=AND)
 
 #### Gateway Endpoint
-As in our implementation, Lambda needs to connect with DynamoDB, we need to use Gateway endpoint.
+In our implementation, Lambda needs a connection with DynamoDB. We need to create a Gateway endpoint.
 On amazon web service documentations, it says there is no additional charge. [Resource](https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html)
 
 #### Lambda
-Since we are going to use Lambda in our application to write to the DynamoDB, this service is always free up to a certain limit.
+Since we are going to use Lambda so that the new income message will be written to the DynamoDB.
+Amazon offers this service always free up to a certain limit.
 
 The first 1 million invocations per month are free and up to 3.2million seconds of compute time per month [resource](https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all&all-free-tier.q=lambda&all-free-tier.q_operator=AND)
 
 
 # Implementations
 
+## DynamoDB Scripts
+In this section, it is listed the main scripts used during the development (local and production)
+
+- **./bin/ddb/drop** ([code](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/backend-flask/bin/ddb/drop)): This script allows to drop dynamo db table
+
+- **./bin/ddb/list-tables** ([code](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/backend-flask/bin/ddb/drop)): This script allows the list of the table that has been created.
+
+- **./bin/ddb/scan**  ([code](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/backend-flask/bin/ddb/scan)):
+
+- **./bin/ddb/schema-load** ([code](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/backend-flask/bin/ddb/schema-load)): This script allows the creation of the dynamodb **cruddur-messages** either locally or in production
+
+
+
+
+
+
+
+
 ## Implementation DynamoDB Data Stream to update message groups
  
-Before creating the new DynamoDB table, replace the new code for the script **/bin/ddb/schema-load**
+Before creating the new DynamoDB table, replace the new code for the script **/bin/ddb/schema-load** and make sure the **
 
 ```
 #!/usr/bin/env python3
