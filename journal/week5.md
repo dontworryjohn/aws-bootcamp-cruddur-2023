@@ -45,8 +45,53 @@ In these 2 diagrams, the communication with dyanomodb is within the aws network 
  - Do not access dynamodb through the internet, use site-to-site or Direct Connect to access dynamodb from the on-premise.
  - Client Side encryption for sensitive information on dynamodb (recommended by amazon)
 
+# Cost
+This Week Cirag did not post any video about cost so I did some research.
+
+## DynamoDB
+The pricing for dynamo db are in 2 flavours:
+
+**Pricing for on demand capacity mode**: Amazon will charge you depeding of your data read and write of your application performs on your table.
+
+Few cases are:
+- Create new table with unknown workloads
+- Have unpredictable application traffic
+- Prefer the ease of pay as you go 
+
+- **Pricing for for provisioned capacity mode**: You need to specify the number of reads and writes per second that your application needs.
+
+Few Cases are:
+- Have a predictable application traffic
+- Run application whose traffic is consistant or ramps gradually
+- Can forcast capacity requirements to control cost.
+
+Dynamo db is always free.
+The 25 read and write capacity are free
+The first 25GB are free
+The 2.5 million DynamoDB Streams read request are free
+ [Resource](https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all&all-free-tier.q=dynamo%2Bdb&all-free-tier.q_operator=AND)
+
+## Gateway Endpoint
+As in our implementation, Lambda needs to connect with DynamoDB, we need to use Gateway endpoint.
+On amazon web service documentations, it says there is no additional charge. [Resource](https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html)
+
+## Lambda
+Since we are going to use Lambda in our application to write to the DynamoDB, this service is always free up to a certain limit.
+
+The first 1 million invocations per month are free and up to 3.2million seconds of compute time per month [resource](https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all&all-free-tier.q=lambda&all-free-tier.q_operator=AND)
+
 
 # Implementations
+
+## Implementation Dynamo Data Stream
+
+Create the table using the script. This will create the dynamodb in your aws account. 
+```
+/bin/ddb/schema-load prod
+```
+Note: If you returns the error **table already exists: cruddur-messages**, thats mean the table is already created into your account. if you dont se the table, make sure you are in the right region.
+
+
 
 
 
@@ -55,4 +100,4 @@ In these 2 diagrams, the communication with dyanomodb is within the aws network 
 Reference
 - Contino.Io
 - AWS Documentation
-![Ashish Video Cloud Security Podcast]()
+![Ashish Video Cloud Security Podcast](https://www.youtube.com/watch?v=gFPljPNnK2Q&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=51)
