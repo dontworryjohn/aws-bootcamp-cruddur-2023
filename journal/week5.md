@@ -58,7 +58,7 @@ Few cases are:
 - Have unpredictable application traffic
 - Prefer the ease of pay as you go 
 
-- **Pricing for for provisioned capacity mode**: You need to specify the number of reads and writes per second that your application needs.
+**Pricing for for provisioned capacity mode**: You need to specify the number of reads and writes per second that your application needs.
 
 Few Cases are:
 - Have a predictable application traffic
@@ -66,9 +66,9 @@ Few Cases are:
 - Can forcast capacity requirements to control cost.
 
 Dynamo db is always free.
-The 25 read and write capacity are free
-The first 25GB are free
-The 2.5 million DynamoDB Streams read request are free
+The 25 read and write capacity are free.
+The first 25GB are free.
+The 2.5 million DynamoDB Streams read request are free.
  [Resource](https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all&all-free-tier.q=dynamo%2Bdb&all-free-tier.q_operator=AND)
 
 #### Gateway Endpoint
@@ -81,6 +81,46 @@ Amazon offers this service always free up to a certain limit.
 
 The first 1 million invocations per month are free and up to 3.2million seconds of compute time per month [resource](https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all&all-free-tier.q=lambda&all-free-tier.q_operator=AND)
 
+# Data Modelling
+For the messaging part, we will implement a single table data modelling using Dynamo DB. Below you will see the pattern for CRUDDUR
+
+1. Pattern A: Shows the messages. Users can see the list of the messages that belong to a message group.
+2. Pattern B: Shows the message group conversation with a specific user.
+3. Pattern C: Create a new message in a new message group.
+4. Pattern D: Create a new message in an exisintg group.
+
+# Restructure Script Folders
+
+As we are going to create more scripts, we implement the following folders structure following:
+
+For each postgres script, the folder will be the following:
+```
+backend-flask/bin/db-connect → backend-flask/bin/db/connect
+backend-flask/bin/db-create → backend-flask/bin/db/create
+backend-flask/bin/db-drop → backend-flask/bin/db/drop
+backend-flask/bin/db-schema-load → backend-flask/bin/db/schema-load
+backend-flask/bin/db-seed → backend-flask/bin/db/seed
+backend-flask/bin/db-sessions → backend-flask/bin/db/sessions
+backend-flask/bin/db-setup → backend-flask/bin/db/setup
+
+```
+
+Note: Inside the file **backend-flask/bin/db/setup** we added the following code 
+
+```
+python "$bin_path/db/update_cognito_user_ids"
+```
+The file ([**update_cognito_user_ids**](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/backend-flask/bin/db/update_cognito_user_ids)) must be created. The script adds the cognito user id.
+
+Make sure to add **boto3** into **backend-flask/requirements.txt**, which is the AWS SDK for Python to create, configure, and manage AWS services such as DynamoDB.
+
+Add in .gitpod.yml the following ([code](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/commit/549f34baa8e09bbe51d65a5f87e49c1462afe2a0)). This allows to install python libraries automatically whenever a new workspace is launched.
+
+Update **backend-flask/db/seed.sql** with the following [**code**](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/backend-flask/db/seed.sql)). The new query contains information that are inside the cognito user pool. Therefore update with your information.
+
+Create [backend-flask/bin/cognito/list-users](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/backend-flask/bin/cognito/list-users)). to list users data saved in AWS Cognito
+
+On **docker-compose.yml** insert if not exist the following **CONNECTION_URL: "postgresql://postgres:password@db:5432/cruddur"** and comment #CONNECTION_URL: "${PROD_CONNECTION_URL}". This week we wont use RDS.
 
 # Implementations
 
@@ -91,20 +131,53 @@ In this section, it is listed the main scripts used during the development (loca
 
 - **./bin/ddb/list-tables** ([code](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/backend-flask/bin/ddb/drop)): This script allows the list of the table that has been created.
 
-- **./bin/ddb/scan**  ([code](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/backend-flask/bin/ddb/scan)):
+- **./bin/ddb/scan**  ([code](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/backend-flask/bin/ddb/scan)): This script shows all the items inside of the table.
 
 - **./bin/ddb/schema-load** ([code](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/backend-flask/bin/ddb/schema-load)): This script allows the creation of the dynamodb **cruddur-messages** either locally or in production
 
+- **./bin/ddb/seed** ([code](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/backend-flask/bin/ddb/schema-load)): This script loads some mock data inside the table with hardcoded **message_group_uuid**
+(Note: The **my_handle** and **other_handle** were replaced with 2 users that are avaialble on cognito user pool. the **created_at** was modified as it could cause error if you create a new message.)
 
+NB: Make sure to do the 
+**Chmod u+x** for the new scripts
 
+## Implementation of Messages with the local DynamoDB
 
+Create the following file [**backend-flask/lib/ddb.py](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/backend-flask/lib/ddb.py). 
+Make sure to create **AWS_ENDPOINT_URL: "http://dynamodb-local:8000"** inside the **docker-compose.yml**.
+
+For additional changes from the backend see the [repo](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/commits/main/backend-flask)  and frontent [repo](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/commits/main/frontend-react-js)
+
+To retrieve messages and message groups from Dynamodb instead of using hard-coded data, modify the backend routes and functions. Rather than passing in a handle, use message_group_uuid. The Ddb class's list_message_groups and list_messages are mainly used for these implementations.
+
+Make the following changes in backend-flask/app.py: replace "/api/messages/@string:handle" with "/api/messages/string:message_group_uuid".
+
+Also, make modifications in the backend-flask/services/message_groups.py and backend-flask/services/messages.py files.
+
+In the frontend-react-js/src/pages/MessageGroupPage.js, update the backend_url to use ${params.message_group_uuid} instead of ${handle}, and in frontend-react-js/src/App.js, change the path from "/messages/@:handle" to "/messages/:message_group_uuid".
+
+In frontend-react-js/src/components/MessageGroupItem.js, change props.message_group.handle to props.message_group.uuid and params.handle to params.message_group_uuid.
+
+For authentication, create a reusable script in frontend-react-js/src/lib/CheckAuth.js, which can be used in frontend-react-js/src/pages/HomeFeedPage.js, frontend-react-js/src/pages/MessageGroupPage.js, frontend-react-js/src/pages/MessageGroupsPage.js, and frontend-react-js/src/components/MessageForm.js.
+
+To create a new message, modify the content for body in frontend-react-js/src/components/MessageForm.js. Update the data_create_message function in backend-flask/app.py and backend-flask/services/create_message.py, which has two modes - "update" to a new message group or "create" a new message with a new message group.
+
+Create backend-flask/db/sql/users/create_message_users.sql.
+
+For additional pages, use create_message_group of the Ddb class. In frontend-react-js/src/App.js, import MessageGroupNewPage and add the corresponding router.
+
+Create frontend-react-js/src/pages/MessageGroupNewPage.js and frontend-react-js/src/components/MessageGroupNewItem.js.
+
+Add the endpoint and function for user short in backend-flask/app.py, create backend-flask/services/users_short.py and backend-flask/db/sql/users/short.sql.
+
+Finally, update frontend-react-js/src/components/MessageGroupFeed.js and frontend-react-js/src/components/MessageForm.js.
 
 
 
 
 ## Implementation DynamoDB Data Stream to update message groups
  
-Before creating the new DynamoDB table, replace the new code for the script **/bin/ddb/schema-load** and make sure the **
+Before creating the new DynamoDB table, replace the new code for the script **/bin/ddb/schema-load** and make sure the **AWS_ENDPOINT_URL: "http://dynamodb-local:8000"** from the **docker-compose.yml** is commented.
 
 ```
 #!/usr/bin/env python3
