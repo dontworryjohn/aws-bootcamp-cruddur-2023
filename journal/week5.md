@@ -91,7 +91,8 @@ Create the table using the script. This will create the dynamodb in your aws acc
 ```
 Note: If you returns the error **table already exists: cruddur-messages**, thats mean the table is already created into your account. if you dont se the table, make sure you are in the right region.
 
-
+The next steps is to create the endpoint.
+To do please follow the follwing [link](https://scribehow.com/shared/Amazon_Workflow__9knsACwST_equLV8dYYa9A).
 
 
 
