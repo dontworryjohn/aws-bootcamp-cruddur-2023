@@ -89,6 +89,8 @@ For the messaging part, we will implement a single table data modelling using Dy
 3. Pattern C: Create a new message in a new message group.
 4. Pattern D: Create a new message in an exisintg group.
 
+![Pattern](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/message%20pattern.jpeg)
+
 # Restructure Script Folders
 
 As we are going to create more scripts, we implement the following folders structure following:
