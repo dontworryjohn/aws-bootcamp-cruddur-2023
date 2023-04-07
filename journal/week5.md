@@ -23,7 +23,7 @@ In these 2 diagrams, the communication with dynamodb goes outside the aws throug
 
 ![DynamoDB via VPC ENDPOINT](https://docs.aws.amazon.com/images/amazondynamodb/latest/developerguide/images/ddb-yes-vpc-endpoint.png)
 
-![DynamoDB vi GATEWAY ENDPOINT](https://docs.aws.amazon.com/images/vpc/latest/privatelink/images/gateway-endpoints.png)
+![DynamoDB via GATEWAY ENDPOINT](https://docs.aws.amazon.com/images/vpc/latest/privatelink/images/gateway-endpoints.png)
 
 In these 2 diagrams, the communication with dyanomodb is within the aws network and not through the public internet.
 
