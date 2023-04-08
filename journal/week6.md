@@ -46,6 +46,9 @@ Fargate
 
 # Implementation
 
+this is week we start to implementation on AWS ecs with fargate
+
+
 First we need to create a script to check if we can estabilish a connection with the RDS
 
 this is the script
@@ -435,6 +438,53 @@ aws ec2 authorize-security-group-ingress \
   --cidr 0.0.0.0/0
   ```
 
+  Create a file called service-backend-flask.json under the path /aws/json/
+  replace the value of security group and subnetmask
+```
+{
+  "cluster": "cruddur",
+  "launchType": "FARGATE",
+  "desiredCount": 1,
+  "enableECSManagedTags": true,
+  "enableExecuteCommand": true,
+  "networkConfiguration": {
+    "awsvpcConfiguration": {
+      "assignPublicIp": "ENABLED",
+      "securityGroups": [
+        "sg-04ca5ebd69e0aec6f"
+      ],
+      "subnets": [
+        "subnet-0462b87709683ccaa",
+        "subnet-066a53dd88d557e05",
+        "subnet-021a6adafb79249e3"
+      ]
+    }
+  },
+  "propagateTags": "SERVICE",
+  "serviceName": "backend-flask",
+  "taskDefinition": "backend-flask",
+  "serviceConnectConfiguration": {
+    "enabled": true,
+    "namespace": "cruddur",
+    "services": [
+      {
+        "portName": "backend-flask",
+        "discoveryName": "backend-flask",
+        "clientAliases": [{"port": 4567}]
+      }
+    ]
+  }
+}
+```
+
+launch the following command to create the new for the backend flask so that the enable executecommand is active (Note that this function can active only using the CLI)
+
+```
+aws ecs create-service --cli-input-json file://aws/json/service-backend-flask.json
+
+```
+
+
   how to connect to the containers using the session manager tool for ubuntu
 
 install the session manager. here is the [reference](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-linux)
@@ -459,6 +509,54 @@ aws ecs execute-command  \
     --command "/bin/bash" \
     --interactive
   ```
+
+Note: the execute command is possible to active via console. therefore need to be recreate the task/service via cli
+
+add the following code inside the gitpod.yml
+
+```
+name: fargate
+    before: |
+      curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+      sudo dpkg -i session-manager-plugin.deb
+      cd backend-flask
+
+```
+
+create the new folder called ssm inside the following path
+/backend-flask/bin/
+and create the new file connect-to-service and apply the chmod u+x
+
+```
+#! /usr/bin/bash
+
+if [ -z "$1" ]; then
+    echo "No TASK_ID argument supplied eg ./bin/ecs/connect-to service TASKNUMBER backend-flask"
+    exit 1
+fi
+TASK_ID=$1
+
+if [ -z "$2" ]; then
+    echo "No CONTAINER_NAME argument supplied eg ./bin/ecs/connect-to service TASKNUMBER backend-flask"
+    exit 2
+fi
+CONTAINER_NAME=$2
+
+
+aws ecs execute-command  \
+    --region $AWS_DEFAULT_REGION \
+    --cluster cruddur \
+    --task $TASK_ID \
+    --container $CONTAINER_NAME \
+    --command "/bin/bash" \
+    --interactive
+```
+
+
+
+
+
+
 
 Reference
 ![Ashish Video Cloud Security Podcast](https://www.youtube.com/watch?v=zz2FQAk1I28&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=58)
