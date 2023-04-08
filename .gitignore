@@ -1,3 +1,4 @@
 .gitignore
 week6note.md
-docker/
+docker/**/*
+frontend-react-js/build/*
