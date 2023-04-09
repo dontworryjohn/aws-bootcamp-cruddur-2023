@@ -719,7 +719,7 @@ from the folder frontend-react-js run the command to build
 npm run build
 ```
 
-run the following command to push 
+run the following command to build the image pointing to the local env 
 
 ```
 docker build \
@@ -927,6 +927,28 @@ aws ecs create-service --cli-input-json file://aws/json/service-frontend-react-j
 
 ```
 
+Since there is problem with the frontend image, The next step to do is create the image locally (pointing to the local env) and launch it locally
+
+```
+docker ps
+
+docker inspect 9175560cb662
+```
+
+Note by default bash is not included with busybox and alpie linux
+
+insert this part for the frontend-react-js-json under task-definitions
+```
+"healthCheck": {
+          "command": [
+            "CMD-SHELL",
+            "curl -f http://localhost:3000 || exit 1"
+          ],
+          "interval": 30,
+          "timeout": 5,
+          "retries": 3
+        },
+```
 
 
 
