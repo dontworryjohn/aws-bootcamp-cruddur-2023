@@ -580,5 +580,173 @@ on the targetGroupArn insert the arn ot the target group in this case the target
 on containername backend-flask
 on containport 4567
 
+We create the task for the frontend-react-js.
+
+first crete the task definitiion called frontend-react-js.json under /aws/task-definition
+```sh
+"family": "frontend-react-js",
+    "executionRoleArn": "arn:aws:iam::238967891447:role/CruddurServiceExecutionRole",
+    "taskRoleArn": "arn:aws:iam::238967891447:role/CruddurTaskRole",
+    "networkMode": "awsvpc",
+    "cpu": "256",
+    "memory": "512",
+    "requiresCompatibilities": [ 
+      "FARGATE" 
+    ],
+    "containerDefinitions": [
+      {
+        "name": "frontend-react-js",
+        "image": "number.dkr.ecr.REGION.amazonaws.com/frontend-react-js",
+        "essential": true,
+        "portMappings": [
+          {
+            "name": "frontend-react-js",
+            "containerPort": 3000,
+            "protocol": "tcp", 
+            "appProtocol": "http"
+          }
+        ],
+  
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+              "awslogs-group": "cruddur",
+              "awslogs-region": "eu-west-2",
+              "awslogs-stream-prefix": "frontend-react-js"
+          }
+        }
+      }
+    ]
+  }
+```
+
+
+create the dockerfile.prod under the frontend-react-js
+``` sh
+# Base Image ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+FROM node:16.18 AS build
+
+ARG REACT_APP_BACKEND_URL
+ARG REACT_APP_AWS_PROJECT_REGION
+ARG REACT_APP_AWS_COGNITO_REGION
+ARG REACT_APP_AWS_USER_POOLS_ID
+ARG REACT_APP_CLIENT_ID
+
+ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
+ENV REACT_APP_AWS_PROJECT_REGION=$REACT_APP_AWS_PROJECT_REGION
+ENV REACT_APP_AWS_COGNITO_REGION=$REACT_APP_AWS_COGNITO_REGION
+ENV REACT_APP_AWS_USER_POOLS_ID=$REACT_APP_AWS_USER_POOLS_ID
+ENV REACT_APP_CLIENT_ID=$REACT_APP_CLIENT_ID
+
+COPY . ./frontend-react-js
+WORKDIR /frontend-react-js
+RUN npm install
+RUN npm run build
+
+# New Base Image ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+FROM nginx:1.23.3-alpine
+
+# --from build is coming from the Base Image
+COPY --from=build /frontend-react-js/build /usr/share/nginx/html
+COPY --from=build /frontend-react-js/nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 3000
+```
+
+create a file called nginx.conf under the frontend-react-js
+```sh
+# Set the worker processes
+worker_processes 1;
+
+# Set the events module
+events {
+  worker_connections 1024;
+}
+
+# Set the http module
+http {
+  # Set the MIME types
+  include /etc/nginx/mime.types;
+  default_type application/octet-stream;
+
+  # Set the log format
+  log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                    '$status $body_bytes_sent "$http_referer" '
+                    '"$http_user_agent" "$http_x_forwarded_for"';
+
+  # Set the access log
+  access_log  /var/log/nginx/access.log main;
+
+  # Set the error log
+  error_log /var/log/nginx/error.log;
+
+  # Set the server section
+  server {
+    # Set the listen port
+    listen 3000;
+
+    # Set the root directory for the app
+    root /usr/share/nginx/html;
+
+    # Set the default file to serve
+    index index.html;
+
+    location / {
+        # First attempt to serve request as file, then
+        # as directory, then fall back to redirecting to index.html
+        try_files $uri $uri/ $uri.html /index.html;
+    }
+
+    # Set the error page
+    error_page  404 /404.html;
+    location = /404.html {
+      internal;
+    }
+
+    # Set the error page for 500 errors
+    error_page  500 502 503 504  /50x.html;
+    location = /50x.html {
+      internal;
+    }
+  }
+}
+
+```
+
+from the folder frontend-react-js run the command to build
+
+```
+npm run build
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Reference
 ![Ashish Video Cloud Security Podcast](https://www.youtube.com/watch?v=zz2FQAk1I28&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=58)
