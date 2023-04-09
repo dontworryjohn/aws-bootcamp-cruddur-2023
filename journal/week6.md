@@ -563,10 +563,22 @@ aws ecs execute-command  \
 ```
 
 
+create load balancer to set in front of the backend container
 
+add the following code on your service-backend-flask.json
 
-
-
+```
+"loadBalancers": [
+      {
+          "targetGroupArn": "",
+          "containerName": "",
+          "containerPort": 0
+      }
+    ],
+```
+on the targetGroupArn insert the arn ot the target group in this case the targetgroup for the backend-flask
+on containername backend-flask
+on containport 4567
 
 Reference
 ![Ashish Video Cloud Security Podcast](https://www.youtube.com/watch?v=zz2FQAk1I28&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=58)
