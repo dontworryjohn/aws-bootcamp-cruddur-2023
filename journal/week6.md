@@ -166,7 +166,7 @@ ENV FLASK_ENV=development
 ````
 with
 ```
-#FROM 238967891447.dkr.ecr.eu-west-2.amazonaws.com/cruddur-python
+FROM 238967891447.dkr.ecr.eu-west-2.amazonaws.com/cruddur-python
 
 ENV FLASK_DEBUG=1
 ```
@@ -434,7 +434,7 @@ echo $CRUD_SERVICE_SG
 aws ec2 authorize-security-group-ingress \
   --group-id $CRUD_SERVICE_SG \
   --protocol tcp \
-  --port 80 \
+  --port 4567 \
   --cidr 0.0.0.0/0
   ```
 
