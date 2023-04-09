@@ -264,7 +264,7 @@ Create another json file under this path aws/policies/service-execution-policy.j
                 "ssm:GetParameters",
                 "ssm:GetParameter"
             ],
-            "Resource": "arn:aws:ssm:eu-west-2:387543059434:parameter/cruddur/backend-flask/*"
+            "Resource": "arn:aws:ssm:eu-west-2:238967891447:parameter/cruddur/backend-flask/*"
         }
     ]
 }
