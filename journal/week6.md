@@ -451,12 +451,12 @@ aws ec2 authorize-security-group-ingress \
     "awsvpcConfiguration": {
       "assignPublicIp": "ENABLED",
       "securityGroups": [
-        "sg-04ca5ebd69e0aec6f"
+        "TO CHANGE"
       ],
       "subnets": [
-        "subnet-0462b87709683ccaa",
-        "subnet-066a53dd88d557e05",
-        "subnet-021a6adafb79249e3"
+        "TO CHANGE",
+        "TO CHANGE",
+        "TO CHANGE"
       ]
     }
   },
@@ -477,6 +477,16 @@ aws ec2 authorize-security-group-ingress \
 }
 ```
 
+if you need the to get the default subnet mask follow the following code (relaunch the on the line 414 if needed)
+
+```
+export DEFAULT_SUBNET_IDS=$(aws ec2 describe-subnets  \
+ --filters Name=vpc-id,Values=$DEFAULT_VPC_ID \
+ --query 'Subnets[*].SubnetId' \
+ --output json | jq -r 'join(",")')
+echo $DEFAULT_SUBNET_IDS
+```
+
 launch the following command to create the new for the backend flask so that the enable executecommand is active (Note that this function can active only using the CLI)
 
 ```
@@ -485,7 +495,7 @@ aws ecs create-service --cli-input-json file://aws/json/service-backend-flask.js
 ```
 
 
-  how to connect to the containers using the session manager tool for ubuntu
+how to connect to the containers using the session manager tool for ubuntu
 
 install the session manager. here is the [reference](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-linux)
 
@@ -531,13 +541,13 @@ and create the new file connect-to-service and apply the chmod u+x
 #! /usr/bin/bash
 
 if [ -z "$1" ]; then
-    echo "No TASK_ID argument supplied eg ./bin/ecs/connect-to service TASKNUMBER backend-flask"
+    echo "No TASK_ID argument supplied eg ./bin/ecs/connect-to service 291661114f174777aeeaff30522b972d backend-flask"
     exit 1
 fi
 TASK_ID=$1
 
 if [ -z "$2" ]; then
-    echo "No CONTAINER_NAME argument supplied eg ./bin/ecs/connect-to service TASKNUMBER backend-flask"
+    echo "No CONTAINER_NAME argument supplied eg ./bin/ecs/connect-to service 291661114f174777aeeaff30522b972d backend-flask"
     exit 2
 fi
 CONTAINER_NAME=$2
