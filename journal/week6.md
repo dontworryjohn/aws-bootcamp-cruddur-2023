@@ -719,10 +719,213 @@ from the folder frontend-react-js run the command to build
 npm run build
 ```
 
+run the following command to push 
+
+```
+docker build \
+--build-arg REACT_APP_BACKEND_URL="https://${CODESPACE_NAME}-4567.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}" \
+--build-arg REACT_APP_AWS_PROJECT_REGION="$AWS_DEFAULT_REGION" \
+--build-arg REACT_APP_AWS_COGNITO_REGION="$AWS_DEFAULT_REGION" \
+--build-arg REACT_APP_AWS_USER_POOLS_ID="$AWS_USER_POOLS_ID" \
+--build-arg REACT_APP_CLIENT_ID="$APP_CLIENT_ID" \
+-t frontend-react-js \
+-f Dockerfile.prod \
+.
+
+```
+
+for the production put the url of the load balancer
+```
+docker build \
+--build-arg REACT_APP_BACKEND_URL="http://cruddur-alb-1044769460.eu-west-2.elb.amazonaws.com:4567" \
+--build-arg REACT_APP_AWS_PROJECT_REGION="$AWS_DEFAULT_REGION" \
+--build-arg REACT_APP_AWS_COGNITO_REGION="$AWS_DEFAULT_REGION" \
+--build-arg REACT_APP_AWS_USER_POOLS_ID="$AWS_USER_POOLS_ID" \
+--build-arg REACT_APP_CLIENT_ID="$APP_CLIENT_ID" \
+-t frontend-react-js \
+-f Dockerfile.prod \
+.
+
+```
 
 
+create the repo for the frontend ECR
+
+```
+aws ecr create-repository \
+  --repository-name frontend-react-js \
+  --image-tag-mutability MUTABLE
+```
 
 
+and set the env var
+
+```
+export ECR_FRONTEND_REACT_URL="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/frontend-react-js"
+echo $ECR_FRONTEND_REACT_URL
+```
+
+tag the image
+
+```
+docker tag frontend-react-js:latest $ECR_FRONTEND_REACT_URL:latest
+```
+
+and we push to the repo in ecr
+
+```
+docker push $ECR_FRONTEND_REACT_URL:latest
+```
+
+
+Before pushing, test locallu
+```
+docker run --rm -p 3000:3000 -it frontend-react-js 
+
+```
+
+create the the task definition for the frontend-react-js
+
+```
+{
+    "family": "frontend-react-js",
+    "executionRoleArn": "arn:aws:iam::238967891447:role/CruddurServiceExecutionRole",
+    "taskRoleArn": "arn:aws:iam::238967891447:role/CruddurTaskRole",
+    "networkMode": "awsvpc",
+    "cpu": "256",
+    "memory": "512",
+    "requiresCompatibilities": [ 
+      "FARGATE" 
+    ],
+    "containerDefinitions": [
+      {
+        "name": "frontend-react-js",
+        "image": "238967891447.dkr.ecr.eu-west-2.amazonaws.com/frontend-react-jss",
+        "essential": true,
+        "portMappings": [
+          {
+            "name": "frontend-react-js",
+            "containerPort": 3000,
+            "protocol": "tcp", 
+            "appProtocol": "http"
+          }
+        ],
+  
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+              "awslogs-group": "cruddur",
+              "awslogs-region": "eu-west-2",
+              "awslogs-stream-prefix": "frontend-react-js"
+          }
+        }
+      }
+    ]
+  }
+```
+
+and the service-front-react-js.json
+```
+{
+    "cluster": "cruddur",
+    "launchType": "FARGATE",
+    "desiredCount": 1,
+    "enableECSManagedTags": true,
+    "enableExecuteCommand": true,
+    "loadBalancers": [
+      {
+          "targetGroupArn": "arn:aws:elasticloadbalancing:eu-west-2:238967891447:targetgroup/cruddur-frontend-react-js/de92d78abee2a37a",
+          "containerName": "frontend-react-js",
+          "containerPort": 3000
+      }
+    ],
+    "networkConfiguration": {
+      "awsvpcConfiguration": {
+        "assignPublicIp": "ENABLED",
+        "securityGroups": [
+            "sg-081fda7fb7464c107"
+          ],
+          "subnets": [
+            "subnet-5d5bd827",
+            "subnet-608b5a2c",
+            "subnet-4db0f724"
+          ]
+      }
+    },
+    "propagateTags": "SERVICE",
+    "serviceName": "frontend-react-js",
+    "taskDefinition": "frontend-react-js",
+    "serviceConnectConfiguration": {
+      "enabled": true,
+      "namespace": "cruddur",
+      "services": [
+        {
+          "portName": "frontend-react-js",
+          "discoveryName": "frontend-react-js",
+          "clientAliases": [{"port": 3000}]
+        }
+      ]
+    }
+  }
+```
+
+```
+{
+    "cluster": "cruddur",
+    "launchType": "FARGATE",
+    "desiredCount": 1,
+    "enableECSManagedTags": true,
+    "enableExecuteCommand": true,
+    "loadBalancers": [
+      {
+          "targetGroupArn": "arn:aws:elasticloadbalancing:eu-west-2:238967891447:targetgroup/cruddur-frontend-react-js/de92d78abee2a37a",
+          "containerName": "frontend-react-js",
+          "containerPort": 3000
+      }
+    ],
+    "networkConfiguration": {
+      "awsvpcConfiguration": {
+        "assignPublicIp": "ENABLED",
+        "securityGroups": [
+            "sg-081fda7fb7464c107"
+          ],
+          "subnets": [
+            "subnet-5d5bd827",
+            "subnet-608b5a2c",
+            "subnet-4db0f724"
+          ]
+      }
+    },
+    "propagateTags": "SERVICE",
+    "serviceName": "frontend-react-js",
+    "taskDefinition": "frontend-react-js",
+    "serviceConnectConfiguration": {
+      "enabled": true,
+      "namespace": "cruddur",
+      "services": [
+        {
+          "portName": "frontend-react-js",
+          "discoveryName": "frontend-react-js",
+          "clientAliases": [{"port": 3000}]
+        }
+      ]
+    }
+  }
+```
+
+before lunch the task definition for the front end
+
+```
+aws ecs register-task-definition --cli-input-json file://aws/task-definitions/frontend-react-js.json
+
+```
+
+create the services for the frontend-react-js using the following command
+
+```
+aws ecs create-service --cli-input-json file://aws/json/service-frontend-react-js.json
+
+```
 
 
 
