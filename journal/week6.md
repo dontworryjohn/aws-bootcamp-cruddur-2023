@@ -956,11 +956,18 @@ insert this part for the frontend-react-js-json under task-definitions
         },
 ```
 
+<<<<<<< HEAD
 In our case the problem is the communication between the ALB and the target group. 
 In this case you need to able the security group for the port 3000
 
 Implementation of the SSL and Route 53
 
+=======
+Problem with container:
+-Verify if the conatiner is healthy. if it is healthy, the problem could be another thing. check the security group of alb that is allowed the connection with the alb of the target group. In our case the problem is the target group has no SG for the port 3000.
+
+Implementation of the SSL and configuration of Domain from Route53
+>>>>>>> c2e8a02 (SSL and Route53)
 
 
 
