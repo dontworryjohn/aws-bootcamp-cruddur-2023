@@ -42,7 +42,13 @@ Application Side- Security Best Practice
 
 # Cost
 
-Fargate
+This Week Cirag did not post any video about cost so I did some research.
+
+Fargate: There is no free tier for this service. The cost is payg and no upfront cost. Please refer the aws calculator for [fargate](https://calculator.aws/#/addService/Fargate)
+
+ELB: If it is your new account, AWS offers a free tier for 12 months for this service. you receive a 750 hours per month shared between classic load balancer and application load balancer. 15 Gb of data processing for classic load balancer and 15 LCU for application Load balancer
+
+AWS Certificate Manager: Public SSL/TLS certificates provisioned through AWS Certificate Manager are free
 
 # Implementation
 
@@ -949,6 +955,14 @@ insert this part for the frontend-react-js-json under task-definitions
           "retries": 3
         },
 ```
+
+In our case the problem is the communication between the ALB and the target group. 
+In this case you need to able the security group for the port 3000
+
+Implementation of the SSL and Route 53
+
+
+
 
 
 
