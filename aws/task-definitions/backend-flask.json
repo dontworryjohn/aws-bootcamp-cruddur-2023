@@ -44,8 +44,8 @@
           {"name": "OTEL_EXPORTER_OTLP_ENDPOINT", "value": "https://api.honeycomb.io"},
           {"name": "AWS_COGNITO_USER_POOL_ID", "value": "eu-west-2_rNUe2sEXo"},
           {"name": "AWS_COGNITO_USER_POOL_CLIENT_ID", "value": "3870k3kbsr6tbkj6bltab924bp"},
-          {"name": "FRONTEND_URL", "value": "*"},
-          {"name": "BACKEND_URL", "value": "*"},
+          {"name": "FRONTEND_URL", "value": "https://johnbuen.co.uk"},
+          {"name": "BACKEND_URL", "value": "https://api.johnbuen.co.uk"},
           {"name": "AWS_DEFAULT_REGION", "value": "eu-west-2"}
         ],
         "secrets": [
