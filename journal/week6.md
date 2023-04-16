@@ -1027,8 +1027,7 @@ docker build \
 .
 ```
 
-
-
+Note: make sure to open the SG of the container backend flask from the SG of the RDS for the port 5432 otherwise you wont be able to use the test script to check the RDS from the container backendflask in ECS
 
 
 
