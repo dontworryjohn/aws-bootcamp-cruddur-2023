@@ -742,7 +742,7 @@ docker build \
 
 ```
 
-for the production put the url of the load balancer
+To point to the url of the load balancer
 ```
 docker build \
 --build-arg REACT_APP_BACKEND_URL="http://cruddur-alb-1044769460.eu-west-2.elb.amazonaws.com:4567" \
@@ -999,12 +999,33 @@ In this way your domain will talk with the alb dns.
 
 the configuration will be the following
 
-[New listener](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/load%20balancer.png)
+![New listener](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/load%20balancer.png)
 
 and set the rules for the https as following
 
-[rule https](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/ruleshttps443.png)
+![rule https](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/ruleshttps443.png)
 
+
+from the task definition of the backend, edit the following line:
+```sh
+   {"name": "FRONTEND_URL", "value": "https://example.co.uk"},
+   {"name": "BACKEND_URL", "value": "https://api.example.co.uk"},
+```
+
+once you done, relunch the task definition and recreate the image of the frontend and push it. 
+
+
+```sh
+docker build \
+--build-arg REACT_APP_BACKEND_URL="https://example.com" \
+--build-arg REACT_APP_AWS_PROJECT_REGION="$AWS_DEFAULT_REGION" \
+--build-arg REACT_APP_AWS_COGNITO_REGION="$AWS_DEFAULT_REGION" \
+--build-arg REACT_APP_AWS_USER_POOLS_ID="$AWS_USER_POOLS_ID" \
+--build-arg REACT_APP_CLIENT_ID="$APP_CLIENT_ID" \
+-t frontend-react-js \
+-f Dockerfile.prod \
+.
+```
 
 
 
