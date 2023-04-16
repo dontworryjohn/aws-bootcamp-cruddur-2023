@@ -999,6 +999,14 @@ In this way your domain will talk with the alb dns.
 
 the configuration will be the following
 
+[New listener](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/load%20balancer.png)
+
+and set the rules for the https as following
+
+[rule https](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/ruleshttps443.png)
+
+
+
 
 
 
