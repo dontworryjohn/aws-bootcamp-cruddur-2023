@@ -48,7 +48,9 @@ Fargate: There is no free tier for this service. The cost is payg and no upfront
 
 ELB: If it is your new account, AWS offers a free tier for 12 months for this service. you receive a 750 hours per month shared between classic load balancer and application load balancer. 15 Gb of data processing for classic load balancer and 15 LCU for application Load balancer
 
-AWS Certificate Manager: Public SSL/TLS certificates provisioned through AWS Certificate Manager are free
+AWS Certificate Manager: Public SSL/TLS certificates provisioned through AWS Certificate Manager are free.
+
+
 
 # Implementation
 
@@ -983,8 +985,19 @@ example.com
 As a validation method, select "DNS validation - raccomended" and as key algorithm select RSA 2048.
 Once you have created the certificate request, go to the certificate request and click on create records in route 53.
 
-Note: it takes about a few min to have the status changed from "pending validation" to "issued"
+Note: it takes about a few min to have the status changed from "pending validation" to "issued". but sometimes it could take more than that
 
+Once you have the certification, is time to do some modification on route53 alb and task definition and eventually then repush the images for the backend and frontend
+
+from the hosted zone created before, create 2 new records.
+
+on for example the domain.co.uk and select as a record type "CNAME - routes traffic to another domain name and to some aws resource", toggle on alias and select the endpoint and region. for the routing policy select "simple routing"
+
+do the same thing for the api.domain.co.uk with the same configuration above.
+
+In this way your domain will talk with the alb dns.
+
+the configuration will be the following
 
 
 
