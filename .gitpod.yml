@@ -35,7 +35,7 @@ tasks:
       cd backend-flask
   - name: ECR Login
     before: |
-      source "AWS-BOOTCAMP-CRUDDUR-2023/bin/backend/ecrlogin"
+      source "/workspace/aws-bootcamp-cruddur-2023/bin/backend/ecrlogin"
 
 vscode:
   extensions:
