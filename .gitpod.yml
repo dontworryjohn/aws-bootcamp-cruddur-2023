@@ -33,6 +33,9 @@ tasks:
       sudo dpkg -i session-manager-plugin.deb
       session-manager-plugin
       cd backend-flask
+  - name: ECR Login
+    before: |
+      source "$THEIA_WORKSPACE_ROOT/bin/backend/ecrlogin"
 
 vscode:
   extensions:
