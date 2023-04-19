@@ -35,7 +35,7 @@ tasks:
       cd backend-flask
   - name: ECR Login
     before: |
-      source "$THEIA_WORKSPACE_ROOT/bin/backend/ecrlogin"
+      source "AWS-BOOTCAMP-CRUDDUR-2023/bin/backend/ecrlogin"
 
 vscode:
   extensions:
