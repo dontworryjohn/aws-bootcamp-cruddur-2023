@@ -23,8 +23,5 @@ session-manager-plugin
 cd /workspaces/aws-bootcamp-cruddur-2023/backend-flask
 
 #ECR Login
-CYAN='\033[1;36m'
-NO_COLOR='\033[0m'
-LABEL="Logged"
-aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com"
-printf "${CYAN}==== ${LABEL}${NO_COLOR}\n"
+source  "/workspaces/aws-bootcamp-cruddur-2023/bin/backend/ecrlogin"
+
