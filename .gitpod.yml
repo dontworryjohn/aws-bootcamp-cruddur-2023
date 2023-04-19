@@ -8,6 +8,7 @@ tasks:
       unzip -o awscliv2.zip
       sudo ./aws/install
       cd $THEIA_WORKSPACE_ROOT
+      source "$THEIA_WORKSPACE_ROOT/bin/backend/ecrlogin"
   - name: postgres
     before: |
       curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
@@ -33,9 +34,7 @@ tasks:
       sudo dpkg -i session-manager-plugin.deb
       session-manager-plugin
       cd backend-flask
-  - name: ECR Login
-    command: |
-      source "$THEIA_WORKSPACE_ROOT/bin/backend/ecrlogin"
+      
 
 vscode:
   extensions:
