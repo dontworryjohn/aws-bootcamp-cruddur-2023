@@ -34,8 +34,8 @@ tasks:
       session-manager-plugin
       cd backend-flask
   - name: ECR Login
-    before: |
-      source "/workspace/aws-bootcamp-cruddur-2023/bin/backend/ecrlogin"
+    command: |
+      source "$THEIA_WORKSPACE_ROOT/bin/backend/ecrlogin"
 
 vscode:
   extensions:
