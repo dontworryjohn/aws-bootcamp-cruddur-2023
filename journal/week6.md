@@ -1027,10 +1027,47 @@ docker build \
 .
 ```
 
-Note: make sure to open the SG of the container backend flask from the SG of the RDS for the port 5432 otherwise you wont be able to use the test script to check the RDS from the container backendflask in ECS
+Note: make sure to open the SG of the container backend flask from the SG of the RDS for the port 5432 otherwise you wont be able to use the test script to check the RDS from the container backendflask in ECS.
+
+# Securing Backend flask
+
+In this part of implementation, we need to create 2 docker file. 
+
+one called Dockerfile with the following code which has the debug on
+```sh
+FROM 238967891447.dkr.ecr.eu-west-2.amazonaws.com/cruddur-python:3.10-slim-buster
+
+WORKDIR /backend-flask
+
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+
+COPY . .
 
 
 
+EXPOSE ${PORT}
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=4567", "--debug"]
+```
+
+the other file called Dockerfile.prod with the following code which does not have the debug, the debugger and the reload active.
+
+```sh
+FROM 238967891447.dkr.ecr.eu-west-2.amazonaws.com/cruddur-python:3.10-slim-buster
+
+WORKDIR /backend-flask
+
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+
+COPY . .
+
+
+EXPOSE ${PORT}
+
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=4567", "--no-debug", "--no-debugger", "--no-reload"]
+
+```
 
 
 
