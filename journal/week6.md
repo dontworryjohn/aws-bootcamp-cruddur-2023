@@ -1075,10 +1075,21 @@ Make sure to test the docker production changes before pushing the image to the 
 In our case, we run the docker compose up using the dockerfile rather than recall the build and run process.
 
 Below are the scripts for the building for the backend and frontend
+
 ```
 #! /usr/bin/bash
 
-docker build -f Dockerfile.prod -t backend-flask-prod .
+ABS_PATH=$(readlink -f "$0")
+BUILD_PATH=$(dirname $ABS_PATH)
+DOCKER_PATH=$(dirname $BUILD_PATH)
+BIN_PATH=$(dirname $DOCKER_PATH)
+PROJECT_PATH=$(dirname $BIN_PATH)
+BACKEND_FLASK_PATH="$PROJECT_PATH/backend-flask"
+
+docker build \
+-f "$BACKEND_FLASK_PATH/Dockerfile.prod" \
+-t backend-flask-prod \
+"$BACKEND_FLASK_PATH/."
 ```
 Note that the REACT_APP_BACKEND_URL should point to your domain instead to your gitpod/codespace
 ```
@@ -1119,7 +1130,34 @@ docker run --rm \
 -it backend-flask-prod
 ```
 
-We develop also a script that make it easy the deployment of the ecs backend-flask.
+
+another implementation that we did is to push the image to ecr. create the script under /backend-flask/bin/docker/push/backend-flask-prod
+
+```
+#! /usr/bin/bash
+
+
+ECR_BACKEND_FLASK_URL="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/backend-flask"
+echo $ECR_BACKEND_FLASK_URL
+
+docker tag backend-flask-prod:latest $ECR_BACKEND_FLASK_URL:latest
+docker push $ECR_BACKEND_FLASK_URL:latest
+
+```
+
+same for the frontend under ./bin/docker/push/frontend-react-js-prod
+```sh
+#! /usr/bin/bash
+
+
+ECR_FRONTEND_REACT_URL="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/frontend-react-js"
+echo $ECR_FRONTEND_REACT_URL
+
+docker tag frontend-react-js-prod:latest $ECR_FRONTEND_REACT_URL:latest
+docker push $ECR_FRONTEND_REACT_URL:latest
+```
+
+We develop also a script that makes it easy the deployment of the ecs backend-flask.
 This file is under /bin/ecs/force-deploy-backend-flask
 
 ```
@@ -1150,6 +1188,11 @@ aws ecs update-service \
 #--query 'services[0].deployments' \
 #--output table
 ```
+
+
+
+
+
 
 
 
