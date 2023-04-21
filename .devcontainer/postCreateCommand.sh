@@ -14,7 +14,7 @@ sudo apt update
 sudo apt install -y postgresql-client-13 libpq-dev 
 
 #set ip for security group to connect with the gitpod/codespace
-source  "/workspaces/aws-bootcamp-cruddur-2023/backend-flask/bin/rds/update-sg-rule"
+source  "/workspaces/aws-bootcamp-cruddur-2023/bin/rds/update-sg-rule"
 
 #Fargate session
 curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
