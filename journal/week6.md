@@ -1031,6 +1031,8 @@ Note: make sure to open the SG of the container backend flask from the SG of the
 
 # Securing Backend flask
 
+
+
 In this part of implementation, we need to create 2 docker file. 
 
 one called Dockerfile with the following code which has the debug on
@@ -1068,6 +1070,59 @@ EXPOSE ${PORT}
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=4567", "--no-debug", "--no-debugger", "--no-reload"]
 
 ```
+
+Make sure to test the docker production changes before pushing the image to the ECR repo.
+In our case, we run the docker compose up using the dockerfile rather than recall the build and run process.
+
+Below are the scripts for the building for the backend and frontend
+```
+#! /usr/bin/bash
+
+docker build -f Dockerfile.prod -t backend-flask-prod .
+```
+Note that the REACT_APP_BACKEND_URL should point to your domain instead to your gitpod/codespace
+```
+#! /usr/bin/bash
+
+docker build \
+--build-arg REACT_APP_BACKEND_URL="https://4567-$GITPOD_WORKSPACE_ID.$GITPOD_WORKSPACE_CLUSTER_HOST" \
+--build-arg REACT_APP_AWS_PROJECT_REGION="$AWS_DEFAULT_REGION" \
+--build-arg REACT_APP_AWS_COGNITO_REGION="$AWS_DEFAULT_REGION" \
+--build-arg REACT_APP_AWS_USER_POOLS_ID="$AWS_USER_POOLS_ID" \
+--build-arg REACT_APP_CLIENT_ID="$APP_CLIENT_ID" \
+-t frontend-react-js \
+-f Dockerfile.prod \
+.
+```
+
+and the script to run the image for the backend
+```
+#! /usr/bin/bash
+
+docker run --rm \
+-p 4567:4567 \
+--env AWS_ENDPOINT_URL="http://dynamodb-local:8000" \
+--env CONNECTION_URL="postgresql://postgres:password@db:5432/cruddur" \
+--env FRONTEND_URL="https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}" \
+--env BACKEND_URL="https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}" \
+--env OTEL_SERVICE_NAME='backend-flask' \
+--env OTEL_EXPORTER_OTLP_ENDPOINT="https://api.honeycomb.io" \
+--env OTEL_EXPORTER_OTLP_HEADERS="x-honeycomb-team=${HONEYCOMB_API_KEY}" \
+--env AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION}" \
+--env AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}" \
+--env AWS_XRAY_URL="*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*" \
+--env AWS_XRAY_DAEMON_ADDRESS="xray-daemon:2000" \
+--env AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}" \
+--env ROLLBAR_ACCESS_TOKEN="${ROLLBAR_ACCESS_TOKEN}" \
+--env AWS_COGNITO_USER_POOL_ID="${AWS_USER_POOLS_ID}" \
+--env AWS_COGNITO_USER_POOL_CLIENT_ID="${APP_CLIENT_ID}" \
+-it backend-flask-prod
+```
+
+
+
+
+
 
 
 
