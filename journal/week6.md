@@ -1189,8 +1189,26 @@ aws ecs update-service \
 #--output table
 ```
 
+the next implementation is to create the absolute path using the following code for some code of the scripts under the /backend-flask/bin
+```
+ABS_PATH=$(readlink -f "$0")
+BUILD_PATH=$(dirname $ABS_PATH)
+DOCKER_PATH=$(dirname $BUILD_PATH)
+BIN_PATH=$(dirname $DOCKER_PATH)
+PROJECT_PATH=$(dirname $BIN_PATH)
+echo $PROJECT_PATH
 
+```
+the files affected are
+/db/schema-load
+/db/seed
+/db/setup
+/docker/build/backend-flask-prod
+/docker/build/frontend-react-js-prod
 
+The location of the ./backend-flask/bin has been moved to the previous folder apart for the ./flask/health-check
+
+For any changes of the backend or frontend, do the build tag and push and force the deployment.
 
 
 
