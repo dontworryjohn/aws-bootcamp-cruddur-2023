@@ -11,7 +11,7 @@ BIN_PATH=$(dirname $DB_PATH))
 PROJECT_PATH=$(dirname $BIN_PATH)
 BACKEND_FLASK_PATH="$PROJECT_PATH/backend-flask"
 
-schema_path="$BACKEND_FLASK_PATH/db/seed.sql"
+seed_path="$BACKEND_FLASK_PATH/bin/db/seed.sql"
 
 echo $seed_path
 
