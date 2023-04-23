@@ -11,4 +11,4 @@ NO_COLOR='\033[0m'
 LABEL="updated the frontend container service to 1"
 printf "${CYAN}>> ${LABEL}${NO_COLOR}\n"
 
-aws ecs update-service --cluster cruddur --service frontend-react-js --desired-count 1
+aws ecs update-service --cluster cruddur --service frontend-react-js --desired-count 1 --force
