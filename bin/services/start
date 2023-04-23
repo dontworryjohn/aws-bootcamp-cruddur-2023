@@ -14,5 +14,5 @@ source "$bin_path/services/rds-start"
 
 CYAN='\033[1;36m'
 NO_COLOR='\033[0m'
-LABEL="RDS and Fargate are now upping and running"
+LABEL="RDS and Fargate are now starting and soon running"
 printf "${CYAN}== ${LABEL}${NO_COLOR}\n"

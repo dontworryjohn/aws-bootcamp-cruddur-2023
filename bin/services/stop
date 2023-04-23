@@ -9,7 +9,7 @@ while true; do
     # turn off ECS and RDS services
     CYAN='\033[1;36m'
     NO_COLOR='\033[0m'
-    LABEL="Start Services"
+    LABEL="Stop Services"
     printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
 
     ABS_PATH=$(readlink -f "$0")
@@ -18,6 +18,11 @@ while true; do
 
     source "$bin_path/services/fargate-stop"
     source "$bin_path/services/rds-stop"
+
+    CYAN='\033[1;36m'
+    NO_COLOR='\033[0m'
+    LABEL="RDS and Fargate are now shutting down"
+    printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
     break
   fi
   sleep 1800 # wait for 30 minutes
