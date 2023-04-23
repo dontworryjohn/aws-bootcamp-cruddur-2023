@@ -1,11 +1,11 @@
 #!/bin/bash
 
-while true; do
-  status=$(gitpod info | grep "Status" | awk '{print $2}')
-  if [ "$status" == "Running" ]; then
-    echo "Gitpod workspace is active"
-  else
-    echo "Gitpod workspace is inactive"
+#while true; do
+ # status=$(gitpod info | grep "Status" | awk '{print $2}')
+  #if [ "$status" == "Running" ]; then
+    #echo "Gitpod workspace is active"
+  #else
+    #echo "Gitpod workspace is inactive"
     # turn off ECS and RDS services
     CYAN='\033[1;36m'
     NO_COLOR='\033[0m'
@@ -21,9 +21,9 @@ while true; do
 
     CYAN='\033[1;36m'
     NO_COLOR='\033[0m'
-    LABEL="RDS and Fargate will shut in 30 min of inactivity"
+    LABEL="RDS and Fargate will shut down"
     printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
-    break
-  fi
-  sleep 1800 # wait for 30 minutes
-done
+    #break
+  #fi
+  #sleep 1800 # wait for 30 minutes
+#done
