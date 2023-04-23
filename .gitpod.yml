@@ -19,7 +19,7 @@ tasks:
       export GITPOD_IP=$(curl ifconfig.me)
       source  "$THEIA_WORKSPACE_ROOT/bin/rds/update-sg-rule"
       source  "$THEIA_WORKSPACE_ROOT/bin/services/start"
-      source  "$THEIA_WORKSPACE_ROOT/bin/services/stop"
+      
   - name: react-js
     command: |
       cd frontend-react-js
