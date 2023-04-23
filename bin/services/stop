@@ -1,0 +1,24 @@
+#!/bin/bash
+
+while true; do
+  status=$(gitpod info | grep "Status" | awk '{print $2}')
+  if [ "$status" == "Running" ]; then
+    echo "Gitpod workspace is active"
+  else
+    echo "Gitpod workspace is inactive"
+    # turn off ECS and RDS services
+    CYAN='\033[1;36m'
+    NO_COLOR='\033[0m'
+    LABEL="Start Services"
+    printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
+
+    ABS_PATH=$(readlink -f "$0")
+    bin_path=$(dirname $ABS_PATH)
+    bin_path="$(realpath .)/bin"
+
+    source "$bin_path/services/fargate-stop"
+    source "$bin_path/services/rds-stop"
+    break
+  fi
+  sleep 1800 # wait for 30 minutes
+done

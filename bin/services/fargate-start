@@ -1,0 +1,14 @@
+#! /usr/bin/bash
+
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="updated the backend flask container service to 1!"
+printf "${CYAN}>> ${LABEL}${NO_COLOR}\n"
+aws ecs update-service --cluster cruddur --service backend-flask --desired-count 1
+
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="updated the frontend container service to 1"
+printf "${CYAN}>> ${LABEL}${NO_COLOR}\n"
+
+aws ecs update-service --cluster cruddur --service frontend-react-js --desired-count 1
