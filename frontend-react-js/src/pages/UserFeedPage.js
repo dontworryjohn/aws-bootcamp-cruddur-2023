@@ -6,6 +6,7 @@ import DesktopNavigation  from '../components/DesktopNavigation';
 import DesktopSidebar     from '../components/DesktopSidebar';
 import ActivityFeed from '../components/ActivityFeed';
 import ActivityForm from '../components/ActivityForm';
+import { checkAuth } from '../lib/CheckAuth';
 
 // [TODO] Authenication
 import Cookies from 'js-cookie'
