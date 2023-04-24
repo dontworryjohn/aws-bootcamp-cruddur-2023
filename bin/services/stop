@@ -7,22 +7,24 @@
   #else
     #echo "Gitpod workspace is inactive"
     # turn off ECS and RDS services
-    CYAN='\033[1;36m'
-    NO_COLOR='\033[0m'
-    LABEL="Stop Services"
-    printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="updated the backend flask container and frontend container service to 0!"
+printf "${CYAN}>> ${LABEL}${NO_COLOR}\n"
+aws ecs update-service --cluster cruddur --service backend-flask --desired-count 0 & \
 
-    ABS_PATH=$(readlink -f "$0")
-    bin_path=$(dirname $ABS_PATH)
-    bin_path="$(realpath .)/bin"
+aws ecs update-service --cluster cruddur --service frontend-react-js --desired-count 0 & \
 
-    source "$bin_path/services/fargate-stop"
-    source "$bin_path/services/rds-stop"
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="RDS Start!"
+printf "${CYAN}>> ${LABEL}${NO_COLOR}\n"
 
-    CYAN='\033[1;36m'
-    NO_COLOR='\033[0m'
-    LABEL="RDS and Fargate will shut down"
-    printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
+aws rds stop-db-instance --db-instance-identifier cruddur-db-instance & \
+
+LABEL="Fargate and RDS will be stopping soon!"
+printf "${CYAN}>> ${LABEL}${NO_COLOR}\n"
+
     #break
   #fi
   #sleep 1800 # wait for 30 minutes
