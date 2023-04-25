@@ -1210,6 +1210,67 @@ The location of the ./backend-flask/bin has been moved to the previous folder ap
 
 For any changes of the backend or frontend, do the build tag and push and force the deployment.
 
+# Fixing the Check Auth Token
+As you may already know, at the moment the token wont update.
+To do this replace the checkAuth.js with the following code
+
+```
+import { Auth } from 'aws-amplify';
+import { resolvePath } from 'react-router-dom';
+
+export async function getAccessToken(){
+  Auth.currentSession()
+  .then((cognito_user_session) => {
+    const access_token = cognito_user_session.accessToken.jwtToken
+    localStorage.setItem("access_token", access_token)
+  })
+  .catch((err) => console.log(err));
+}
+
+export async function checkAuth(setUser){
+  Auth.currentAuthenticatedUser({
+    // Optional, By default is false. 
+    // If set to true, this call will send a 
+    // request to Cognito to get the latest user data
+    bypassCache: false 
+  })
+  .then((cognito_user) => {
+    setUser({
+      cognito_user_uuid: cognito_user.attributes.sub,
+      display_name: cognito_user.attributes.name,
+      handle: cognito_user.attributes.preferred_username
+    })
+    return Auth.currentSession()
+  }).then((cognito_user_session) => {
+      localStorage.setItem("access_token", cognito_user_session.accessToken.jwtToken)
+  })
+  .catch((err) => console.log(err));
+};
+```
+
+Replace and add the following code for the following file
+frontend-react-js/src/components/MessageForm.js  (the first line of code)
+frontend-react-js/src/pages/HomeFeedPage.js   (the first line of code)
+frontend-react-js/src/pages/MessageGroupNewPage.js   (the first line of code)
+frontend-react-js/src/pages/MessageGroupPage.js   (the first line of code)
+frontend-react-js/src/components/MessageForm.js   (the second line of code)
+
+```
+import {checkAuth, getAccessToken} from '../lib/CheckAuth';
+
+import {getAccessToken} from '../lib/CheckAuth';
+```
+
+
+```
+  await getAccessToken()
+  const access_token = localStorage.getItem("access_token")
+```
+
+
+```
+Authorization': `Bearer ${access_token}`
+```
 
 
 
