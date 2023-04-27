@@ -299,7 +299,6 @@ via console attach the following policy:
 make sure to attach to the CruddurServiceExecutionRole the CloudWatchFullAccess
 
 
-****************** to start here
 now we create the taskrole
 
 ```
@@ -1272,13 +1271,232 @@ import {getAccessToken} from '../lib/CheckAuth';
 Authorization': `Bearer ${access_token}`
 ```
 
+# Implementation of Xray on Ecs and Container Insights
+
+on our task definition backend and frontend, add the following part for the xray
+```
+{
+      "name": "xray",
+      "image": "public.ecr.aws/xray/aws-xray-daemon" ,
+      "essential": true,
+      "user": "1337",
+      "portMappings": [
+        {
+          "name": "xray",
+          "containerPort": 2000,
+          "protocol": "udp"
+        }
+      ]
+    },
+```
+
+create the script to create the new task definition
+on the folder aws-bootcamp-cruddur-2023/bin/backend create a file called register.
+```sh
+#! /usr/bin/bash
+
+ABS_PATH=$(readlink -f "$0")
+FRONTEND_PATH=$(dirname $ABS_PATH)
+BIN_PATH=$(dirname $FRONTEND_PATH)
+PROJECT_PATH=$(dirname $BIN_PATH)
+TASK_DEF_PATH="$PROJECT_PATH/aws/task-definitions/backend-flask.json"
+
+echo $TASK_DEF_PATH
+
+aws ecs register-task-definition \
+--cli-input-json "file://$TASK_DEF_PATH"
+```
+
+do the same thing for the frontend
+on the folder aws-bootcamp-cruddur-2023/bin/frontend create a file called register.
+
+```sh
+#! /usr/bin/bash
+
+ABS_PATH=$(readlink -f "$0")
+BACKEND_PATH=$(dirname $ABS_PATH)
+BIN_PATH=$(dirname $BACKEND_PATH)
+PROJECT_PATH=$(dirname $BIN_PATH)
+TASK_DEF_PATH="$PROJECT_PATH/aws/task-definitions/frontend-react-js.json"
+
+echo $TASK_DEF_PATH
+
+aws ecs register-task-definition \
+--cli-input-json "file://$TASK_DEF_PATH"
+```
+
+on the folder aws-bootcamp-cruddur-2023/bin/backend create a file called run.
+```
+#! /usr/bin/bash
+
+ABS_PATH=$(readlink -f "$0")
+BACKEND_PATH=$(dirname $ABS_PATH)
+BIN_PATH=$(dirname $BACKEND_PATH)
+PROJECT_PATH=$(dirname $BIN_PATH)
+ENVFILE_PATH="$PROJECT_PATH/backend-flask-gitpod.env.erb"
+
+docker run --rm \
+--env-file $ENVFILE_PATH \
+--network cruddur-net \
+--publish 4567:4567 \
+-it backend-flask-prod
+
+```
+
+create a file backend-flask-gitpod.env.erb and frontend-react-js-gitpod.env.ebr on the aws-bootcamp-crudduer2023
+
+```
+AWS_ENDPOINT_URL="http://dynamodb-local:8000"
+CONNECTION_URL="postgresql://postgres:password@db:5432/cruddur"
+FRONTEND_URL="https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+BACKEND_URL="https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+OTEL_SERVICE_NAME='backend-flask'
+OTEL_EXPORTER_OTLP_ENDPOINT="https://api.honeycomb.io"
+OTEL_EXPORTER_OTLP_HEADERS="x-honeycomb-team=${HONEYCOMB_API_KEY}"
+AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION}" \
+AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}" \
+AWS_XRAY_URL="*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*"
+AWS_XRAY_DAEMON_ADDRESS="xray-daemon:2000"
+AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
+ROLLBAR_ACCESS_TOKEN="${ROLLBAR_ACCESS_TOKEN}"
+AWS_COGNITO_USER_POOL_ID="${AWS_USER_POOLS_ID}"
+AWS_COGNITO_USER_POOL_CLIENT_ID="${APP_CLIENT_ID}"
+```
+```
+REACT_APP_BACKEND_URL="https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+REACT_APP_AWS_PROJECT_REGION="${AWS_DEFAULT_REGION}"
+#REACT_APP_AWS_COGNITO_IDENTITY_POOL_ID=""
+REACT_APP_AWS_COGNITO_REGION="${AWS_DEFAULT_REGION}"
+REACT_APP_AWS_USER_POOLS_ID="${AWS_USER_POOLS_ID}"
+REACT_APP_CLIENT_ID="${APP_CLIENT_ID}"``
+
+```
+
+change the code of the docker-compose-gitpod.yml of the backend
+
+```
+environment:
+      AWS_ENDPOINT_URL: "http://dynamodb-local:8000"
+      #CONNECTION_URL: "${PROD_CONNECTION_URL}"
+      CONNECTION_URL: "postgresql://postgres:password@db:5432/cruddur"
+      #FRONTEND_URL: "https://${CODESPACE_NAME}-3000.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
+      #BACKEND_URL: "https://${CODESPACE_NAME}-4567.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
+      FRONTEND_URL: "https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+      BACKEND_URL: "https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+      OTEL_SERVICE_NAME: 'backend-flask'
+      OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io"
+      OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=${HONEYCOMB_API_KEY}"
+      AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_XRAY_URL: "*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*"
+      #AWS_XRAY_URL: "*${CODESPACE_NAME}-4567.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}*"
+      AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      ROLLBAR_ACCESS_TOKEN: "${ROLLBAR_ACCESS_TOKEN}"
+      #env var for jwttoken
+      AWS_COGNITO_USER_POOL_ID: "${AWS_USER_POOLS_ID}"
+      AWS_COGNITO_USER_POOL_CLIENT_ID: "${APP_CLIENT_ID}"
+```
+
+with the following code
+```
+  env_file:
+      - backend-flask.env
+```
+
+same thing for the frontend
+
+```
+environment:
+      REACT_APP_BACKEND_URL: "https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+      #REACT_APP_BACKEND_URL: "https://${CODESPACE_NAME}-4567.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
+      REACT_APP_AWS_PROJECT_REGION: "${AWS_DEFAULT_REGION}"
+      #REACT_APP_AWS_COGNITO_IDENTITY_POOL_ID: ""
+      REACT_APP_AWS_COGNITO_REGION: "${AWS_DEFAULT_REGION}"
+      REACT_APP_AWS_USER_POOLS_ID: "${AWS_USER_POOLS_ID}"
+      REACT_APP_CLIENT_ID: "${APP_CLIENT_ID}"
+```
+
+with the following code
+
+```
+  env_file:
+      - frontend-react-js.env
+```
+
+Since the file env does not pass the value of the env var, there is additional implementation that needs to be done.
+
+create a file generate-env under the aws-bootcamp-cruddur-2023/bin/backend
+
+and paste the following code
+```
+#! /usr/bin/env ruby
+
+require 'erb'
+
+template = File.read 'erb/backend-flask-gitpod.env.erb'
+content = ERB.new(template).result(binding)
+filename = "backend-flask.env"
+File.write(filename, content)
+
+```
+
+create a file called backend-flask-gitpod.env.erb 
+
+```
+AWS_ENDPOINT_URL="http://dynamodb-local:8000"
+CONNECTION_URL="postgresql://postgres:password@db:5432/cruddur"
+FRONTEND_URL="https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+BACKEND_URL="https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+OTEL_SERVICE_NAME='backend-flask'
+OTEL_EXPORTER_OTLP_ENDPOINT="https://api.honeycomb.io"
+OTEL_EXPORTER_OTLP_HEADERS="x-honeycomb-team=${HONEYCOMB_API_KEY}"
+AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION}" \
+AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}" \
+AWS_XRAY_URL="*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*"
+AWS_XRAY_DAEMON_ADDRESS="xray-daemon:2000"
+AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
+ROLLBAR_ACCESS_TOKEN="${ROLLBAR_ACCESS_TOKEN}"
+AWS_COGNITO_USER_POOL_ID="${AWS_USER_POOLS_ID}"
+AWS_COGNITO_USER_POOL_CLIENT_ID="${APP_CLIENT_ID}"
+```
+
+```
+AWS_ENDPOINT_URL=http://dynamodb-local:8000
+CONNECTION_URL=postgresql://postgres:password@db:5432/cruddur
+FRONTEND_URL=https://3000-<%= ENV['GITPOD_WORKSPACE_ID'] %>.<%= ENV['GITPOD_WORKSPACE_CLUSTER_HOST'] %>
+BACKEND_URL=https://4567-<%= ENV['GITPOD_WORKSPACE_ID'] %>.<%= ENV['GITPOD_WORKSPACE_CLUSTER_HOST'] %>
+OTEL_SERVICE_NAME=backend-flask
+OTEL_EXPORTER_OTLP_ENDPOINT=https://api.honeycomb.io
+OTEL_EXPORTER_OTLP_HEADERS=x-honeycomb-team=<%= ENV['HONEYCOMB_API_KEY'] %>
+AWS_XRAY_URL=*4567-<%= ENV['GITPOD_WORKSPACE_ID'] %>.<%= ENV['GITPOD_WORKSPACE_CLUSTER_HOST'] %>*
+AWS_XRAY_DAEMON_ADDRESS=xray-daemon:2000
+AWS_DEFAULT_REGION=<%= ENV['AWS_DEFAULT_REGION'] %>
+AWS_ACCESS_KEY_ID=<%= ENV['AWS_ACCESS_KEY_ID'] %>
+AWS_SECRET_ACCESS_KEY=<%= ENV['AWS_SECRET_ACCESS_KEY'] %>
+ROLLBAR_ACCESS_TOKEN=<%= ENV['ROLLBAR_ACCESS_TOKEN'] %>
+AWS_COGNITO_USER_POOL_ID=<%= ENV['AWS_COGNITO_USER_POOL_ID'] %>
+AWS_COGNITO_USER_POOL_CLIENT_ID=<%= ENV['APP_CLIENT_ID'] %>
+
+```
 
 
+In this part of the implementation, we link all the containers to connect with a specific network.
+change the configuration of your docker-compose.yml
+```
+networks: 
+  internal-network:
+    driver: bridge
+    name: cruddur
+```
+with the following code
 
-
-
-
-
+```
+networks: 
+  default:
+    driver: bridge
+    name: cruddur-net
+```
 
 
 
