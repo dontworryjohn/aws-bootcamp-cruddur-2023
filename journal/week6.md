@@ -1333,7 +1333,7 @@ ABS_PATH=$(readlink -f "$0")
 BACKEND_PATH=$(dirname $ABS_PATH)
 BIN_PATH=$(dirname $BACKEND_PATH)
 PROJECT_PATH=$(dirname $BIN_PATH)
-ENVFILE_PATH="$PROJECT_PATH/backend-flask-gitpod.env.erb"
+ENVFILE_PATH="$PROJECT_PATH/backend-flask.env"
 
 docker run --rm \
 --env-file $ENVFILE_PATH \
@@ -1342,33 +1342,24 @@ docker run --rm \
 -it backend-flask-prod
 
 ```
+NOTE:
+add the  /bin/bash after the -it backend-flask-prod if you want to shell inside the contianer.
 
-create a file backend-flask-gitpod.env.erb and frontend-react-js-gitpod.env.ebr on the aws-bootcamp-crudduer2023
+on the folder aws-bootcamp-cruddur-2023/bin/frontend create a file called run.
+```
+#! /usr/bin/bash
 
-```
-AWS_ENDPOINT_URL="http://dynamodb-local:8000"
-CONNECTION_URL="postgresql://postgres:password@db:5432/cruddur"
-FRONTEND_URL="https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
-BACKEND_URL="https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
-OTEL_SERVICE_NAME='backend-flask'
-OTEL_EXPORTER_OTLP_ENDPOINT="https://api.honeycomb.io"
-OTEL_EXPORTER_OTLP_HEADERS="x-honeycomb-team=${HONEYCOMB_API_KEY}"
-AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION}" \
-AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}" \
-AWS_XRAY_URL="*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*"
-AWS_XRAY_DAEMON_ADDRESS="xray-daemon:2000"
-AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
-ROLLBAR_ACCESS_TOKEN="${ROLLBAR_ACCESS_TOKEN}"
-AWS_COGNITO_USER_POOL_ID="${AWS_USER_POOLS_ID}"
-AWS_COGNITO_USER_POOL_CLIENT_ID="${APP_CLIENT_ID}"
-```
-```
-REACT_APP_BACKEND_URL="https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
-REACT_APP_AWS_PROJECT_REGION="${AWS_DEFAULT_REGION}"
-#REACT_APP_AWS_COGNITO_IDENTITY_POOL_ID=""
-REACT_APP_AWS_COGNITO_REGION="${AWS_DEFAULT_REGION}"
-REACT_APP_AWS_USER_POOLS_ID="${AWS_USER_POOLS_ID}"
-REACT_APP_CLIENT_ID="${APP_CLIENT_ID}"``
+ABS_PATH=$(readlink -f "$0")
+FRONTEND_PATH=$(dirname $ABS_PATH)
+BIN_PATH=$(dirname $FRONTEND_PATH)
+PROJECT_PATH=$(dirname $BIN_PATH)
+ENVFILE_PATH="$PROJECT_PATH/frontend-react-js.env"
+
+docker run --rm \
+--env-file $ENVFILE_PATH \
+--network cruddur-net \
+--publish 3000:3000 \
+-it frontend-react-js-prod
 
 ```
 
@@ -1426,7 +1417,7 @@ with the following code
 
 Since the file env does not pass the value of the env var, there is additional implementation that needs to be done.
 
-create a file generate-env under the aws-bootcamp-cruddur-2023/bin/backend
+create a file generate-env-gitpod under the aws-bootcamp-cruddur-2023/bin/backend
 
 and paste the following code
 ```
@@ -1441,27 +1432,26 @@ File.write(filename, content)
 
 ```
 
-create a file called backend-flask-gitpod.env.erb 
+
+create a file generate-env-gitpod under the aws-bootcamp-cruddur-2023/bin/frontend
+
+and paste the following code
+```
+#! /usr/bin/env ruby
+
+require 'erb'
+
+template = File.read 'erb/frontend-react-js-gitpod.env.erb'
+content = ERB.new(template).result(binding)
+filename = "frontend-react-js.env"
+File.write(filename, content)
 
 ```
-AWS_ENDPOINT_URL="http://dynamodb-local:8000"
-CONNECTION_URL="postgresql://postgres:password@db:5432/cruddur"
-FRONTEND_URL="https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
-BACKEND_URL="https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
-OTEL_SERVICE_NAME='backend-flask'
-OTEL_EXPORTER_OTLP_ENDPOINT="https://api.honeycomb.io"
-OTEL_EXPORTER_OTLP_HEADERS="x-honeycomb-team=${HONEYCOMB_API_KEY}"
-AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION}" \
-AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}" \
-AWS_XRAY_URL="*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*"
-AWS_XRAY_DAEMON_ADDRESS="xray-daemon:2000"
-AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
-ROLLBAR_ACCESS_TOKEN="${ROLLBAR_ACCESS_TOKEN}"
-AWS_COGNITO_USER_POOL_ID="${AWS_USER_POOLS_ID}"
-AWS_COGNITO_USER_POOL_CLIENT_ID="${APP_CLIENT_ID}"
-```
 
-```
+create  a folder called erb and create the following file backend-flask-gitpod.env.erb under erb folder
+
+
+```sh
 AWS_ENDPOINT_URL=http://dynamodb-local:8000
 CONNECTION_URL=postgresql://postgres:password@db:5432/cruddur
 FRONTEND_URL=https://3000-<%= ENV['GITPOD_WORKSPACE_ID'] %>.<%= ENV['GITPOD_WORKSPACE_CLUSTER_HOST'] %>
@@ -1480,6 +1470,22 @@ AWS_COGNITO_USER_POOL_CLIENT_ID=<%= ENV['APP_CLIENT_ID'] %>
 
 ```
 
+create  a folder called erb and create the following file frontend-react-js-gitpod.env.erb 
+
+```sh
+REACT_APP_BACKEND_URL=https://4567-<%= ENV['GITPOD_WORKSPACE_ID'] %>.<%= ENV['GITPOD_WORKSPACE_CLUSTER_HOST'] %>
+REACT_APP_AWS_PROJECT_REGION=<%= ENV['AWS_DEFAULT_REGION'] %>
+REACT_APP_AWS_COGNITO_REGION=<%= ENV['AWS_DEFAULT_REGION'] %>
+REACT_APP_AWS_USER_POOLS_ID=<%= ENV['AWS_USER_POOLS_ID'] %>
+REACT_APP_CLIENT_ID=<%= ENV['APP_CLIENT_ID'] %>
+```
+
+from the gitpod.yml add the scripts to create the files env necessary for the backend and frontend dockers.
+```
+  source  "$THEIA_WORKSPACE_ROOT/bin/backend/generate-env-gitpod"
+  source  "$THEIA_WORKSPACE_ROOT/bin/frontend/generate-env-gitpod
+```
+
 
 In this part of the implementation, we link all the containers to connect with a specific network.
 change the configuration of your docker-compose.yml
@@ -1493,10 +1499,37 @@ with the following code
 
 ```
 networks: 
-  default:
+  cruddur-net:
     driver: bridge
     name: cruddur-net
 ```
+
+and for each services, make sure to attach the crudduer-net network by adding the following code
+```
+  networks:
+      - cruddur-net
+```
+
+to troublshoot, you can use a busy box.
+create a file under aws-bootcamp-cruddur-2023/bin called busybox
+and paste the following code
+```
+#! /usr/bin/bash
+
+docker run --rm \
+  --network cruddur-net \
+  -p 4567:4567 \
+  -it busybox
+```
+
+also we can add some tools such as ping on our dockerfile.prod
+after url of the image. this is for the debugging
+
+```
+RUN apt-get update -y
+RUN apt-get install iputils-ping -y
+```
+
 
 
 
