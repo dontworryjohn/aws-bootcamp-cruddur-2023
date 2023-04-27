@@ -1326,7 +1326,7 @@ aws ecs register-task-definition \
 ```
 
 on the folder aws-bootcamp-cruddur-2023/bin/backend create a file called run.
-```
+```sh
 #! /usr/bin/bash
 
 ABS_PATH=$(readlink -f "$0")
@@ -1346,7 +1346,7 @@ NOTE:
 add the  /bin/bash after the -it backend-flask-prod if you want to shell inside the contianer.
 
 on the folder aws-bootcamp-cruddur-2023/bin/frontend create a file called run.
-```
+```sh
 #! /usr/bin/bash
 
 ABS_PATH=$(readlink -f "$0")
@@ -1397,7 +1397,7 @@ with the following code
 
 same thing for the frontend
 
-```
+```sh
 environment:
       REACT_APP_BACKEND_URL: "https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
       #REACT_APP_BACKEND_URL: "https://${CODESPACE_NAME}-4567.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
@@ -1410,7 +1410,7 @@ environment:
 
 with the following code
 
-```
+```sh
   env_file:
       - frontend-react-js.env
 ```
@@ -1465,7 +1465,7 @@ AWS_DEFAULT_REGION=<%= ENV['AWS_DEFAULT_REGION'] %>
 AWS_ACCESS_KEY_ID=<%= ENV['AWS_ACCESS_KEY_ID'] %>
 AWS_SECRET_ACCESS_KEY=<%= ENV['AWS_SECRET_ACCESS_KEY'] %>
 ROLLBAR_ACCESS_TOKEN=<%= ENV['ROLLBAR_ACCESS_TOKEN'] %>
-AWS_COGNITO_USER_POOL_ID=<%= ENV['AWS_COGNITO_USER_POOL_ID'] %>
+AWS_COGNITO_USER_POOL_ID=<%= ENV['AWS_USER_POOLS_ID'] %>
 AWS_COGNITO_USER_POOL_CLIENT_ID=<%= ENV['APP_CLIENT_ID'] %>
 
 ```
