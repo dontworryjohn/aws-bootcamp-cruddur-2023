@@ -1529,6 +1529,11 @@ after url of the image. this is for the debugging
 RUN apt-get update -y
 RUN apt-get install iputils-ping -y
 ```
+# Enable Container Insights
+
+To enable this function, go to the cluster and click on update cluster.
+
+Under the section Monitoring, toggle on Use Container Insights
 
 
 
@@ -1542,11 +1547,5 @@ RUN apt-get install iputils-ping -y
 
 
 
-
-
-
-
-
-
-Reference
+### Reference
 ![Ashish Video Cloud Security Podcast](https://www.youtube.com/watch?v=zz2FQAk1I28&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=58)
