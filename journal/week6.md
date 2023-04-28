@@ -1248,11 +1248,11 @@ export async function checkAuth(setUser){
 ```
 
 Replace and add the following code for the following file
-frontend-react-js/src/components/MessageForm.js  (the first line of code)
-frontend-react-js/src/pages/HomeFeedPage.js   (the first line of code)
-frontend-react-js/src/pages/MessageGroupNewPage.js   (the first line of code)
-frontend-react-js/src/pages/MessageGroupPage.js   (the first line of code)
-frontend-react-js/src/components/MessageForm.js   (the second line of code)
+- rontend-react-js/src/components/MessageForm.js  (the first line of code)
+- frontend-react-js/src/pages/HomeFeedPage.js   (the first line of code)
+- frontend-react-js/src/pages/MessageGroupNewPage.js   (the first line of code)
+- frontend-react-js/src/pages/MessageGroupPage.js   (the first line of code)
+- frontend-react-js/src/components/MessageForm.js   (the second line of code)
 
 ```
 import {checkAuth, getAccessToken} from '../lib/CheckAuth';
