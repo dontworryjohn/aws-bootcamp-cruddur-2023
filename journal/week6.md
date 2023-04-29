@@ -1,5 +1,5 @@
-# Week 6 — Deploying Containers
-This week the team will be talking about ECS.
+# Week 6 — Deploying Containers and DNS
+This week the team will be talking about ECS, DNS
 
 # Security in ECS/EKS/FARGATE
 
@@ -39,6 +39,30 @@ Application Side- Security Best Practice
 - Limit ability to SSH into EC2 container to read only file system - use API or GitOps to put information for troubleshooting.
 - Amazon Cloudwatc to monitor Malicious ECS Configuration Changes.
 - Only using Authorized Container Images 
+
+# Security of website using route 53
+
+Let's understand what is the website: it is an application exposed using a custom domain. (An example is www.facebook.com) 
+
+AWS Security Best Practice (Route 53)
+- Integration With Amazon Certificate Manager for TLS
+- Compliance Standard is what your business requires for a DNS provider
+- Amazon Organization SCP - To manage route 53 actions like creation, deletion, modification of production URIs etc.
+- AWS CloudTrail is enabled & monitored to trigger alerts for malicious activities e.g Associate VPC with hosted zone, change resource record set, register domain etc.
+- Guardduty is enabled for monitoring suspicious DNS comms (e.g Crypto-mining etc) and automated for auto-remediation.
+- AWS Config Rules is enabled in the account and region of ECS
+
+Security Best Practice - Application (Route53)
+- Access Control - Role or IAM users for making DNS changes in Amazon Route53
+- Public vs Private Hosted Zone
+- All route 53 records should point to an existing DNS, ELB, ALB or AWS S3
+- Hosted Zone Configuration Changes Limited to a small set of people.
+- Enable Encryption in Transit using TLS/SSL certification
+- Only use trusted domain providers for requesting new DNSs
+- Set TTL appropriately to afford to wait for a change to take effect
+- Ensure Root Domain Alias Record point to ELB
+-Develop process for continuously verifying  if DNS (& Hosted Zone) are al current and valid
+
 
 # Cost
 
@@ -1549,3 +1573,5 @@ Under the section Monitoring, toggle on Use Container Insights
 
 ### Reference
 ![Ashish Video Cloud Security Podcast](https://www.youtube.com/watch?v=zz2FQAk1I28&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=58)
+
+![Ashish Video Cloud Security Podcast](https://www.youtube.com/watch?v=MzVCEViI8Gg&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=70)
