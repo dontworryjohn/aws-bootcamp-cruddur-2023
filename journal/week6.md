@@ -1559,6 +1559,291 @@ To enable this function, go to the cluster and click on update cluster.
 
 Under the section Monitoring, toggle on Use Container Insights
 
+# Implementation Time Zone
+
+from the ddb/seed change the following line of code
+
+```
+now = datetime.now(timezone.utc).astimezone()
+```
+
+with the following
+
+```
+now = datetime.now()
+```
+from the same file, change also the following code
+```
+  created_at = (now + timedelta(hours=-3) + timedelta(minutes=i)).isoformat()
+```
+
+```
+  created_at = (now - timedelta(days=1) + timedelta(minutes=i)).isoformat()
+```
+
+from the ddb.py change the following code
+```
+ now = datetime.now(timezone.utc).astimezone().isoformat()
+created_at = now
+```
+
+with the following
+```
+created_at = datetime.now().isoformat()
+
+```
+
+from the frontend-react-js/src/lib/ create a file called DateTimeFormats.js with the following code
+```sh
+import { DateTime } from 'luxon';
+
+export function format_datetime(value) {
+  const datetime = DateTime.fromISO(value, { zone: 'utc' })
+  const local_datetime = datetime.setZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  return local_datetime.toLocaleString(DateTime.DATETIME_FULL)
+}
+
+export function message_time_ago(value){
+  const datetime = DateTime.fromISO(value, { zone: 'utc' })
+  const created = datetime.setZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  const now     = DateTime.now()
+  console.log('message_time_group',created,now)
+  const diff_mins = now.diff(created, 'minutes').toObject().minutes;
+  const diff_hours = now.diff(created, 'hours').toObject().hours;
+
+  if (diff_hours > 24.0){
+    return created.toFormat("LLL L");
+  } else if (diff_hours < 24.0 && diff_hours > 1.0) {
+    return `${Math.floor(diff_hours)}h`;
+  } else if (diff_hours < 1.0) {
+    return `${Math.round(diff_mins)}m`;
+  } else {
+    console.log('dd', diff_mins,diff_hours)
+    return 'unknown'
+  }
+}
+
+export function time_ago(value){
+  const datetime = DateTime.fromISO(value, { zone: 'utc' })
+  const future = datetime.setZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  const now     = DateTime.now()
+  const diff_mins = now.diff(future, 'minutes').toObject().minutes;
+  const diff_hours = now.diff(future, 'hours').toObject().hours;
+  const diff_days = now.diff(future, 'days').toObject().days;
+
+  if (diff_hours > 24.0){
+    return `${Math.floor(diff_days)}d`;
+  } else if (diff_hours < 24.0 && diff_hours > 1.0) {
+    return `${Math.floor(diff_hours)}h`;
+  } else if (diff_hours < 1.0) {
+    return `${Math.round(diff_mins)}m`;
+  }
+}
+```
+
+ do some modifications for the following
+ - messageitem.js
+
+ 
+
+remove the following code
+
+```
+import { DateTime } from 'luxon';
+```
+
+and replace with 
+
+```
+import { format_datetime, message_time_ago } from '../lib/DateTimeFormats';
+```
+
+same for the following code
+```
+<div className="created_at" title={props.message.created_at}>
+<span className='ago'>{format_time_created_at(props.message.created_at)}</span> 
+```
+
+with the new
+
+```
+  <div className="created_at" title={format_datetime(props.message.created_at)}>
+  <span className='ago'>{message_time_ago(props.message.created_at)}</span> 
+```
+
+replace also this part of the code
+```
+<Link className='message_item' to={`/messages/@`+props.message.handle}>
+<div className='message_avatar'></div>
+```
+
+with the following
+```
+ <div className='message_item'>
+      <Link className='message_avatar' to={`/messages/@`+props.message.handle}></Link>
+```
+
+and do remove the following
+```sh
+ </Link>
+```
+with
+```
+ </div>
+```
+
+from the messageitem.css do the following changes
+
+move portion of the code
+```
+ cursor: pointer;
+text-decoration: none;
+```
+
+add  the following code
+```sh
+
+.message_item .avatar {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+```
+
+
+
+do the same for the following
+- messagegroupitem.js
+
+remove the following code
+
+```
+import { DateTime } from 'luxon';
+```
+
+and replace with 
+
+```
+import { format_datetime, message_time_ago } from '../lib/DateTimeFormats';
+```
+
+same for the following code
+```
+   <div className="created_at" title={props.message_group.created_at}>
+  <span className='ago'>{format_time_created_at(props.message_group.created_at)}</span> 
+```
+
+and replace with the following
+
+```sh
+
+<div className="created_at" title={format_datetime(props.message_group.created_at)}>
+<span className='ago'>{message_time_ago(props.message_group.created_at)}</span> 
+```
+remove also this portion of the code
+```
+const format_time_created_at = (value) => {
+    // format: 2050-11-20 18:32:47 +0000
+    const created = DateTime.fromISO(value)
+    const now     = DateTime.now()
+    const diff_mins = now.diff(created, 'minutes').toObject().minutes;
+    const diff_hours = now.diff(created, 'hours').toObject().hours;
+
+    if (diff_hours > 24.0){
+      return created.toFormat("LLL L");
+    } else if (diff_hours < 24.0 && diff_hours > 1.0) {
+      return `${Math.floor(diff_hours)}h`;
+    } else if (diff_hours < 1.0) {
+      return `${Math.round(diff_mins)}m`;
+    }
+  };
+```
+
+from the activitycontent.js do the following amendments:
+
+remove the following code
+```sh
+import { DateTime } from 'luxon';
+```
+
+```sh
+import { format_datetime, time_ago } from '../lib/DateTimeFormats';
+```
+
+and change the following code
+```
+  <div className="created_at" title={props.activity.created_at}>
+  <span className='ago'>{format_time_created_at(props.activity.created_at)}</span> 
+```
+with the following
+
+```
+<div className="created_at" title={format_datetime(props.activity.created_at)}>
+<span className='ago'>{time_ago(props.activity.created_at)}</span> 
+```
+
+remove also this portion of the code
+```sh
+ const format_time_created_at = (value) => {
+    // format: 2050-11-20 18:32:47 +0000
+    const past = DateTime.fromISO(value)
+    const now     = DateTime.now()
+    const diff_mins = now.diff(past, 'minutes').toObject().minutes;
+    const diff_hours = now.diff(past, 'hours').toObject().hours;
+
+    if (diff_hours > 24.0){
+      return past.toFormat("LLL L");
+    } else if (diff_hours < 24.0 && diff_hours > 1.0) {
+      return `${Math.floor(diff_hours)}h ago`;
+    } else if (diff_hours < 1.0) {
+      return `${Math.round(diff_mins)}m ago`;
+    }
+  };
+
+  const format_time_expires_at = (value) => {
+    // format: 2050-11-20 18:32:47 +0000
+    const future = DateTime.fromISO(value)
+    const now     = DateTime.now()
+    const diff_mins = future.diff(now, 'minutes').toObject().minutes;
+    const diff_hours = future.diff(now, 'hours').toObject().hours;
+    const diff_days = future.diff(now, 'days').toObject().days;
+
+    if (diff_hours > 24.0){
+      return `${Math.floor(diff_days)}d`;
+    } else if (diff_hours < 24.0 && diff_hours > 1.0) {
+      return `${Math.floor(diff_hours)}h`;
+    } else if (diff_hours < 1.0) {
+      return `${Math.round(diff_mins)}m`;
+    }
+  };
+```
+
+do the same changes for the following line
+```
+ <span className='ago'>{format_time_expires_at(props.activity.expires_at)}</span>
+
+ ````
+
+ with the following
+ ```
+ <span className='ago'>{time_ago(props.activity.expires_at)}</span>
+ ```
+
+amend the following code
+ ```
+     expires_at =  <div className="expires_at" title={props.activity.expires_at}>
+```
+
+with the new one
+
+```
+   expires_at =  <div className="expires_at" title={format_datetime(props.activity.expires_at)}>
+```
+
+
+
+
+
 
 
 
