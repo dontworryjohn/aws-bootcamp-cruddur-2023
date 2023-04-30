@@ -1,7 +1,7 @@
 #! /usr/bin/bash
 
-export ECR_BACKEND_FLASK_URL="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/backend-flask"
-echo $ECR_BACKEND_FLASK_URL
+export ECR_FRONTEND_REACT_URL="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/frontend-react-js"
+echo $ECR_FRONTEND_REACT_URL
 
 CYAN='\033[1;36m'
 NO_COLOR='\033[0m'
