@@ -23,4 +23,8 @@ session-manager-plugin
 cd /workspaces/aws-bootcamp-cruddur-2023/backend-flask
 
 #ECR Login
-source  "/workspaces/aws-bootcamp-cruddur-2023//bin/ecr/login"
+source  "/workspaces/aws-bootcamp-cruddur-2023/bin/ecr/login"
+
+#Create Env for codespace
+ruby "/workspaces/aws-bootcamp-cruddur-2023/bin/backend/generate-env-codespace"
+ruby "/workspaces/aws-bootcamp-cruddur-2023/bin/frontend/generate-env-codespace"
