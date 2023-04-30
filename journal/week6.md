@@ -1576,6 +1576,7 @@ from the same file, change also the following code
 ```
   created_at = (now + timedelta(hours=-3) + timedelta(minutes=i)).isoformat()
 ```
+with the following
 
 ```
   created_at = (now - timedelta(days=1) + timedelta(minutes=i)).isoformat()
@@ -1765,6 +1766,7 @@ remove the following code
 ```sh
 import { DateTime } from 'luxon';
 ```
+and replace with
 
 ```sh
 import { format_datetime, time_ago } from '../lib/DateTimeFormats';
