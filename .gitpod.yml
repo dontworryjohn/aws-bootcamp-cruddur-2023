@@ -18,7 +18,7 @@ tasks:
     command: |
       export GITPOD_IP=$(curl ifconfig.me)
       source  "$THEIA_WORKSPACE_ROOT/bin/rds/update-sg-rule"
-      source  "$THEIA_WORKSPACE_ROOT/bin/services/start"
+      # source  "$THEIA_WORKSPACE_ROOT/bin/services/start"
       ruby "$THEIA_WORKSPACE_ROOT/bin/backend/generate-env-gitpod"
       ruby "$THEIA_WORKSPACE_ROOT/bin/frontend/generate-env-gitpod"
       
