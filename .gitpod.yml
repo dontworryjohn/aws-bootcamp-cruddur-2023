@@ -34,10 +34,18 @@ tasks:
       pip install -r requirements.txt
   - name: fargate session manager
     before: |
+      cd /workspace
       curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
       sudo dpkg -i session-manager-plugin.deb
       session-manager-plugin
+      cd $THEIA_WORKSPACE_ROOT
       cd backend-flask
+  - name: cdk
+    before: |
+      npm install aws-cdk -g
+      cd thumbing-serverless-cdk
+      cp .env.example .env
+      npm i
       
 
 vscode:
