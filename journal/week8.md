@@ -836,6 +836,6 @@ add the function to create the policy to sns publish
 
 # Creation CDN
 
-In the link below you find the steps to create the CDN
+In the link below you find the steps to create the CDN.
 
-![CND Steps](https://scribehow.com/shared/Create_Cloudfront_distribution__7zZ6diCvTz2YN-h753zqBw)
+Check the lin for [CND Steps](https://scribehow.com/shared/Create_Cloudfront_distribution__7zZ6diCvTz2YN-h753zqBw)
