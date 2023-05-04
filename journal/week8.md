@@ -242,7 +242,7 @@ and then we create the lambda function
 **Note**
 Lambda function needs at least 3 parameters Runtime (language of the code), handler and code (which is the source where is located our code)
 
-create the .env.example with the following info
+create the .env.example inside of our cdk project with the following info
 ```sh
 THUMBING_BUCKET_NAME="assets.yourdomain.com"
 THUMBING_FUNCTION_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/lambdas/process-images"
@@ -256,6 +256,8 @@ THUMBING_TOPIC_NAME="crudduer-assets"
 - It is a good practice to create a folder for the lambda codes for each project so it is to refer to which project belongs the code.
 
 - The THUMBING_BUCKET_NAME must be unique as this will refer to the s3 bucket. change the name of the bucket with your domain (for example assets.example.com)
+
+- This file will be copied with the extension ".env" and will be necessery for thumbing-serverless-cdk-stack file.
 
 if you launch the **cdk synth** the result will be something similar to this:
 
@@ -595,7 +597,7 @@ npm i sharp
 npm i @aws-sdk/client-s3
 
 ```
-**Note** Make sure to check on the internet before installing as there are some packages with similar names
+**Note** Make sure to check on the internet the library before installing it as there are some packages with similar names
 
 To deploy the CDK project launch the following code. then check it on cloudformation
 
@@ -605,7 +607,7 @@ cdk deploy
 **Note**
 - Before deploying, CDK launch a synth to check if the code is correct.
 
-- If you rename a bucket and deploy the entire stack, this wont affect the changes. you need to destroy the entire stack and relaunch using the following command 
+- If you rename a bucket and deploy the entire stack, this wont affect the changes. you need to destroy the entire stack and relaunch using the following command:
 ```
 cdk destroy
 ```
@@ -656,7 +658,7 @@ ABS_PATH=$(readlink -f "$0")
 SERVERLESS_PATH=$(dirname $ABS_PATH)
 DATA_FILE_PATH="$SERVERLESS_PATH/files/data.jpg"
 
-aws s3 "$DATA_FILE_PATH" "s3://assets.$DOMAIN_NAME/avatars/original/data.jpg"
+aws s3 cp "$DATA_FILE_PATH" "s3://assets.$DOMAIN_NAME/avatars/original/data.jpg"
 ```
 
 and also a script for the list called **ls**
@@ -671,6 +673,7 @@ Create the env var to reference your domain name locally and on gitpod (these 2 
 export DOMAIN_NAME="yourdomain.com"
 gp env DOMAIN_NAME="yourdomain.com"
 ```
+**Note**: if you are using codespace, make sure to add this env var as well there.
 
 and a folder called **files** where you load the image that will be load to s3.
 
@@ -699,10 +702,10 @@ createS3NotifyToLambda(prefix: string, lambda: lambda.IFunction, bucket: s3.IBuc
 }
 ```
 
-Also need to add the library for s3 notification.
+Also it needs the library for s3 notification.
 
 ```sh
-import * as s3n from 'aws-cdk-lib/aws-s3-notification';
+import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
 ```
 
 We need to import an existing bucket
@@ -756,7 +759,7 @@ import the library for iam
 import * as iam from 'aws-cdk-lib/aws-iam';
 ```
 
-and with this line of code, lambda will attach the policy created under the const **s3ReadWritePolicy**
+and with this line of code, lambda will have the policy created under the const **s3ReadWritePolicy**
 ```sh
 lambda.addToRolePolicy(s3ReadWritePolicy);
 ```
@@ -765,11 +768,11 @@ The last part of the implementation  notification
 
 from **thumbing-serverless-cdk-stack** add the following 
 
-import the libraries for s3 notification and sns subscription
+import the libraries for sns and sns subscription
 
 ```sh
-import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
-import * as subscription from 'aws-cdk-lib/aws-sns-subscription';
+import * as sns from 'aws-cdk-lib/aws-sns';
+import * as subscriptions from 'aws-cdk-lib/aws-sns-subscriptions';
 ```
 
 and add the creation of  SNStopic, SNS subscritption, SNS policy and attach to the lambda
