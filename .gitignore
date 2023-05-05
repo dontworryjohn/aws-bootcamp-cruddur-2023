@@ -6,4 +6,3 @@ session-manager-plugin.deb
 *.env
 node_modules
 cdk.out
-data.jpg
