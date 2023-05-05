@@ -51,7 +51,7 @@ tasks:
     command: |
       cd aws/lambdas/process-images
       npm i sharp
-# npm i @aws-sdk/client-s3
+      npm i @aws-sdk/client-s3
 
 vscode:
   extensions:
