@@ -651,8 +651,7 @@ ABS_PATH=$(readlink -f "$0")
 SERVERLESS_PATH=$(dirname $ABS_PATH)
 DATA_FILE_PATH="$SERVERLESS_PATH/files/data.jpg"
 
-aws s3 rm "s3://assets.$DOMAIN_NAME/avatars/original/data.jpg"
-aws s3 rm "s3://assets.$DOMAIN_NAME/avatars/processed/data.jpg"
+aws s3 cp "$DATA_FILE_PATH" "s3://johnbuen-uploaded-avatars/data.jpg"
 
 ```
 
@@ -704,8 +703,8 @@ createS3NotifyToLambda(prefix: string, lambda: lambda.IFunction, bucket: s3.IBuc
   const destination = new s3n.LambdaDestination(lambda);
   bucket.addEventNotification(
     s3.EventType.OBJECT_CREATED_PUT,
-    destination,
-    {prefix: prefix}
+    destination//,
+    //{prefix: prefix}
   )
 }
 ```
