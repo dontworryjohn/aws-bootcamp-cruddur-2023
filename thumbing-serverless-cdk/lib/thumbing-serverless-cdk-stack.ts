@@ -35,19 +35,25 @@ export class ThumbingServerlessCdkStack extends cdk.Stack {
     const uploadsBucket = this.createBucket(uploadsBucketName);
     const assetsBucket = this.importBucket(assetsBucketName);
     //create a lambda
-    const lambda = this.createLambda(functionPath, uploadsBucketName, assetsBucketName, folderInput, folderOutput)
+    const lambda = this.createLambda(
+      functionPath,
+      uploadsBucketName,
+      assetsBucketName,
+      folderInput,
+      folderOutput
+    );
 
     //create topic and subscription
-    const snsTopic = this.createSnsTopic(topicName)
-    this.createSnsSubscription(snsTopic,webhookUrl)
+    const snsTopic = this.createSnsTopic(topicName);
+    this.createSnsSubscription(snsTopic,webhookUrl);
 
     //add our s3 event notification
-    this.createS3NotifyToLambda(folderInput,lambda,uploadsBucket)
-    this.createS3NotifyToSns(folderOutput,snsTopic,assetsBucket)
+    this.createS3NotifyToLambda(folderInput,lambda,uploadsBucket);
+    this.createS3NotifyToSns(folderOutput,snsTopic,assetsBucket);
 
     //create policies
-    const s3UploadsReadWritePolicy = this.createPolicyBucketAccess(uploadsBucket.bucketArn)
-    const s3AssetsReadWritePolicy = this.createPolicyBucketAccess(assetsBucket.bucketArn)
+    const s3UploadsReadWritePolicy = this.createPolicyBucketAccess(uploadsBucket.bucketArn);
+    const s3AssetsReadWritePolicy = this.createPolicyBucketAccess(assetsBucket.bucketArn);
 
     //const snsPublishPolicy = this.createPolicySnSPublish(snsTopic.topicArn)
 

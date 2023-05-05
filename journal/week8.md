@@ -35,10 +35,11 @@ From gitpod.yml add these lines of code. This automatically reinstalls cdk every
 ```sh
  - name: cdk
     before: |
-      npm install aws-cdk -g
       cd thumbing-serverless-cdk
       cp .env.example .env
       npm i
+      npm install aws-cdk -g
+      cdk --version
 ```
 
 To initialise the project type **cdk init app --language typescript**  (instead of typescript, you can choose another language supported by cdk such JavaScript, TypeScript, Python, Java, C#)
