@@ -55,19 +55,20 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 
 set the variable (Since this project is in typescript which is strongly typed. it means all must have  a specific data type)
 ```sh
-const bucketName: string = process.env.THUMBING_BUCKET_NAME as string;
-const bucket = this.createBucket(bucketName);
+const uploadsBucketName: string = process.env.UPLOADS_BUCKET_NAME as string;
+const uploadsBucket = this.createBucket(uploadsBucketName);
 ```
 
 with the following code, cdk creates the s3 bucket
 
 ```sh
  createBucket(bucketName: string): s3.IBucket{
-    const bucket = new s3.Bucket(this, 'ThumbingBucket', {
+    const bucket = new s3.Bucket(this, 'UploadsBucket', {
       bucketName: bucketName,
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
     return bucket;
+  }
 ```
 
 To launch the AWS CloudFormation template based on the AWS CDK, type:
@@ -206,30 +207,35 @@ from the folder, run the following command to install the dotenv dependency to i
 
 set the variables for the lambda
 ```sh
-const bucketName: string = process.env.THUMBING_BUCKET_NAME as string;
+const uploadsBucketName: string = process.env.UPLOADS_BUCKET_NAME as string;
+const assetsBucketName: string = process.env.ASSETS_BUCKET_NAME as string;
+const functionPath: string = process.env.THUMBING_FUNCTION_PATH as string;
 const folderInput: string = process.env.THUMBING_S3_FOLDER_INPUT as string;
 const folderOutput: string = process.env.THUMBING_S3_FOLDER_OUTPUT as string;
 const webhookUrl: string = process.env.THUMBING_WEBHOOK_URL as string;
 const topicName: string = process.env.THUMBING_TOPIC_NAME as string;
-const functionPath: string = process.env.THUMBING_FUNCTION_PATH as string;
-console.log('bucketName',bucketName)
+console.log('uploadsBucketName',uploadsBucketName)
+console.log('assetsBucketName',assetsBucketName)
 console.log('folderInput',folderInput)
 console.log('folderOutput',folderOutput)
 console.log('webhookUrl',webhookUrl)
 console.log('topicName',topicName)
 console.log('functionPath',functionPath)
+
+const lambda = this.createLambda(functionPath, uploadsBucketName, assetsBucketName, folderInput, folderOutput)
+
 ```
 
 and then we create the lambda function
 
 ```sh
-   createLambda(functionPath: string, bucketName: string, folderInput: string, folderOutput: string): lambda.IFunction{
+  createLambda(functionPath: string, uploadsBucketName: string, assetsBucketName:string, folderInput: string, folderOutput: string): lambda.IFunction{
     const lambdaFunction = new lambda.Function(this, 'thumbLambda', {
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: 'index.handler',
       code: lambda.Code.fromAsset(functionPath),
       environment: {
-        DEST_BUCKET_NAME: bucketName,
+        DEST_BUCKET_NAME: assetsBucketName,
         FOLDER_INPUT: folderInput,
         FOLDER_OUTPUT: folderOutput,
         PROCESS_WIDTH: '512',
@@ -244,18 +250,19 @@ Lambda function needs at least 3 parameters Runtime (language of the code), hand
 
 create the .env.example inside of our cdk project with the following info
 ```sh
-THUMBING_BUCKET_NAME="assets.yourdomain.com"
+UPLOADS_BUCKET_NAME="johnbuen-uploaded-avatars"
+ASSETS_BUCKET_NAME="assets.yourdomanin.com"
 THUMBING_FUNCTION_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/lambdas/process-images"
 THUMBING_S3_FOLDER_INPUT="avatars/original"
 THUMBING_S3_FOLDER_OUTPUT="avatars/processed"
-THUMBING_WEBHOOK_URL="https://api.johnbuen.co.uk/webhooks/avatar"
+THUMBING_WEBHOOK_URL="https://api.yourdomain.com/webhooks/avatar"
 THUMBING_TOPIC_NAME="crudduer-assets"
 
 ```
 **Note** 
 - It is a good practice to create a folder for the lambda codes for each project so it is to refer to which project belongs the code.
 
-- The THUMBING_BUCKET_NAME must be unique as this will refer to the s3 bucket. change the name of the bucket with your domain (for example assets.example.com)
+- The UPLOADS_BUCKET_NAME and ASSETS_BUCKET_NAME must be unique as this will refer to the s3 bucket. change the name of the bucket with your domain (for example assets.example.com)
 
 - This file will be copied with the extension ".env" and will be necessery for thumbing-serverless-cdk-stack file.
 
@@ -619,7 +626,7 @@ rm -rf node_modules/sharp
 SHARP_IGNORE_GLOBAL_LIBVIPS=1 npm install --arch=x64 --platform=linux --libc=glibc sharp
 ```
 
-with the same code, create a bash script under .bin/serverless called build
+with the same code, create a bash script under .bin/avatar called build
 ```sh
 #! /usr/bin/bash
 
@@ -684,8 +691,8 @@ It is some additional code to our **thumbing-serverless-cdk-stack.ts**
 
 from the section of  variable add the following command
 ```sh
-this.createS3NotifyToLambda(folderInput,lambda,bucket)
-this.createS3NotifyToSns(folderOutput,snsTopic,bucket)
+this.createS3NotifyToLambda(folderInput,lambda,uploadsBucket)
+this.createS3NotifyToSns(folderOutput,snsTopic,assetsBucket)
 ```
 
 Add also this portion of code to sets up an event notification in an Amazon S3 bucket to trigger a specific AWS Lambda function when an object is created with a PUT operation and a key that matches a specific prefix.
@@ -712,28 +719,26 @@ We need to import an existing bucket
 
 ```sh
   importBucket(bucketName: string): s3.IBucket{
-    const bucket = s3.Bucket.fromBucketName(this,"AssestsBucket", bucketName);
+    const bucket = s3.Bucket.fromBucketName(this,"AssetsBucket", bucketName);
     return bucket;
   }
-```
-
-And commented the following code:
-```sh
-const bucket = this.createBucket(bucketName);
 ```
 
 
 and add the following under the previous one
 ```sh
-const bucket = this.importBucket(bucketName);
+const assetsBucket = this.importBucket(assetsBucketName);
 ```
 
-We will need to create an s3 bucket called **assets.yourdomain** manually just for this time.
+We will need to create an s3 bucket called **assets.yourdomain.com** manually just for this time.
 
-To add the permission to write to the s3bucket, add the following code to the **thumbing-serverless-cdk-stack**
+To add the permission to write to the s3 buckets, add the following code to the **thumbing-serverless-cdk-stack**
 
 ```
-const s3ReadWritePolicy = this.createPolicyBucketAccess(bucket.bucketArn)
+const s3UploadsReadWritePolicy = this.createPolicyBucketAccess(uploadsBucket.bucketArn)
+const s3AssetsReadWritePolicy = this.createPolicyBucketAccess(assetsBucket.bucketArn)
+
+
 ```
 
 add the new function
@@ -759,9 +764,10 @@ import the library for iam
 import * as iam from 'aws-cdk-lib/aws-iam';
 ```
 
-and with this line of code, lambda will have the policy created under the const **s3ReadWritePolicy**
+and with these lines of code, lambda will have the policy created under the const **s3ReadWritePolicy**
 ```sh
-lambda.addToRolePolicy(s3ReadWritePolicy);
+lambda.addToRolePolicy(s3UploadsReadWritePolicy);
+lambda.addToRolePolicy(s3AssetsReadWritePolicy);
 ```
 
 The last part of the implementation  notification
@@ -834,8 +840,10 @@ add the function to create the policy to sns publish
   }
 ```
 
-# Creation CDN
+# Cloudfront Network Distribution
 
-In the link below you find the steps to create the CDN.
+Next is to create a CDN. We will distribute our image assets using this service. 
 
-Check the lin for [CND Steps](https://scribehow.com/shared/Create_Cloudfront_distribution__7zZ6diCvTz2YN-h753zqBw)
+[Guide CDN step by step](https://scribehow.com/shared/Create_Cloudfront_distribution__7zZ6diCvTz2YN-h753zqBw)
+
+
