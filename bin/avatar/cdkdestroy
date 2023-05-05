@@ -5,8 +5,9 @@ AVATAR_PATH=$(dirname $ABS_PATH)
 BIN_PATH=$(dirname $AVATAR_PATH)
 PROJECT_PATH=$(dirname $BIN_PATH)
 CDK_PATH="$PROJECT_PATH/thumbing-serverless-cdk"
-cd $CDK_PATH
+
 source "$AVATAR_PATH/clear"
 
-echo "Destroying Stack in progress"
+cd $CDK_PATH
+echo "Destroying CDK in progress..."
 cdk destroy
