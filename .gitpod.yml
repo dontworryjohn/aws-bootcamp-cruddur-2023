@@ -42,11 +42,11 @@ tasks:
       cd backend-flask
   - name: cdk
     before: |
-      npm install aws-cdk -g
       cd thumbing-serverless-cdk
       cp .env.example .env
       npm i
-      
+      npm install aws-cdk -g
+      cdk --version
 
 vscode:
   extensions:
