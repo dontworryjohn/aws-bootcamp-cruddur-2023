@@ -43,9 +43,10 @@ tasks:
   - name: cdk
     before: |
       cd thumbing-serverless-cdk
-      npm install aws-cdk -g
       cp .env.example .env
       npm i
+      npm install aws-cdk -g
+      cdk --version
       
 
 vscode:
