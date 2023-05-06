@@ -1006,11 +1006,8 @@ import EditProfileButton from '../components/EditProfileButton';
       <div className='content'>
         <ActivityForm popped={popped} setActivities={setActivities} />
           <div className='activity_feed'>
-            <div className='activity_feed_heading'>
-              <div className='title'>{profile.display_name}</div>
-              <div class="cruds_count">{profile.cruds_count} Cruds</div>
-          </div>
-          <ActivityFeed title={title} activities={activities} />
+            <ProfileHeading profile={profile} />
+          <ActivityFeed  activities={activities} />
         </div>
       </div>
       <DesktopSidebar user={user} />
@@ -1128,7 +1125,7 @@ return (
   );
 ```
 
-from **NotificationsFeedPage.js**, do the same ammends
+from **NotificationsFeedPage.js**, do the same amends
 
 ```sh
 return (
@@ -1165,5 +1162,20 @@ return (
 }
 ```
 
+create the **ProfileHeading.js** copy the following code
+
 ```sh
+import './ProfileHeading.css';
+
+export default function ProfileHeading(props) {
+  const pop_activities_form = (event) => {
+    event.preventDefault();
+    props.setPopped(true);
+    return false;
+  }
+
+  return (
+    <button onClick={pop_activities_form} className='post' href="#">Crud</button>
+  );
+}
 ```
