@@ -878,6 +878,11 @@ SELECT
       users.uuid,
       users.handle,
       users.display_name
+      (SELECT
+        count(true)
+       FROM public.activities
+       WHERE
+        activities.users_uuid=users.uuid) as cruds_count
   ) object_row) as profile,
   (SELECT COALESCE(array_to_json(array_agg(row_to_json(array_row))),'[]'::json) FROM (
     SELECT
@@ -919,7 +924,7 @@ from app.py, change the following code
 ```
 from user_activities.py,
 
-add the following part
+add the following library db
 ```sh
 from lib.db import db
 ```
@@ -940,27 +945,37 @@ comment out the following code
 from datetime import datetime, timedelta, timezone
 ```
 
-from the userfeed.js
-
-change the following code
-```sh
-setActivities(resJson)
-```
-
-with the following
-```sh
-setActivities(resJson.activities)
-setActivities(resJson.profile)
-```
+from the **userfeed.js**
 
 add the following line
 ```sh
  const [profile, setProfile] = React.useState([]);
 ```
 
-create a new component called **EditProfileButton.js**  **EditProfileButton.css** under frontend-react-js/src/components
-this allow the users to edit their profile
-with the following code
+refactor this part of the code
+
+```sh
+return (
+    <article>
+      <DesktopNavigation user={user} active={'profile'} setPopped={setPopped} />
+      <div className='content'>
+        <ActivityForm popped={popped} setActivities={setActivities} />
+        <div className='activity_feed'>
+          <div className='activity_feed_heading'>
+            <div className='title'>{title}</div>
+          </div>
+          <ActivityFeed activities={activities} />
+        </div>
+      </div>
+      <DesktopSidebar user={user} />
+    </article>
+  );
+}
+```
+
+create a new component called **EditProfileButton.js**  **EditProfileButton.css** under frontend-react-js/src/components 
+this allows the users to edit their profile
+from the file EditProfileButton.js add this block of code
 ```sh
 import './EditProfileButton.css';
 
@@ -972,7 +987,183 @@ export default function EditProfileButton(props) {
   }
 
   return (
-    <button onClick={pop_profile_form} className='profile-edit-button' href="#">Edit</button>
+    <button onClick={pop_profile_form} className='profile-edit-button' href="#">Edit Profile</button>
   );
 }
+```
+
+from the **UserFeedPage.js** add the following line to import the new component
+```sh
+import EditProfileButton from '../components/EditProfileButton';
+```
+
+
+
+```sh
+ return (
+    <article>
+      <DesktopNavigation user={user} active={'profile'} setPopped={setPopped} />
+      <div className='content'>
+        <ActivityForm popped={popped} setActivities={setActivities} />
+          <div className='activity_feed'>
+            <div className='activity_feed_heading'>
+              <div className='title'>{profile.display_name}</div>
+              <div class="cruds_count">{profile.cruds_count} Cruds</div>
+          </div>
+          <ActivityFeed title={title} activities={activities} />
+        </div>
+      </div>
+      <DesktopSidebar user={user} />
+    </article>
+  );
+}
+```
+
+remove the following code as not needed
+```sh
+  const checkAuth = async () => {
+    console.log('checkAuth')
+    // [TODO] Authenication
+    if (Cookies.get('user.logged_in')) {
+      setUser({
+        display_name: Cookies.get('user.name'),
+        handle: Cookies.get('user.username')
+      })
+    }
+  };
+```
+
+changes the following code
+```sh
+import Cookies from 'js-cookie'
+```
+with the checkauth library
+```sh
+import {checkAuth, getAccessTokn} from '../lib/CheckAuth';
+```
+and amends the following code:
+```sh
+ const loadData = async () => {
+    try {
+      const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/activities/@${params.handle}`
+      await getAccessToken()
+      const access_token = localStorage.getItem("access_token") 
+      const res = await fetch(backend_url, {
+        headers: {
+          Authorization: `Bearer ${access_token}`
+        },
+        method: "GET"
+      });
+      let resJson = await res.json();
+      if (res.status === 200) {
+        setProfile(resJson.profile)
+        setActivities(resJson.activities)
+      } else {
+        console.log(res)
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+```
+
+amend the following code'
+
+```sh
+checkAuth(setUser);
+```
+
+removed the following code
+```sh
+  const title = `@${params.handle}`;
+```
+
+From **ActivityFeed.js** modify the following line of code with this
+```sh
+export default function ActivityFeed(props) {
+  return (
+
+    <div className='activity_feed_collection'>
+      {props.activities.map(activity => {
+      return  <ActivityItem setReplyActivity={props.setReplyActivity} setPopped={props.setPopped} key={activity.uuid} activity={activity} />
+      })}
+    </div>
+  );
+}
+```
+
+from the **HomeFeedPage.js**, it needs some refactoring
+
+```sh
+return (
+    <article>
+      <DesktopNavigation user={user} active={'home'} setPopped={setPopped} />
+      <div className='content'>
+        <ActivityForm
+          user_handle={user} 
+          popped={popped}
+          setPopped={setPopped} 
+          setActivities={setActivities} 
+        />
+        <ReplyForm 
+          activity={replyActivity} 
+          popped={poppedReply} 
+          setPopped={setPoppedReply} 
+          setActivities={setActivities} 
+          activities={activities} 
+        />
+        <div className='activity_feed'>
+          <div className='activity_feed_heading'>
+            <div className='title'>Home</div>
+          </div>
+        <ActivityFeed 
+            setReplyActivity={setReplyActivity} 
+            setPopped={setPoppedReply} 
+            activities={activities} 
+          />
+        </div>
+      </div>
+      <DesktopSidebar user={user} />
+    </article>
+  );
+```
+
+from **NotificationsFeedPage.js**, do the same ammends
+
+```sh
+return (
+    <article>
+      <DesktopNavigation user={user} active={'notification'} setPopped={setPopped} />
+      <div className='content'>
+        <ActivityForm  
+          popped={popped}
+          setPopped={setPopped} 
+          setActivities={setActivities} 
+        />
+        <ReplyForm 
+          activity={replyActivity} 
+          popped={poppedReply} 
+          setPopped={setPoppedReply} 
+          setActivities={setActivities} 
+          activities={activities} 
+        />
+        <div className='activity_feed'>
+          <div className='activity_feed_heading'>
+            <div className='title'>Notifications</div>
+          </div>
+          <ActivityFeed 
+            title="Notification" 
+            setReplyActivity={setReplyActivity} 
+            setPopped={setPoppedReply} 
+            activities={activities} 
+          />
+        </div>
+      </div>
+      <DesktopSidebar user={user} />
+    </article>
+  );
+}
+```
+
+```sh
 ```
