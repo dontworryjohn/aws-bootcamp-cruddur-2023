@@ -1265,6 +1265,10 @@ create the **ProfileHeading.css** and copy the following code
   color: rgb(255,255,255,0.7);
 
 }
+
+.profile_heading .cruds_Count{
+  color: rgb(255,255,255,0.7);
+}
 ```
 
 from s3, create a folder called **banners** under assets.example.com
