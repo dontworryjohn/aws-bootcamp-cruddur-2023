@@ -846,4 +846,133 @@ Next is to create a CDN. We will distribute our image assets using this service.
 
 [Guide CDN step by step](https://scribehow.com/shared/Create_Cloudfront_distribution__7zZ6diCvTz2YN-h753zqBw)
 
+# Implementation User Profile Page
 
+Create a script called **bootstrap** inside the **bin** directory. it creates local psql and dynamodb.
+
+```sh
+#! /usr/bin/bash
+set -e
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="bootstrap"
+printf "${CYAN}==== ${LABEL}${NO_COLOR}\n"
+
+ABS_PATH=$(readlink -f "$0")
+bin_path=$(dirname $ABS_PATH)
+
+echo "Creation local database"
+source "$bin_path/db/setup"
+echo "Creation local dynamodb"
+python "$bin_path/ddb/schema-load"
+echo "Seeding mock data"
+python ""$bin_path/ddb/seed"
+
+```
+
+from backend-flask/db/sql/users create a file called **show.sql** with the following code
+```sh
+SELECT
+ (SELECT COALESCE(row_to_json(object_row),'{}'::json) FROM (
+    SELECT  
+      users.uuid,
+      users.handle,
+      users.display_name
+  ) object_row) as profile,
+  (SELECT COALESCE(array_to_json(array_agg(row_to_json(array_row))),'[]'::json) FROM (
+    SELECT
+      activities.uuid,
+      users.display_name,
+      users.handle,
+      activities.message,
+      activities.created_at,
+      activities.expires_at
+    FROM public.activities'
+    WHERE
+      activities.user_uuid = users.uuid
+    ORDER by activities.created_at DESC
+    LIMIT 40
+  ) array_row) as activities
+FROM public.users
+WHERE
+  users.handle = %(handle)s
+
+```
+
+from app.py, change the following code
+
+```sh
+  now = datetime.now(timezone.utc).astimezone()
+      
+      if user_handle == None or len(user_handle) < 1:
+        model['errors'] = ['blank_user_handle']
+      else:
+        now = datetime.now()
+        results = [{
+          'uuid': '248959df-3079-4947-b847-9e0892d1bab4',
+          'handle':  'Andrew Brown',
+          'message': 'Cloud is fun!',
+          'created_at': (now - timedelta(days=1)).isoformat(),
+          'expires_at': (now + timedelta(days=31)).isoformat()
+        }]
+        model['data'] = results
+```
+from user_activities.py,
+
+add the following part
+```sh
+from lib.db import db
+```
+with this
+```sh
+   if user_handle == None or len(user_handle) < 1:
+        model['errors'] = ['blank_user_handle']
+      else:
+        sql = db.template('user','show')
+        results = db.query_object_json(sql,{'handle': user_handle})
+        return results
+        model['data'] = results
+
+```
+
+comment out the following code
+```sh
+from datetime import datetime, timedelta, timezone
+```
+
+from the userfeed.js
+
+change the following code
+```sh
+setActivities(resJson)
+```
+
+with the following
+```sh
+setActivities(resJson.activities)
+setActivities(resJson.profile)
+```
+
+add the following line
+```sh
+ const [profile, setProfile] = React.useState([]);
+```
+
+create a new component called **EditProfileButton.js**  **EditProfileButton.css** under frontend-react-js/src/components
+this allow the users to edit their profile
+with the following code
+```sh
+import './EditProfileButton.css';
+
+export default function EditProfileButton(props) {
+  const pop_profile_form = (event) => {
+    event.preventdefault();
+    props.setPopped(true);
+    return false;
+  }
+
+  return (
+    <button onClick={pop_profile_form} className='profile-edit-button' href="#">Edit</button>
+  );
+}
+```
