@@ -922,12 +922,7 @@ from app.py, change the following code
         }]
         model['data'] = results
 ```
-from user_activities.py,
 
-add the following library db
-```sh
-from lib.db import db
-```
 with this
 ```sh
    if user_handle == None or len(user_handle) < 1:
@@ -940,12 +935,21 @@ with this
 
 ```
 
+
+
 comment out the following code
 ```sh
 from datetime import datetime, timedelta, timezone
 ```
 
-from the **userfeed.js**
+from **user_activities.py**,
+
+add the following library db
+```sh
+from lib.db import db
+```
+
+from the **userfeedpage.js**
 
 add the following line
 ```sh
@@ -961,9 +965,7 @@ return (
       <div className='content'>
         <ActivityForm popped={popped} setActivities={setActivities} />
         <div className='activity_feed'>
-          <div className='activity_feed_heading'>
-            <div className='title'>{title}</div>
-          </div>
+        <ProfileHeading setPopped={setPoppedProfile} profile={profile} />
           <ActivityFeed activities={activities} />
         </div>
       </div>
@@ -973,11 +975,12 @@ return (
 }
 ```
 
-create a new component called **EditProfileButton.js**  **EditProfileButton.css** under frontend-react-js/src/components 
+create a new component called **EditProfileButton.js**  and **EditProfileButton.css** under frontend-react-js/src/components 
 this allows the users to edit their profile
 from the file EditProfileButton.js add this block of code
 ```sh
 import './EditProfileButton.css';
+import EditProfileButton from '../components/EditProfileButton';
 
 export default function EditProfileButton(props) {
   const pop_profile_form = (event) => {
@@ -991,22 +994,32 @@ export default function EditProfileButton(props) {
   );
 }
 ```
-
-from the **UserFeedPage.js** add the following line to import the new component
+from the **EditProfileButton.css** paste the following code
 ```sh
-import EditProfileButton from '../components/EditProfileButton';
+.profile-edit-button {
+  border: solid 1px rgba (255,255,255,0.5);
+  padding: 12px 20px;
+  font-size: 18px;
+  background: none;
+  border-radius: 999px;
+  color: rgba(255,255,255,0.8);
+  cursor: pointer;
+}
+
+.profile-edit-button:hover {
+  background:  rgba(255,255,255,0.3);
+}
 ```
 
-
-
+ from userfeedpage.js  (to be checked) 
 ```sh
  return (
     <article>
       <DesktopNavigation user={user} active={'profile'} setPopped={setPopped} />
       <div className='content'>
         <ActivityForm popped={popped} setActivities={setActivities} />
-          <div className='activity_feed'>
-            <ProfileHeading profile={profile} />
+        <div className='activity_feed'>
+          <ProfileHeading profile={profile} />
           <ActivityFeed  activities={activities} />
         </div>
       </div>
@@ -1030,14 +1043,22 @@ remove the following code as not needed
   };
 ```
 
+from the **UserFeedPage.js**
+
 changes the following code
 ```sh
 import Cookies from 'js-cookie'
 ```
-with the checkauth library
+with the checkauth library and ad the following
 ```sh
 import {checkAuth, getAccessTokn} from '../lib/CheckAuth';
+import ProfileHeading from '../components/ProfileHeading'
+add this following code
+```sh
+const [poppedProfile, setPoppedProfile] = React.useState([]);
+
 ```
+
 and amends the following code:
 ```sh
  const loadData = async () => {
@@ -1064,7 +1085,7 @@ and amends the following code:
   };
 ```
 
-amend the following code'
+amend the following code
 
 ```sh
 checkAuth(setUser);
@@ -1162,20 +1183,88 @@ return (
 }
 ```
 
-create the **ProfileHeading.js** copy the following code
+create the **ProfileHeading.js** and  copy the following code
 
 ```sh
 import './ProfileHeading.css';
 
 export default function ProfileHeading(props) {
-  const pop_activities_form = (event) => {
-    event.preventDefault();
-    props.setPopped(true);
-    return false;
-  }
-
+  const backgroundImage = 'url("https://assets.example.com/banners/banner.jpg")';
+  const style = {
+    backgroundImage: backgroundImage,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  };
   return (
-    <button onClick={pop_activities_form} className='post' href="#">Crud</button>
+  <div className='activity_feed_heading profile_heading'>
+    <div className='title'>{props.profile.display_name}</div>
+    <div className="cruds_count">{props.profile.cruds_count} Cruds</div>
+    <div className="banner" style={styles}>
+      <div className="avatar">
+        <img src="https://assets.example.com/avatars/data.jpg"></ img>  
+      </div>
+    </div>
+    <div classname="info">
+      <div class='id'>
+        <div className="display_name">{props.profile.display_name}</div>
+        <div className="handle">@{props.profile.handle}</div>
+      </div>
+      <EditProfileButton setPopped={props.setPopped} />  
+    </div>
+  </div>
   );
 }
 ```
+
+Create on s3 under assets.example.com a folder called **banners** and load the data
+
+create the **ProfileHeading.css** and copy the following code
+```sh
+.profile_heading {
+  padding-bottom: 0px;
+}
+.profile_heading .avatar {
+  position: absolute;
+  bottom: -74px;
+  left: 16px;
+}
+
+.profile_heading .avatar img {
+  width: 150px;
+  height: 150px;
+  border-radius: 999px;
+  border: solid 8px var(--fg);
+}
+
+.profile_heading .banner {
+  position: relative; 
+  height: 200;
+}
+
+.profile_heading .info {
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  padding: 16px;
+}
+
+.profile_heading .info .id {
+  padding-top: 70px;
+  flex-grow: 1;
+}
+
+.profile_heading .info .id .display_name {
+  font-size: 24px;
+  font-weight: bold;
+  color: rgb(255,255,255);
+    
+}
+
+.profile_heading .info .id .handle {
+  font-size: 16px;
+  color: rgb(255,255,255,0.7);
+
+}
+```
+
+from s3, create a folder called **banners** under assets.example.com
