@@ -859,14 +859,14 @@ LABEL="bootstrap"
 printf "${CYAN}==== ${LABEL}${NO_COLOR}\n"
 
 ABS_PATH=$(readlink -f "$0")
-bin_path=$(dirname $ABS_PATH)
+bin_dir=$(dirname $ABS_PATH)
 
 echo "Creation local database"
-source "$bin_path/db/setup"
+source "$bin_dir/db/setup"
 echo "Creation local dynamodb"
-python "$bin_path/ddb/schema-load"
+python3 "$bin_dir/ddb/schema-load"
 echo "Seeding mock data"
-python ""$bin_path/ddb/seed"
+python3 "$bin_dir/ddb/seed"
 
 ```
 
@@ -892,7 +892,7 @@ SELECT
       activities.message,
       activities.created_at,
       activities.expires_at
-    FROM public.activities'
+    FROM public.activities
     WHERE
       activities.user_uuid = users.uuid
     ORDER by activities.created_at DESC
@@ -904,7 +904,7 @@ WHERE
 
 ```
 
-from app.py, change the following code
+from user_activities.py, change the following code
 
 ```sh
   now = datetime.now(timezone.utc).astimezone()
@@ -925,14 +925,12 @@ from app.py, change the following code
 
 with this
 ```sh
-   if user_handle == None or len(user_handle) < 1:
+      if user_handle == None or len(user_handle) < 1:
         model['errors'] = ['blank_user_handle']
       else:
-        sql = db.template('user','show')
+        sql = db.template('users','show')
         results = db.query_object_json(sql,{'handle': user_handle})
         return results
-        model['data'] = results
-
 ```
 
 
@@ -950,6 +948,35 @@ from lib.db import db
 ```
 
 from the **userfeedpage.js**
+
+
+Amend the following code:
+```sh
+ const loadData = async () => {
+    try {
+      const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/activities/@${params.handle}`
+      await getAccessToken()
+      const access_token = localStorage.getItem("access_token") 
+      const res = await fetch(backend_url, {
+        headers: {
+          Authorization: `Bearer ${access_token}`
+        },
+        method: "GET"
+      });
+      let resJson = await res.json();
+      if (res.status === 200) {
+        setProfile(resJson.profile)
+        setActivities(resJson.activities)
+      } else {
+        console.log(res)
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+```
+
+```
 
 add the following line
 ```sh
@@ -973,6 +1000,35 @@ return (
     </article>
   );
 }
+```
+
+
+from the **UserFeedPage.js**
+
+changes the following code
+```sh
+import Cookies from 'js-cookie'
+```
+
+with the checkauth library and ad the following
+```sh
+import {checkAuth, getAccessTokn} from '../lib/CheckAuth';
+import ProfileHeading from '../components/ProfileHeading'
+add this following code
+```sh
+const [poppedProfile, setPoppedProfile] = React.useState([]);
+
+```
+
+amend the following code
+
+```sh
+checkAuth(setUser);
+```
+
+removed the following code
+```sh
+  const title = `@${params.handle}`;
 ```
 
 create a new component called **EditProfileButton.js**  and **EditProfileButton.css** under frontend-react-js/src/components 
@@ -1043,58 +1099,6 @@ remove the following code as not needed
   };
 ```
 
-from the **UserFeedPage.js**
-
-changes the following code
-```sh
-import Cookies from 'js-cookie'
-```
-with the checkauth library and ad the following
-```sh
-import {checkAuth, getAccessTokn} from '../lib/CheckAuth';
-import ProfileHeading from '../components/ProfileHeading'
-add this following code
-```sh
-const [poppedProfile, setPoppedProfile] = React.useState([]);
-
-```
-
-and amends the following code:
-```sh
- const loadData = async () => {
-    try {
-      const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/activities/@${params.handle}`
-      await getAccessToken()
-      const access_token = localStorage.getItem("access_token") 
-      const res = await fetch(backend_url, {
-        headers: {
-          Authorization: `Bearer ${access_token}`
-        },
-        method: "GET"
-      });
-      let resJson = await res.json();
-      if (res.status === 200) {
-        setProfile(resJson.profile)
-        setActivities(resJson.activities)
-      } else {
-        console.log(res)
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-```
-
-amend the following code
-
-```sh
-checkAuth(setUser);
-```
-
-removed the following code
-```sh
-  const title = `@${params.handle}`;
-```
 
 From **ActivityFeed.js** modify the following line of code with this
 ```sh

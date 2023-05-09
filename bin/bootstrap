@@ -1,0 +1,16 @@
+#! /usr/bin/bash
+set -e
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="bootstrap"
+printf "${CYAN}==== ${LABEL}${NO_COLOR}\n"
+
+ABS_PATH=$(readlink -f "$0")
+bin_dir=$(dirname $ABS_PATH)
+
+echo "Creation local database"
+source "$bin_dir/db/setup"
+echo "Creation local dynamodb"
+python3 "$bin_dir/ddb/schema-load"
+echo "Seeding mock data"
+python3 "$bin_dir/ddb/seed"
