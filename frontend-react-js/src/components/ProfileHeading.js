@@ -18,10 +18,14 @@ export default function ProfileHeading(props) {
                 <img src="https://assets.johnbuen.co.uk/avatars/data.jpg"></img>
             </div>
         </div>
-        <div className="display_name">{props.display_name}</div>
-        <div className="handle">@{props.handle}</div>
-
-        <EditProfileButton setPopped={props.setPopped} />
+        <div class="info">
+            <div class='id'>
+                <div className="display_name">{props.profile.display_name}</div>
+                <div className="handle">@{props.profile.handle}</div>
+            </div>
+            <EditProfileButton setPopped={props.setPopped} />
+        </div>
+        
     </div>
     );
 }
