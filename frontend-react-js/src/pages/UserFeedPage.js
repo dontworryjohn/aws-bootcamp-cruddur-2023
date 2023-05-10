@@ -13,6 +13,7 @@ export default function UserFeedPage() {
   const [activities, setActivities] = React.useState([]);
   const [profile, setProfile] = React.useState([]);
   const [popped, setPopped] = React.useState([]);
+  const [poppedProfile, setpoppedProfile] = React.useState([]);
   const [user, setUser] = React.useState(null);
   const dataFetchedRef = React.useRef(false);
 
@@ -56,11 +57,17 @@ export default function UserFeedPage() {
       <DesktopNavigation user={user} active={'profile'} setPopped={setPopped} />
       <div className='content'>
         <ActivityForm popped={popped} setActivities={setActivities} />
+        <ProfileForm 
+          profile={profile}
+          popped={poppedProfile} 
+          setPopped={setPoppedProfile} 
+        />
+        
         <div className='activity_feed'>
-          <ProfileHeading profile={profile}/>
+          <ProfileHeading setPopped={setPoppedProfile} profile={profile} />
           <ActivityFeed activities={activities} />
         </div>
-      </div>
+      </div>  
       <DesktopSidebar user={user} />
     </article>
   );
