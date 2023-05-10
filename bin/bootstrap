@@ -9,6 +9,13 @@ printf "${CYAN}==== ${LABEL}${NO_COLOR}\n"
 echo "Creation local database"
 source "$THEIA_WORKSPACE_ROOT/bin/db/setup"
 echo "Creation local dynamodb"
+
+# Check if the table exists and delete it if it does
+if aws dynamodb list-tables --endpoint-url http://localhost:8000 --output text | grep -q "cruddur-messages"; then
+    echo "Deleting existing table"
+    aws dynamodb delete-table --table-name cruddur-messages --endpoint-url http://localhost:8000
+fi
+
 python3 "$THEIA_WORKSPACE_ROOT/bin/ddb/schema-load"
 echo "Seeding mock data"
 python3 "$THEIA_WORKSPACE_ROOT/bin/ddb/seed"
