@@ -12,8 +12,10 @@ echo "Creation local dynamodb"
 
 # Check if the table exists and delete it if it does
 if aws dynamodb list-tables --endpoint-url http://localhost:8000 --output text | grep -q "cruddur-messages"; then
+    echo "===================="
     echo "Deleting existing table"
-    aws dynamodb delete-table --table-name cruddur-messages --endpoint-url http://localhost:8000
+    aws dynamodb delete-table --table-name cruddur-messages --endpoint-url http://localhost:8000 
+    echo "Table Deleted"
 fi
 
 python3 "$THEIA_WORKSPACE_ROOT/bin/ddb/schema-load"
