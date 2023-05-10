@@ -5,12 +5,12 @@ NO_COLOR='\033[0m'
 LABEL="bootstrap"
 printf "${CYAN}==== ${LABEL}${NO_COLOR}\n"
 
-ABS_PATH=$(readlink -f "$0")
-bin_dir=$(dirname $ABS_PATH)
+ABS_PATH_BOOTSTRAP=$(readlink -f "$0")
+BIN_DIR_BOOTSTRAP=$(dirname $ABS_PATH_BOOTSTRAP)
 
 echo "Creation local database"
-source "$bin_dir/db/setup"
+source "$BIN_DIR_BOOTSTRAP/db/setup"
 echo "Creation local dynamodb"
-python3 "$bin_dir/ddb/schema-load"
+python3 "$BIN_DIR_BOOTSTRAP/ddb/schema-load"
 echo "Seeding mock data"
-python3 "$bin_dir/ddb/seed"
+python3 "$BIN_DIR_BOOTSTRAP/ddb/seed"
