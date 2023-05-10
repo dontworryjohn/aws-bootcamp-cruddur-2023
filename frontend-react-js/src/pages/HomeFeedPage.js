@@ -40,13 +40,8 @@ export default function HomeFeedPage() {
     }
   };
 
-
-// check when the page loads if we are authenicated
-//React.useEffect(()=>{
-  //loadData();
-  //checkAuth(setUser);
-//}, [])
-
+  
+// check when the page loads if we are authenticated
   React.useEffect(()=>{
     //prevents double call
     if (dataFetchedRef.current) return;

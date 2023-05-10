@@ -21,4 +21,4 @@ SELECT
     ) array_row) as activities
 FROM public.users
 WHERE
-    users.uuid = %(handle)s
+    users.handle = %(handle)s
