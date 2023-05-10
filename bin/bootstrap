@@ -5,12 +5,10 @@ NO_COLOR='\033[0m'
 LABEL="bootstrap"
 printf "${CYAN}==== ${LABEL}${NO_COLOR}\n"
 
-ABS_PATH_BOOTSTRAP=$(readlink -f "$0")
-BIN_DIR_BOOTSTRAP=$(dirname $ABS_PATH_BOOTSTRAP)
 
 echo "Creation local database"
-source "$BIN_DIR_BOOTSTRAP/db/setup"
+source "$THEIA_WORKSPACE_ROOT/bin/db/setup"
 echo "Creation local dynamodb"
-python3 "$BIN_DIR_BOOTSTRAP/ddb/schema-load"
+python3 "$THEIA_WORKSPACE_ROOT/bin/ddb/schema-load"
 echo "Seeding mock data"
-python3 "$BIN_DIR_BOOTSTRAP/ddb/seed"
+python3 "$THEIA_WORKSPACE_ROOT/bin/ddb/seed"
