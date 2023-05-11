@@ -28,6 +28,8 @@ source  "/workspaces/aws-bootcamp-cruddur-2023/bin/ecr/login"
 #Create Env for codespace
 ruby "/workspaces/aws-bootcamp-cruddur-2023/bin/backend/generate-env-codespace"
 ruby "/workspaces/aws-bootcamp-cruddur-2023/bin/frontend/generate-env-codespace"
+cd /workspaces/aws-bootcamp-cruddur-2023 && ruby ./bin/backend/generate-env-codespaces;
+cd /workspaces/aws-bootcamp-cruddur-2023 && ruby ./bin/frontend/generate-env-codespaces;
 
 #CDK
 cd thumbing-serverless-cdk && cp .env.example .env && npm i && npm install aws-cdk -g;
