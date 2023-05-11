@@ -53,7 +53,7 @@ export default function NotificationFeedPage() {
     dataFetchedRef.current = true;
 
     loadData();
-    checkAuth();
+    checkAuth(setUser);
   }, [])
 
   return (
