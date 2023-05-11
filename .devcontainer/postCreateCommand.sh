@@ -30,7 +30,7 @@ ruby "/workspaces/aws-bootcamp-cruddur-2023/bin/backend/generate-env-codespace"
 ruby "/workspaces/aws-bootcamp-cruddur-2023/bin/frontend/generate-env-codespace"
 
 #CDK
-cd thumbing-serverless-cdk && cp .env.example .env && npm i && npm install aws-cdk -g;
+cd /workspaces/aws-bootcamp-cruddur-2023/thumbing-serverless-cdk && cp .env.example .env && npm i && npm install aws-cdk -g;
 
 #Install Sharp and ClientS3
 cd /workspaces/aws-bootcamp-cruddur-2023/aws/lambdas/process-images && npm i sharp && npm i @aws-sdk/client-s3;
