@@ -7,7 +7,7 @@ printf "${CYAN}==== ${LABEL}${NO_COLOR}\n"
 
 
 echo "Creation local database"
-source "$THEIA_WORKSPACE_ROOT/bin/db/kill-all"
+#source "$THEIA_WORKSPACE_ROOT/bin/db/kill-all"
 source "$THEIA_WORKSPACE_ROOT/bin/db/setup"
 echo "Creation local dynamodb"
 
