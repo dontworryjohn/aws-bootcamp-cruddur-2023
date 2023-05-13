@@ -43,3 +43,8 @@
     font-size: 16px;
     color: rgb(255, 255, 255, 0.7);
 }
+
+.profile_heading .cruds_count {
+    font-size: 14px;
+    color: rgb(255, 255, 255, 0.3);
+}
