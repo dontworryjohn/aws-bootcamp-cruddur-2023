@@ -9,6 +9,8 @@ import RecoverPage from './pages/RecoverPage';
 import MessageGroupsPage from './pages/MessageGroupsPage';
 import MessageGroupPage from './pages/MessageGroupPage';
 import MessageGroupNewPage from './pages/MessageGroupNewPage';
+import './components/Popup.css';
+
 
 import ConfirmationPage from './pages/ConfirmationPage';
 import React from 'react';
