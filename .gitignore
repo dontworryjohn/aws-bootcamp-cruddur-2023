@@ -6,3 +6,4 @@ session-manager-plugin.deb
 *.env
 node_modules
 cdk.out
+Week8Note.md

@@ -9,6 +9,8 @@ import RecoverPage from './pages/RecoverPage';
 import MessageGroupsPage from './pages/MessageGroupsPage';
 import MessageGroupPage from './pages/MessageGroupPage';
 import MessageGroupNewPage from './pages/MessageGroupNewPage';
+import './components/Popup.css';
+
 
 import ConfirmationPage from './pages/ConfirmationPage';
 import React from 'react';
@@ -45,7 +47,7 @@ const router = createBrowserRouter([
     path: "/notifications",
     element: <NotificationFeedPage />
   },
-    {
+  {
     path: "/@:handle",
     element: <UserFeedPage />
   },
@@ -54,8 +56,8 @@ const router = createBrowserRouter([
     element: <MessageGroupsPage />
   },
   {
-    path: "/messages/new/:handle",
-    element: <MessageGroupNewPage />
+    //path: "/messages/new/:handle",
+    //element: <MessageGroupNewPage />
   },
   {
     path: "/messages/:message_group_uuid",
