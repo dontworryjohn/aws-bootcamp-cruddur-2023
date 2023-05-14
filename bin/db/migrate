@@ -17,8 +17,8 @@ def get_last_successful_run():
     SELECT last_successful_run
     FROM public.schema_information
     LIMIT 1
-  """
-  return int(db.query_value(sql,{},verbose=False))
+"""
+  return int(db.query_value(sql,{},verbose=True))
 
 def set_last_successful_run(value):
   sql = """
@@ -26,7 +26,7 @@ def set_last_successful_run(value):
   SET last_successful_run = %(last_successful_run)s
   WHERE id = 1
   """
-  db.query_commit(sql,{'last_successful_run': value},verbose=true)
+  db.query_commit(sql,{'last_successful_run': value},verbose=True)
   return value
 
 last_successful_run = get_last_successful_run()

@@ -44,12 +44,14 @@ for migration_file in migration_files:
     match = re.match(r'^\d+', filename)
     if match:
       file_time = int(match.group())
+      print("====")
+      print(last_successful_run, file_time)
+      print(last_successful_run > file_time)
       if last_successful_run > file_time:
         last_migration_file = module_name
         mod = importlib.import_module(module_name)
-        print('Rolling back : ',module_name)
+        print('===== rolling back: ',module_name)
         mod.migration.rollback()
         set_last_successful_run(file_time)
-
 
 print(last_migration_file)

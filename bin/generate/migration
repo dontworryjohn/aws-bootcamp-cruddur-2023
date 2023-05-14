@@ -12,14 +12,13 @@ else:
 timestamp = str(time.time()).replace(".","")
 
 filename = f"{timestamp}_{name.replace('_', '')}.py"
-
-
 #convert the file name from add_bio_column to addBiocolumn
 klass = name.replace('_', ' ').title().replace(' ','')
 
 file_content = f"""
 from lib.db import db
-class {klass}Migration
+
+class {klass}Migration:
   def migrate_sql():
     data = \"\"\"
     \"\"\"
@@ -32,14 +31,13 @@ class {klass}Migration
   def migrate():
     db.query_commit({klass}Migration.migrate_sql(),{{
     }})
-
   def rollback():
     db.query_commit({klass}Migration.rollback_sql(),{{
     }})
 
 migration = AddBioColumnMigration
 """
-#remove leading and trailing new lines
+#remove leading and trailing new line
 file_content = file_content.lstrip('\n').rstrip('\n')
 
 current_path = os.path.dirname(os.path.abspath(__file__))

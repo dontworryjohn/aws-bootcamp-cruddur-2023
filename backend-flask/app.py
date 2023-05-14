@@ -317,6 +317,7 @@ def data_update_profile():
   except TokenVerifyError as e:
     # unauthenicatied request
     app.logger.debug(e)
+    return {}, 401
 
 if __name__ == "__main__":
   app.run(debug=True)

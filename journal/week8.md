@@ -1611,6 +1611,7 @@ def data_update_profile():
   except TokenVerifyError as e:
     # unauthenicatied request
     app.logger.debug(e)
+    return {}, 401
 ```
 
 and add the import update_profile to the **app.py**
@@ -1685,21 +1686,21 @@ import os
 import sys
 
 if len(sys.argv) == 2:
-  name = sys.argv[1]
+  name = sys.argv[1].lower()
 else:
   print("pass a filename: eg. ./bin/generate/migration add_bio_column")
   exit(0)
 
 timestamp = str(time.time()).replace(".","")
 
-filename = f"{timestamp}_{name}.py"
+filename = f"{timestamp}_{name.replace('_', '')}.py"
 
-#convert the file name from add_bio_column to addBiocolumn
 klass = name.replace('_', ' ').title().replace(' ','')
 
 file_content = f"""
 from lib.db import db
-class {klass}Migration
+
+class {klass}Migration:
   def migrate_sql():
     data = \"\"\"
     \"\"\"
@@ -1712,14 +1713,13 @@ class {klass}Migration
   def migrate():
     db.query_commit({klass}Migration.migrate_sql(),{{
     }})
-
   def rollback():
     db.query_commit({klass}Migration.rollback_sql(),{{
     }})
 
 migration = AddBioColumnMigration
 """
-#remove leading and trailing new lines
+#remove leading and trailing new line
 file_content = file_content.lstrip('\n').rstrip('\n')
 
 current_path = os.path.dirname(os.path.abspath(__file__))
@@ -1806,7 +1806,7 @@ def set_last_successful_run(value):
   SET last_successful_run = %(last_successful_run)s
   WHERE id = 1
   """
-  db.query_commit(sql,{'last_successful_run': value},verbose=true)
+  db.query_commit(sql,{'last_successful_run': value})
   return value
 
 last_successful_run = get_last_successful_run()
@@ -1816,18 +1816,25 @@ sys.path.append(migrations_path)
 migration_files = glob.glob(f"{migrations_path}/*")
 
 
+last_migration_file = None
 for migration_file in migration_files:
-  filename = os.path.basename(migration_file)
-  module_name = os.path.splitext(filename)[0]
-  match = re.match(r'^\d+', filename)
-  if match:
-    file_time = int(match.group())
-    if last_successful_run <= file_time:
-      mod = importlib.import_module(module_name)
-      print('running migration: ',module_name)
-      mod.migration.migrate()
-      timestamp = str(time.time()).replace(".","")
-      last_successful_run = set_last_successful_run(timestamp)
+  if last_migration_file == None:
+    filename = os.path.basename(migration_file)
+    module_name = os.path.splitext(filename)[0]
+    match = re.match(r'^\d+', filename)
+    if match:
+      file_time = int(match.group())
+      print("====")
+      print(last_successful_run, file_time)
+      print(last_successful_run > file_time)
+      if last_successful_run > file_time:
+        last_migration_file = module_name
+        mod = importlib.import_module(module_name)
+        print('===== rolling back: ',module_name)
+        mod.migration.rollback()
+        set_last_successful_run(file_time)
+
+print(last_migration_file)
 
 ```
 Make the file executable by launching chmod u+x for the  **bin/db/migrate** 
@@ -1880,20 +1887,22 @@ for migration_file in migration_files:
     match = re.match(r'^\d+', filename)
     if match:
       file_time = int(match.group())
+      print("====")
+      print(last_successful_run, file_time)
+      print(last_successful_run > file_time)
       if last_successful_run > file_time:
         last_migration_file = module_name
         mod = importlib.import_module(module_name)
-        print('Rolling back : ',module_name)
+        print('===== rolling back: ',module_name)
         mod.migration.rollback()
         set_last_successful_run(file_time)
-
 
 print(last_migration_file)
 ```
 
 Make the file executable by launching chmod u+x for the **bin/db/rollback** 
 
-from the **schema.sql** we need to add the new table that creates the schema_information that stores the last successful run and the last migration file
+from the **schema.sql** we need to add the new table that creates the schema_information that stores the last successful run and the last migration file. We need to enter to the psql using the script **./bin/db/connect**
 
 ```sh
 CREATE TABLE IF NOT EXISTS public.schema_information (
@@ -1901,12 +1910,11 @@ CREATE TABLE IF NOT EXISTS public.schema_information (
   last_successful_run text
 );
 ```
-and also the following code
+and launch the following query
 ```sh
-INSERT INTO public.schema_information (id,last_succesful_run)
+INSERT INTO public.schema_information (id,last_successful_run)
 VALUES (1,'0')
 ON CONFLICT (id) DO NOTHING;
-
 ```
 
 from the **db.py**, change the following lines
@@ -1949,6 +1957,23 @@ def query_object_json(self,sql,params={},verbose=True):
 def query_value(self,sql,params={},verbose=True):
   if verbose:
     self.print_sql('value',sql,params)
+```
+
+Note: to test the Migrate script and Roll script, you need to update manupulate the table schema information and the user.
+
+this query update the value of last successful run to 0
+```sh
+ update schema_information set last_successful_run = 0;
+ ```
+
+this query remove the column bio from the table users
+ ```sh
+ALTER TABLE public.users DROP COLUMN bio;
+```
+
+use also the following command to see the bahaviour of the column
+```sh
+\dt users
 ```
 
 Change the **ProfileHeading.js**
