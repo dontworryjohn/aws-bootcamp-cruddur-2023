@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS public.schema_information (
   last_successful_run text
 );
 
-INSERT INTO public.schema_information (id, last_successful_run)
-VALUES (0,'1')
+INSERT INTO public.schema_information (id,last_successful_run)
+VALUES (1,'0')
 ON CONFLICT (id) DO NOTHING;
 
 CREATE TABLE public.users (

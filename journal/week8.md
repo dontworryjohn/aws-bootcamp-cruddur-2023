@@ -1973,7 +1973,7 @@ ALTER TABLE public.users DROP COLUMN bio;
 
 use also the following command to see the bahaviour of the column
 ```sh
-\dt users
+\d users
 ```
 
 Change the **ProfileHeading.js**
