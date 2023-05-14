@@ -316,7 +316,7 @@ def data_update_profile():
       return model['data'], 200
   except TokenVerifyError as e:
     # unauthenicatied request
-    app.logger.debug(e
+    app.logger.debug(e)
 
 if __name__ == "__main__":
   app.run(debug=True)

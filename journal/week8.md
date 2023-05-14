@@ -1610,7 +1610,7 @@ def data_update_profile():
       return model['data'], 200
   except TokenVerifyError as e:
     # unauthenicatied request
-    app.logger.debug(e
+    app.logger.debug(e)
 ```
 
 and add the import update_profile to the **app.py**
@@ -1683,7 +1683,6 @@ create a file called **migration** under **.bin/generate/**
 import time
 import os
 import sys
-from lib.db import db
 
 if len(sys.argv) == 2:
   name = sys.argv[1]
@@ -1695,10 +1694,11 @@ timestamp = str(time.time()).replace(".","")
 
 filename = f"{timestamp}_{name}.py"
 
-#conver the file name from add_bio_column to addBiocolumn
+#convert the file name from add_bio_column to addBiocolumn
 klass = name.replace('_', ' ').title().replace(' ','')
 
 file_content = f"""
+from lib.db import db
 class {klass}Migration
   def migrate_sql():
     data = \"\"\"
@@ -1728,6 +1728,11 @@ print(file_path)
 
 with open(file_path, 'w') as f:
   f.write(file_content)
+  ```
+
+Note: we can enforce that the name assigned is lowercase by changing the line with this
+```sh
+name = sys.argv[1].lower()
 ```
 
 from the **backend-flask/db/** create a folder called **migration**
