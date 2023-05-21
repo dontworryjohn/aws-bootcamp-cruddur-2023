@@ -21,7 +21,7 @@ tasks:
       # source  "$THEIA_WORKSPACE_ROOT/bin/services/start"
       ruby "$THEIA_WORKSPACE_ROOT/bin/backend/generate-env-gitpod"
       ruby "$THEIA_WORKSPACE_ROOT/bin/frontend/generate-env-gitpod"
-      
+
   - name: react-js
     command: |
       cd frontend-react-js
@@ -56,7 +56,8 @@ tasks:
 vscode:
   extensions:
     - 42Crunch.vscode-openapi
-    
+    - rangav.vscode-thunder-client
+
 # open the ports for the service by default
 ports:
   - name: frontend
