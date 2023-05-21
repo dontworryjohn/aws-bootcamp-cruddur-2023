@@ -2208,15 +2208,18 @@ from the folder **lambda-authorizer** install the dependecy
 npm install aws-jwt-verify --save
 ```
 
-Once installed, create a zip file containing all the files of the **lambda-authorizer** by using the following code
+Once installed, create a zip file containing all the files of the **lambda-authorizer** by using the following code. 
+
+Note: You must set the folder above (For example: /workspace/aws-bootcamp-cruddur-2023/aws/lambdas  )
 
 ```sh
-zip -r lambda-authorizer.zip lambda-authorizer
+zip -r lambda-authorizer.zip lambda-authorizer/
 ```
 
-The following link is how to create the lambda function authorizer for API gateway
 
-[here](https://scribehow.com/shared/Creating_a_New_Lambda_Function_for_API_Gateway_Authorizer__pVyjG006QZKX77JnCq49dg)
+The following link is how to create the lambda function authorizer for API gateway [here](https://scribehow.com/shared/Creating_a_New_Lambda_Function_for_API_Gateway_Authorizer__pVyjG006QZKX77JnCq49dg)
+
+Once you created the Lambda, load the file zip created before.
 
 
 Create the api gateway following guide attaching the lambdas created before
