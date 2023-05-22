@@ -2219,10 +2219,8 @@ zip -r lambda-authorizer.zip lambda-authorizer/
 
 The following link is how to create the lambda function authorizer for API gateway [here](https://scribehow.com/shared/Creating_a_New_Lambda_Function_for_API_Gateway_Authorizer__pVyjG006QZKX77JnCq49dg)
 
-Once you created the Lambda, load the file zip created before.
 
-
-Create the api gateway following guide attaching the lambdas created before
+Create the api gateway following guide attaching the lambdas created before [Here](https://scribehow.com/shared/How_to_Configure_API_Gateway_with_Lambda_Authorizer__gYXsfpjWSlO3mwiJATt06Q)
 
 from the **profileform.js** add a new function
 
