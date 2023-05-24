@@ -50,7 +50,7 @@ export default function ProfileForm(props) {
     //formData.append('file', file);
     try {
       console.log('s3upload')
-      const backend_url = "https://johnbuen-uploaded-avatars.s3.eu-west-2.amazonaws.com/mock.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIATPI4YUX3WEDNR66F%2F20230524%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230524T055817Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=7ca3d0e2554660ed6cb2e17fca09f10c923af4a2403a9db65269db7342941e50"
+      const backend_url = "insert the new url"
       const res = await fetch(backend_url, {
         method: "PUT",
         body: file,
