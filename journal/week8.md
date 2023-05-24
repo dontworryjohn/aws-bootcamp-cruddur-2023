@@ -2092,6 +2092,8 @@ This command install all the requiremenets
 bundle install
 ```
 
+Note: if you restart the workspace, you have to redo the installation of the requirement
+
 Add the following file code to the **function.rb**:
 ```sh
 require 'aws-sdk-s3'
@@ -2104,7 +2106,7 @@ def handler(event:, context:)
   object_key = 'mock.jpg'
 
   obj = s3.bucket(bucket_name).object(object_key)
-  url = obj.presigned_url(:put, expires_in: 300)
+  url = obj.presigned_url(:put, expires_in: 3600)
   url # this is the data that it will be returned
   body = {url: url}.to_json
   { statusCode: 200, body: body }
@@ -2219,114 +2221,21 @@ zip -r lambda-authorizer.zip lambda-authorizer/
 
 The following link is how to create the lambda function authorizer for API gateway [here](https://scribehow.com/shared/Creating_a_New_Lambda_Function_for_API_Gateway_Authorizer__pVyjG006QZKX77JnCq49dg)
 
+> add how to create the cors on api gateway
 
 Create the api gateway following guide attaching the lambdas created before [Here](https://scribehow.com/shared/How_to_Configure_API_Gateway_with_Lambda_Authorizer__gYXsfpjWSlO3mwiJATt06Q)
 
 from the **profileform.js** add a new function
 
 ```sh
-import './ProfileForm.css';
-import React from "react";
-import process from 'process';
-import {getAccessToken} from 'lib/CheckAuth';
+to inser the new updated
+```
 
-export default function ProfileForm(props) {
-  const [bio, setBio] = React.useState(0);
-  const [displayName, setDisplayName] = React.useState(0);
+And from the **ProfileForm.css**, add the following code to make visible the **avatar upload**
 
-  React.useEffect(()=>{
-    console.log('useEffects',props)
-    setBio(props.profile.bio);
-    setDisplayName(props.profile.display_name);
-  }, [props.profile])
-
-const s3upload = async (event) => {
-
-}
-
-  const onsubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/profile/update`
-      await getAccessToken()
-      const access_token = localStorage.getItem("access_token")
-      const res = await fetch(backend_url, {
-        method: "POST",
-        headers: {
-          'Authorization': `Bearer ${access_token}`,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          bio: bio,
-          display_name: displayName
-        }),
-      });
-      let data = await res.json();
-      if (res.status === 200) {
-        setBio(null)
-        setDisplayName(null)
-        props.setPopped(false)
-      } else {
-        console.log(res)
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  const bio_onchange = (event) => {
-    setBio(event.target.value);
-  }
-
-  const display_name_onchange = (event) => {
-    setDisplayName(event.target.value);
-  }
-
-  const close = (event)=> {
-    if (event.target.classList.contains("profile_popup")) {
-      props.setPopped(false)
-    }
-  }
-
-  if (props.popped === true) {
-    return (
-      <div className="popup_form_wrap profile_popup" onClick={close}>
-        <form 
-          className='profile_form popup_form'
-          onSubmit={onsubmit}
-        >
-          <div className="popup_heading">
-            <div className="popup_title">Edit Profile</div>
-            <div className='submit'>
-              <button type='submit'>Save</button>
-            </div>
-          </div>
-          <div className="popup_content">
-            <div className="upload" onClick={s3upload}>
-              Upload Avatar
-            </div>
-            <div className="field display_name">
-              <label>Display Name</label>
-              <input
-                type="text"
-                placeholder="Display Name"
-                value={displayName}
-                onChange={display_name_onchange} 
-              />
-            </div>
-            <div className="field bio">
-              <label>Bio</label>
-              <textarea
-                placeholder="Bio"
-                value={bio}
-                onChange={bio_onchange} 
-              />
-            </div>
-          </div>
-        </form>
-      </div>
-    );
-  }
+```sh
+.profile_popup .upload {
+  color: white;
+  background: rgba(149,0,255,1);
 }
 ```

@@ -46,7 +46,10 @@ tasks:
       cp .env.example .env
       npm i
       npm install aws-cdk -g
-
+  - name: bundle ruby cruddur upload avatar
+    before: |
+      cd $THEIA_WORKSPACE_ROOT/aws/lambdas/cruddur-upload-avatar
+      bundle install
   - name: sharp and clients3
     command: |
       cd aws/lambdas/process-images

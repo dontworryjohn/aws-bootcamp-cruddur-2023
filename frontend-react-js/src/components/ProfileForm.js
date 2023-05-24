@@ -13,9 +13,62 @@ export default function ProfileForm(props) {
     setDisplayName(props.profile.display_name);
   }, [props.profile])
 
-  const s3upload = async (event) => {
-
+  const s3uploadkey = async (event) => {
+    try {
+      console.log('s3uploadkey')
+      const backend_url = "https://efj0vmip4e.execute-api.eu-west-2.amazonaws.com/avatars/key_upload"
+      await getAccessToken()
+      const access_token = localStorage.getItem("access_token")
+      const res = await fetch(backend_url, {
+        method: "POST",
+        headers: {
+          'Authorization': `Bearer ${access_token}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }})
+      let data = await res.json();
+      if (res.status === 200) {
+        console.log('presigned url',data)
+      } else {
+        console.log(res)
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
+
+  const s3upload = async (event) => {
+    console.log('event',event)
+    const file = event.target.files[0]
+    console.log('file',file)
+    const filename = file.name
+    const size = file.size
+    const type = file.type
+    const preview_image_url = URL.createObjectURL(file)
+    console.log(filename, size, type)
+    //const formData = new FormData();
+    //formData.append('file', file);
+    try {
+      console.log('s3upload')
+      const backend_url = "https://johnbuen-uploaded-avatars.s3.eu-west-2.amazonaws.com/mock.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIATPI4YUX3WEDNR66F%2F20230524%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230524T055817Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=7ca3d0e2554660ed6cb2e17fca09f10c923af4a2403a9db65269db7342941e50"
+      const res = await fetch(backend_url, {
+        method: "PUT",
+        body: file,
+        headers: {
+          'Content-Type': type
+        }})
+      let data = await res.json();
+      if (res.status === 200) {
+        console.log('presigned url',data)
+      } else {
+        console.log(res)
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+
 
   const onsubmit = async (event) => {
     event.preventDefault();
@@ -76,9 +129,10 @@ export default function ProfileForm(props) {
             </div>
           </div>
           <div className="popup_content">
-            <div className="upload" onClick={s3upload}>
+            <div className="upload" onClick={s3uploadkey}>
               Upload Avatar
             </div>
+          <input type="file" name="avatarupload" onChange={s3upload} />
             <div className="field display_name">
               <label>Display Name</label>
               <input
