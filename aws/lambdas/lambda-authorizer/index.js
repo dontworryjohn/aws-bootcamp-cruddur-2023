@@ -7,7 +7,7 @@ const jwtVerifier = CognitoJwtVerifier.create({
   tokenUse: "access",
   clientId: process.env.CLIENT_ID//,
   //customJwtCheck: ({ payload }) => {
-    //assertStringEquals("e-mail", payload["email"], process.env.USER_EMAIL);
+  //  assertStringEquals("e-mail", payload["email"], process.env.USER_EMAIL);
   //},
 });
 
