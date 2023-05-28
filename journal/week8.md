@@ -2222,7 +2222,7 @@ zip -r lambda-authorizer.zip .
 The following link is how to create the lambda function authorizer for API gateway [here](https://scribehow.com/shared/Creating_a_New_Lambda_Function_for_API_Gateway_Authorizer__pVyjG006QZKX77JnCq49dg)
 
 Note make sure to add the environment variables as on the image that is on your cognito user pool
-![image](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/implementation-Avatar-uploading/imagesenvvar.png)
+![image](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/implementation-Avatar-uploading/images/envvar.png)
 
 > add how to create the cors on api gateway
 
