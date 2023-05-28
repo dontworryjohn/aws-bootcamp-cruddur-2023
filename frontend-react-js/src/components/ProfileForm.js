@@ -23,7 +23,7 @@ export default function ProfileForm(props) {
         method: "POST",
         headers: {
           'Origin': process.env.FRONTEND_URL,
-          'Authorization': `Bearer ${access_token}`,
+          'Authorization': `${access_token}`,
           'Accept': 'application/json',
           'Content-Type': 'application/json'
       }})

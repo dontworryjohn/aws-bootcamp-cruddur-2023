@@ -2256,7 +2256,7 @@ export default function ProfileForm(props) {
         method: "POST",
         headers: {
           'Origin': "https://dontworryjo-awsbootcamp-9skzhx6st0i.ws-eu98.gitpod.io",
-          'Authorization': `Bearer ${access_token}`,
+          'Authorization': `${access_token}`,
           'Accept': 'application/json',
           'Content-Type': 'application/json'
       }})

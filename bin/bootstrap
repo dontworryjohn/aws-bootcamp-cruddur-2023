@@ -22,4 +22,4 @@ fi
 python3 "$THEIA_WORKSPACE_ROOT/bin/ddb/schema-load"
 echo "Seeding mock data"
 python3 "$THEIA_WORKSPACE_ROOT/bin/ddb/seed"
-source "$THEIA_WORKSPACE_ROOT/bin/db/migrate"
+python3 "$THEIA_WORKSPACE_ROOT/bin/db/migrate"
