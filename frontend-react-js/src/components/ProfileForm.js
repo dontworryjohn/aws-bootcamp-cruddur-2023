@@ -15,23 +15,21 @@ export default function ProfileForm(props) {
 
   const s3uploadkey = async (event)=> {
     try {
-      console.log('s3upload')
+      console.log('s3uploadkey')
       const backend_url = "https://7mikzwim9i.execute-api.eu-west-2.amazonaws.com/avatars/key_upload"
-      const frontend_url = process.env.FRONTEND_URL
       await getAccessToken()
       const access_token = localStorage.getItem("access_token")
       const res = await fetch(backend_url, {
         method: "POST",
         headers: {
-          'Origin': frontend_url,
+          'Origin': process.env.FRONTEND_URL,
           'Authorization': `Bearer ${access_token}`,
           'Accept': 'application/json',
           'Content-Type': 'application/json'
       }})
       let data = await res.json();
       if (res.status === 200) {
-        console.log('presigned url',data)
-        //return data.url
+        console.log("presigned url:", data)
       } else {
         console.log(res)
       }
