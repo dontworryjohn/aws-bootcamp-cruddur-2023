@@ -2095,25 +2095,39 @@ bundle install
 Note: if you restart the workspace, you have to redo the installation of the requirement
 
 Add the following file code to the **function.rb**:
-```sh
+```ruby
 require 'aws-sdk-s3'
 require 'json'
-
 def handler(event:, context:)
   puts event
   s3 = Aws::S3::Resource.new
   bucket_name = ENV["UPLOADS_BUCKET_NAME"]
   object_key = 'mock.jpg'
-
   obj = s3.bucket(bucket_name).object(object_key)
-  url = obj.presigned_url(:put, expires_in: 3600)
+  url = obj.presigned_url(:put, expires_in: 300)
   url # this is the data that it will be returned
   body = {url: url}.to_json
-  { statusCode: 200, body: body }
+  {
+    headers: {
+      "Access-Control-Allow-Headers": "*, Authorization",
+      "Access-Control-Allow-Origin": "https://3000-dontworryjo-awsbootcamp-z10i8ne516j.ws-eu98.gitpod.io",
+      "Access-Control-Allow-Methods": "OPTIONS,GET,POST"
+    },
+    statusCode: 200,
+    body: body
+  } 
 end
+#use for debugging
+puts handler(
+  event: {},
+  context: {}
+)
 ```
 
-to execute the **function.rb** locally launch the following command:
+**Note:** On "Access-Control-Allow-Origin", make sure to insert your `FRONTEND_URL` origin from gitpod which is the url you login to the app and not the url of your gitpod development. Make sure to include the protocol
+Later you will use your production origin (i.e `https://example/com`)
+
+to execute the `function.rb` locally launch the following command:
 ```sh
 bundle exec ruby function.rb
 ```
@@ -2163,7 +2177,7 @@ Follow the link
 
 Make sure to add also the Env Var for the lambda similar to the example below
 
-![image](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/implementation-Avatar-uploading/images/uploadbucketname.png)
+[image](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/implementation-Avatar-uploading/images/uploadbucketname.png)
 
 >Note: Change the value of the bucket with yours.
 
@@ -2224,13 +2238,12 @@ The following link is how to create the lambda function authorizer for API gatew
 Note make sure to add the environment variables as on the image that is on your cognito user pool
 ![image](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/implementation-Avatar-uploading/images/envvar.png)
 
-> add how to create the cors on api gateway
 
 Create the api gateway following guide attaching the lambdas created before [Here](https://scribehow.com/shared/How_to_Configure_API_Gateway_with_Lambda_Authorizer__gYXsfpjWSlO3mwiJATt06Q)
 
 from the **profileform.js** add a new function
 
-```sh
+```js
 import './ProfileForm.css';
 import React from "react";
 import process from 'process';
@@ -2248,7 +2261,7 @@ export default function ProfileForm(props) {
 
   const s3uploadkey = async (event)=> {
     try {
-      console.log('s3upload')
+      console.log('s3uploadkey')
       const backend_url = "https://efj0vmip4e.execute-api.eu-west-2.amazonaws.com/avatars/key_upload"
       await getAccessToken()
       const access_token = localStorage.getItem("access_token")
@@ -2263,7 +2276,7 @@ export default function ProfileForm(props) {
       let data = await res.json();
       if (res.status === 200) {
         console.log('presigned url',data)
-        //return data.url
+        return data.url
       } else {
         console.log(res)
       }
@@ -2283,10 +2296,11 @@ export default function ProfileForm(props) {
     console.log(filename, size, type)
     //const formData = new FormData();
     //formData.append('file', file);
+    presignedurl = await s3uploadkey()
+    console.log(presignedurl)
     try {
       console.log('s3upload')
-      const backend_url = "insert the new url"
-      const res = await fetch(backend_url, {
+      const res = await fetch(presignedurl, {
         method: "PUT",
         body: file,
         headers: {
@@ -2294,7 +2308,7 @@ export default function ProfileForm(props) {
         }})
       let data = await res.json();
       if (res.status === 200) {
-        console.log('presigned url',data)
+        setPresignedUrl(data.url)
       } else {
         console.log(res)
       }
@@ -2364,9 +2378,11 @@ export default function ProfileForm(props) {
             </div>
           </div>
           <div className="popup_content">
+          <!--  
             <div className="upload" onClick={s3uploadkey}>
               Upload Avatar
             </div>
+          -->
           <input type="file" name="avatarupload" onChange={s3upload} />
             <div className="field display_name">
               <label>Display Name</label>
@@ -2395,9 +2411,48 @@ export default function ProfileForm(props) {
 
 And from the **ProfileForm.css**, add the following code to make visible the **avatar upload**
 
-```sh
+```css
 .profile_popup .upload {
   color: white;
   background: rgba(149,0,255,1);
 }
 ```
+from the bucket called `johnbuen-uploaded-avatars` on the section Cross-origin resource sharing (CORS):
+
+add the following code
+```json
+[
+    {
+        "AllowedHeaders": [
+            "*"
+        ],
+        "AllowedMethods": [
+            "PUT"
+        ],
+        "AllowedOrigins": [
+            "https://*.gitpod.io"
+        ],
+        "ExposeHeaders": [
+            "x-amz-server-side-encryption",
+            "x-amz-request-id",
+            "x-amz-id-2"
+        ],
+        "MaxAgeSeconds": 3000
+    }
+]
+```
+
+
+
+
+
+
+
+
+
+## Troubleshooting section
+
+When i have to investigate, i check on my cloudwatch log groups to see if the lambda works.
+In specific check the log for the `CruddurAvatarUpload` and `CruddurApiGatewayLambdaAuthorizer`
+
+
