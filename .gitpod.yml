@@ -21,7 +21,7 @@ tasks:
       # source  "$THEIA_WORKSPACE_ROOT/bin/services/start"
       ruby "$THEIA_WORKSPACE_ROOT/bin/backend/generate-env-gitpod"
       ruby "$THEIA_WORKSPACE_ROOT/bin/frontend/generate-env-gitpod"
-      
+
   - name: react-js
     command: |
       cd frontend-react-js
@@ -46,7 +46,10 @@ tasks:
       cp .env.example .env
       npm i
       npm install aws-cdk -g
-
+  - name: bundle ruby cruddur upload avatar
+    before: |
+      cd $THEIA_WORKSPACE_ROOT/aws/lambdas/cruddur-upload-avatar
+      bundle install
   - name: sharp and clients3
     command: |
       cd aws/lambdas/process-images
@@ -56,7 +59,8 @@ tasks:
 vscode:
   extensions:
     - 42Crunch.vscode-openapi
-    
+    - rangav.vscode-thunder-client
+
 # open the ports for the service by default
 ports:
   - name: frontend

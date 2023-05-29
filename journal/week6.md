@@ -1859,6 +1859,6 @@ with the new one
 
 
 ### Reference
-![Ashish Video Cloud Security Podcast](https://www.youtube.com/watch?v=zz2FQAk1I28&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=58)
+[Ashish Video Cloud Security Podcast](https://www.youtube.com/watch?v=zz2FQAk1I28&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=58)
 
-![Ashish Video Cloud Security Podcast](https://www.youtube.com/watch?v=MzVCEViI8Gg&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=70)
+[Ashish Video Cloud Security Podcast](https://www.youtube.com/watch?v=MzVCEViI8Gg&list=PLBfufR7vyJJ7k25byhRXJldB5AiwgNnWv&index=70)
