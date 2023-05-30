@@ -2468,6 +2468,7 @@ Since we changed some urls hardcoded to `REACT_APP_FRONTEND_URL` and `REACT_APP_
 ```sh
 REACT_APP_FRONTEND_URL=https://3000-<%= ENV['GITPOD_WORKSPACE_ID'] %>.<%= ENV['GITPOD_WORKSPACE_CLUSTER_HOST'] %>
 REACT_APP_API_GATEWAY_ENDPOINT_URL=<%= ENV['API_GATEWAY_ENDPOINT_URL'] %>
+```
 
 From the **ProfileForm.css**, add the following code to make visible the **avatar upload**
 
