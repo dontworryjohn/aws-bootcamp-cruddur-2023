@@ -22,7 +22,7 @@ export default function ProfileForm(props) {
       const res = await fetch(backend_url, {
         method: "POST",
         headers: {
-          'Origin': process.env.FRONTEND_URL,
+          'Origin': process.env.REACT_APP_FRONTEND_URL,
           'Authorization': `${access_token}`,
           'Accept': 'application/json',
           'Content-Type': 'application/json'
