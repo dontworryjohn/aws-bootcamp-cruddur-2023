@@ -2104,7 +2104,7 @@ require 'jwt'
 def handler(event:, context:)
   puts event
   # return cors headers for preflight check
-  if event['routeKey'] == "OPTION /{proxy+}"
+  if event['routeKey'] == "OPTIONS /{proxy+}"
     puts({step: 'preflight', message: 'preflight CORS check'}.to_json)
     {
       headers: {
