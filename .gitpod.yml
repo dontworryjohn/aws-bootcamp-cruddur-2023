@@ -21,7 +21,6 @@ tasks:
       # source  "$THEIA_WORKSPACE_ROOT/bin/services/start"
       ruby "$THEIA_WORKSPACE_ROOT/bin/backend/generate-env-gitpod"
       ruby "$THEIA_WORKSPACE_ROOT/bin/frontend/generate-env-gitpod"
-      source "$THEIA_WORKSPACE_ROOT/bin/ssm/parameters"
       
 
   - name: react-js
