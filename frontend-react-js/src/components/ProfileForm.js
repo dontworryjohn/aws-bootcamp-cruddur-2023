@@ -4,8 +4,8 @@ import process from 'process';
 import {getAccessToken} from 'lib/CheckAuth';
 
 export default function ProfileForm(props) {
-  const [bio, setBio] = React.useState(0);
-  const [displayName, setDisplayName] = React.useState(0);
+  const [bio, setBio] = React.useState('');
+  const [displayName, setDisplayName] = React.useState('');
 
   React.useEffect(()=>{
     setBio(props.profile.bio || '');
@@ -14,7 +14,6 @@ export default function ProfileForm(props) {
 
   const s3uploadkey = async (event)=> {
     try {
-      console.log('s3uploadkey')
       const api_gateway = `${process.env.REACT_APP_API_GATEWAY_ENDPOINT_URL}/avatars/key_upload`
       await getAccessToken()
       const access_token = localStorage.getItem("access_token")
@@ -28,7 +27,6 @@ export default function ProfileForm(props) {
       }})
       let data = await res.json();
       if (res.status === 200) {
-        console.log("presigned url",data)
         return data.url
       } else {
         console.log(res)
@@ -50,7 +48,6 @@ export default function ProfileForm(props) {
     //const formData = new FormData();
     //formData.append('file', file);
     const presignedurl = await s3uploadkey()
-    console.log(presignedurl)
     try {
       console.log('s3upload')
       const res = await fetch(presignedurl, {
@@ -59,9 +56,10 @@ export default function ProfileForm(props) {
         headers: {
           'Content-Type': type
         }})
-      let data = await res.json();
+   
+      //let data = await res.json();
       if (res.status === 200) {
-        setPresignedurl(data.url)
+        //setPresignedurl(data.url)
       } else {
         console.log(res)
       }
