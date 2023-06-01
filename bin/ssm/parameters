@@ -1,0 +1,4 @@
+#! /usr/bin/bash
+
+export URL="https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+aws ssm put-parameter --type "SecureString" --name "/cruddur/CruddurAvatarUpload/LAMBDA_FRONTEND" --value $URL --overwrite
