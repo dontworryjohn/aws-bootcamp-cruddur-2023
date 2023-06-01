@@ -1,4 +1,8 @@
 #! /usr/bin/bash
 
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="Update SSM paramters"
+printf "${CYAN}==== ${LABEL}${NO_COLOR}\n"
 export URL="https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
 aws ssm put-parameter --type "SecureString" --name "/cruddur/CruddurAvatarUpload/LAMBDA_FRONTEND" --value $URL --overwrite
