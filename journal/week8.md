@@ -2097,27 +2097,42 @@ Note: if you restart the workspace, you have to redo the installation of the req
 
 Add the following file code to the **function.rb**:
 ```ruby
+
+      
+#use for debugging
 require 'aws-sdk-s3'
 require 'json'
+require 'aws-sdk-ssm'
 require 'jwt'
 
 def handler(event:, context:)
+  # Create an AWS SSM client
+  ssm_client = Aws::SSM::Client.new
+  # Retrieve the value of an environment variable from SSM Parameter Store
+  response = ssm_client.get_parameter({
+    name: '/cruddur/CruddurAvatarUpload/LAMBDA_FRONTEND',
+    with_decryption: true
+  })
+  # Access the environment variable value
+  frontend_url = response.parameter.value
+  puts frontend_url
+
   puts event
-  # return cors headers for preflight check
-  if event['routeKey'] == "OPTIONS /{proxy+}"
-    puts({step: 'preflight', message: 'preflight CORS check'}.to_json)
+  # Return CORS headers for preflight check
+  if event['routeKey'] == "OPTIONS /{prefix+}"
+    puts({ step: 'preflight', message: 'preflight CORS check' }.to_json)
     {
       headers: {
         "Access-Control-Allow-Headers": "*, Authorization",
-        "Access-Control-Allow-Origin": "https://3000-dontworryjo-awsbootcamp-z10i8ne516j.ws-eu98.gitpod.io",
+        "Access-Control-Allow-Origin": frontend_url,
         "Access-Control-Allow-Methods": "OPTIONS,GET,POST"
       },
-      statusCode: 200
+      statusCode: 200,
     }
   else
-    token = token['headers']['authorization'].split(' ')[1]
-    puts({step: 'presignedurl', access_token: token}.to_json)
-
+    token = event['headers']['authorization'].split(' ')[1]
+    puts({ step: 'presigned url', access_token: token }.to_json)
+    
     body_hash = JSON.parse(event["body"])
     extension = body_hash["extension"]
 
@@ -2128,25 +2143,23 @@ def handler(event:, context:)
     bucket_name = ENV["UPLOADS_BUCKET_NAME"]
     object_key = "#{cognito_user_uuid}.#{extension}"
 
-    puts ({object_key: object_key}.to_json)
+    puts({object_key: object_key}.to_json)
 
     obj = s3.bucket(bucket_name).object(object_key)
     url = obj.presigned_url(:put, expires_in: 300)
-    url # this is the data that it will be returned
-    body = {url: url}.to_json
+    url # this is the data that will be returned
+    body = { url: url }.to_json
     {
       headers: {
         "Access-Control-Allow-Headers": "*, Authorization",
-        "Access-Control-Allow-Origin": "https://3000-dontworryjo-awsbootcamp-z10i8ne516j.ws-eu98.gitpod.io",
+        "Access-Control-Allow-Origin": frontend_url,
         "Access-Control-Allow-Methods": "OPTIONS,GET,POST"
       },
       statusCode: 200,
       body: body
     }
   end
-end 
-      
-#use for debugging
+end
 #puts handler(
 #  event: {},
 #  context: {}
@@ -2243,16 +2256,16 @@ const jwtVerifier = CognitoJwtVerifier.create({
   tokenUse: "access",
   clientId: process.env.CLIENT_ID//,
   //customJwtCheck: ({ payload }) => {
-    //assertStringEquals("e-mail", payload["email"], process.env.USER_EMAIL);
+  //  assertStringEquals("e-mail", payload["email"], process.env.USER_EMAIL);
   //},
 });
 
 exports.handler = async (event) => {
   console.log("request:", JSON.stringify(event, undefined, 2));
 
-  const jwt = event.headers.authorization;
+  const token = JSON.stringify(event.headers["authorization"]).split(" ")[1].replace(/['"]+/g, '');
   try {
-    const payload = await jwtVerifier.verify(jwt);
+    const payload = await jwtVerifier.verify(token);
     console.log("Access allowed. JWT payload:", payload);
   } catch (err) {
     console.error("Access forbidden:", err);
@@ -2302,30 +2315,28 @@ export default function ProfileForm(props) {
   const [displayName, setDisplayName] = React.useState('');
 
   React.useEffect(()=>{
-    //console.log('useEffects',props)
     setBio(props.profile.bio || '');
     setDisplayName(props.profile.display_name);
   }, [props.profile])
 
   const s3uploadkey = async (extension)=> {
-    console.log('ext',extension)
+    console.log('external',extension)
     try {
-      const gateway_url = `${process.env.REACT_APP_API_GATEWAY_ENDPOINT_URL}/avatars/key_upload`
+      const api_gateway = `${process.env.REACT_APP_API_GATEWAY_ENDPOINT_URL}/avatars/key_upload`
       await getAccessToken()
       const access_token = localStorage.getItem("access_token")
       const json = {
-        extension: extension
+          extension: extension
       }
-      const res = await fetch(gateway_url, {
+      const res = await fetch(api_gateway, {
         method: "POST",
         body: JSON.stringify(json),
         headers: {
           'Origin': process.env.REACT_APP_FRONTEND_URL,
-          'Authorization': `${access_token}`,
+          'Authorization': `Bearer ${access_token}`,
           'Accept': 'application/json',
           'Content-Type': 'application/json'
-        }
-      })
+      }})
       let data = await res.json();
       if (res.status === 200) {
         return data.url
@@ -2340,6 +2351,7 @@ export default function ProfileForm(props) {
   const s3upload = async (event) => {
     console.log('event',event)
     const file = event.target.files[0]
+    console.log('file',file)
     const filename = file.name
     const size = file.size
     const type = file.type
@@ -2348,9 +2360,8 @@ export default function ProfileForm(props) {
     //const formData = new FormData();
     //formData.append('file', file);
     const fileparts = filename.split('.')
-    const extension = fileparts[fileparts.lenght-1]
+    const extension = fileparts[fileparts.length-1]
     const presignedurl = await s3uploadkey(extension)
-    
     try {
       console.log('s3upload')
       const res = await fetch(presignedurl, {
@@ -2358,11 +2369,11 @@ export default function ProfileForm(props) {
         body: file,
         headers: {
           'Content-Type': type
-        }
-      })
+        }})
+   
       //let data = await res.json();
       if (res.status === 200) {
-        
+        //setPresignedurl(data.url)
       } else {
         console.log(res)
       }
@@ -2432,11 +2443,6 @@ export default function ProfileForm(props) {
             </div>
           </div>
           <div className="popup_content">
-          <!--  
-            <div className="upload" onClick={s3uploadkey}>
-              Upload Avatar
-            </div>
-          -->
           <input type="file" name="avatarupload" onChange={s3upload} />
             <div className="field display_name">
               <label>Display Name</label>

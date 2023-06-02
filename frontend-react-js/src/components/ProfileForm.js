@@ -12,23 +12,26 @@ export default function ProfileForm(props) {
     setDisplayName(props.profile.display_name);
   }, [props.profile])
 
-  const s3uploadkey = async (event)=> {
+  const s3uploadkey = async (extension)=> {
+    console.log('external',extension)
     try {
-      console.log('s3uploadkey')
       const api_gateway = `${process.env.REACT_APP_API_GATEWAY_ENDPOINT_URL}/avatars/key_upload`
       await getAccessToken()
       const access_token = localStorage.getItem("access_token")
+      const json = {
+          extension: extension
+      }
       const res = await fetch(api_gateway, {
         method: "POST",
+        body: JSON.stringify(json),
         headers: {
           'Origin': process.env.REACT_APP_FRONTEND_URL,
-          'Authorization': `${access_token}`,
+          'Authorization': `Bearer ${access_token}`,
           'Accept': 'application/json',
           'Content-Type': 'application/json'
       }})
       let data = await res.json();
       if (res.status === 200) {
-        console.log("presigned url",data)
         return data.url
       } else {
         console.log(res)
@@ -49,8 +52,9 @@ export default function ProfileForm(props) {
     console.log(filename, size, type)
     //const formData = new FormData();
     //formData.append('file', file);
-    const presignedurl = await s3uploadkey()
-    console.log(presignedurl)
+    const fileparts = filename.split('.')
+    const extension = fileparts[fileparts.length-1]
+    const presignedurl = await s3uploadkey(extension)
     try {
       console.log('s3upload')
       const res = await fetch(presignedurl, {
@@ -59,9 +63,10 @@ export default function ProfileForm(props) {
         headers: {
           'Content-Type': type
         }})
-      let data = await res.json();
+   
+      //let data = await res.json();
       if (res.status === 200) {
-        setPresignedurl(data.url)
+        //setPresignedurl(data.url)
       } else {
         console.log(res)
       }
