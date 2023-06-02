@@ -2243,16 +2243,16 @@ const jwtVerifier = CognitoJwtVerifier.create({
   tokenUse: "access",
   clientId: process.env.CLIENT_ID//,
   //customJwtCheck: ({ payload }) => {
-    //assertStringEquals("e-mail", payload["email"], process.env.USER_EMAIL);
+  //  assertStringEquals("e-mail", payload["email"], process.env.USER_EMAIL);
   //},
 });
 
 exports.handler = async (event) => {
   console.log("request:", JSON.stringify(event, undefined, 2));
 
-  const jwt = event.headers.authorization;
+  const token = JSON.stringify(event.headers["authorization"]).split(" ")[1].replace(/['"]+/g, '');
   try {
-    const payload = await jwtVerifier.verify(jwt);
+    const payload = await jwtVerifier.verify(token);
     console.log("Access allowed. JWT payload:", payload);
   } catch (err) {
     console.error("Access forbidden:", err);
@@ -2302,30 +2302,28 @@ export default function ProfileForm(props) {
   const [displayName, setDisplayName] = React.useState('');
 
   React.useEffect(()=>{
-    //console.log('useEffects',props)
     setBio(props.profile.bio || '');
     setDisplayName(props.profile.display_name);
   }, [props.profile])
 
   const s3uploadkey = async (extension)=> {
-    console.log('ext',extension)
+    console.log('external',extension)
     try {
-      const gateway_url = `${process.env.REACT_APP_API_GATEWAY_ENDPOINT_URL}/avatars/key_upload`
+      const api_gateway = `${process.env.REACT_APP_API_GATEWAY_ENDPOINT_URL}/avatars/key_upload`
       await getAccessToken()
       const access_token = localStorage.getItem("access_token")
       const json = {
-        extension: extension
+          extension: extension
       }
-      const res = await fetch(gateway_url, {
+      const res = await fetch(api_gateway, {
         method: "POST",
         body: JSON.stringify(json),
         headers: {
           'Origin': process.env.REACT_APP_FRONTEND_URL,
-          'Authorization': `${access_token}`,
+          'Authorization': `Bearer ${access_token}`,
           'Accept': 'application/json',
           'Content-Type': 'application/json'
-        }
-      })
+      }})
       let data = await res.json();
       if (res.status === 200) {
         return data.url
@@ -2340,6 +2338,7 @@ export default function ProfileForm(props) {
   const s3upload = async (event) => {
     console.log('event',event)
     const file = event.target.files[0]
+    console.log('file',file)
     const filename = file.name
     const size = file.size
     const type = file.type
@@ -2348,9 +2347,8 @@ export default function ProfileForm(props) {
     //const formData = new FormData();
     //formData.append('file', file);
     const fileparts = filename.split('.')
-    const extension = fileparts[fileparts.lenght-1]
+    const extension = fileparts[fileparts.length-1]
     const presignedurl = await s3uploadkey(extension)
-    
     try {
       console.log('s3upload')
       const res = await fetch(presignedurl, {
@@ -2358,11 +2356,11 @@ export default function ProfileForm(props) {
         body: file,
         headers: {
           'Content-Type': type
-        }
-      })
+        }})
+   
       //let data = await res.json();
       if (res.status === 200) {
-        
+        //setPresignedurl(data.url)
       } else {
         console.log(res)
       }
@@ -2432,11 +2430,6 @@ export default function ProfileForm(props) {
             </div>
           </div>
           <div className="popup_content">
-          <!--  
-            <div className="upload" onClick={s3uploadkey}>
-              Upload Avatar
-            </div>
-          -->
           <input type="file" name="avatarupload" onChange={s3upload} />
             <div className="field display_name">
               <label>Display Name</label>
