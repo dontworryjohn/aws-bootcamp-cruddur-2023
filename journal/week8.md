@@ -2216,7 +2216,7 @@ aws ssm put-parameter --type "SecureString" --name "/cruddur/CruddurAvatarUpload
 ```
 
 Make sure to create the the SSM parameter as well
-[image](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/ssm.jpg)
+![image](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/ssm.jpg)
 
 > Note: from the value make sure to paste the url of the FRONTEND_URL. This will be updated using the script when you launch the CDE environment if you have put inside the bootstrap/setup script.
 
