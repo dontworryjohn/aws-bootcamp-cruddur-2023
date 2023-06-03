@@ -2245,7 +2245,7 @@ aws lambda publish-layer-version \
 ```
 This code will generate a file called lambda-layer that contains the jwt and will be published to the lambda layer
 
->add here steps to configure the lambda layer
+[lambda layer](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/jwt.jpg)
 
 Since our Lambda works with another service, it needs to give some additional permission
 
