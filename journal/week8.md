@@ -2545,11 +2545,214 @@ add the following code
 ```
 
 
+# Rendering Avatar using Cloudfront
+
+Create 2 files called `ProfileAvatar.js` and `ProfileAvatar.css` under the `frontend-react-js/src/components
+
+paste the code for the `ProfileAvatar.js`
+```js
+import './ProfileAvatar.css';
+
+export default function ProfileAvatar(props) {
+    const backgroundImage = `url("https://assets.johnbuen.co.uk/avatars/${props.id}.jpg"`;
+
+    const styles = {
+      backgroundImage: backgroundImage,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    };
+
+  return (
+    <div 
+      className="profile-avatar"
+      style={styles}
+    ></div>
+  );
+}
+```
+
+for the `profileInfo.js` paste the new code. this will load the new component
+
+```js
+import './ProfileInfo.css';
+import {ReactComponent as ElipsesIcon} from './svg/elipses.svg';
+import React from "react";
+import ProfileAvatar from 'components/ProfileAvatar'
 
 
+// [TODO] Authenication
+import { Auth } from 'aws-amplify';
+
+export default function ProfileInfo(props) {
+  const [popped, setPopped] = React.useState(false);
+
+  const click_pop = (event) => {
+    setPopped(!popped)
+  }
+
+  const signOut = async () => {
+    try {
+        await Auth.signOut({ global: true });
+        window.location.href = "/"
+        localStorage.removeItem("access_token")
+    } catch (error) {
+        console.log('error signing out: ', error);
+    }
+  }
+
+  const classes = () => {
+    let classes = ["profile-info-wrapper"];
+    if (popped == true){
+      classes.push('popped');
+    }
+    return classes.join(' ');
+  }
+
+  return (
+    <div className={classes()}>
+      <div className="profile-dialog">
+        <button onClick={signOut}>Sign Out</button> 
+      </div>
+      <div className="profile-info" onClick={click_pop}>
+        <ProfileAvatar id={props.user.cognito_user_uuid}>
+        <div className="profile-desc">
+          <div className="profile-display-name">{props.user.display_name || "My Name" }</div>
+          <div className="profile-username">@{props.user.handle || "handle"}</div>
+        </div>
+        <ElipsesIcon className='icon' />
+      </div>
+    </div>
+  )
+```
+
+from the `ProfileHeading.js`
+
+paste the following new code
+```js
+import './ProfileHeading.css';
+import EditProfileButton from '../components/EditProfileButton';
+import ProfileAvatar from 'components/ProfileAvatar'
 
 
+export default function ProfileHeading(props) {
+    const backgroundImage = 'url("https://assets.johnbuen.co.uk/banners/banner.jpg")';
+    const styles = {
+        backgroundImage: backgroundImage,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+    };
+    return (
+    <div className='activity_feed_heading profile_heading'>
+        <div className='title'>{props.profile.display_name}</div>
+        <div className="cruds_count">{props.profile.cruds_count} Cruds</div>
+        <div className="banner" style={styles} >
+            <ProfileAvatar id={props.profile.cognito_user_uuid} />
+        </div>
+        <div className="info">
+            <div className='id'>
+                <div className="display_name">{props.profile.display_name}</div>
+                <div className="handle">@{props.profile.handle}</div>
+            </div>
+            <EditProfileButton setPopped={props.setPopped} />
+        </div>
+        <div className="bio">{props.profile.bio}</div>
+    </div>
+    );
+}
+```
 
+Amend the `show.sql`
+
+```sql
+SELECT
+    (SELECT COALESCE(row_to_json(object_row),'{}'::json) FROM (
+        SELECT
+            users.uuid,
+            user.cognito_user_id as cognito_user_uuid,
+            users.handle,
+            users.display_name,
+            users.bio,
+            (SELECT count(true)
+            FROM public.activities
+            WHERE
+                activities.user_uuid = users.uuid            
+            ) as cruds_count
+    ) object_row) as profile,
+    (SELECT COALESCE(array_to_json(array_agg(row_to_json(array_row))),'[]'::json) FROM (
+        SELECT
+            activities.uuid,
+            users.display_name,
+            users.handle,
+            activities.message,
+            activities.created_at,
+            activities.expires_at
+        FROM public.activities
+        WHERE
+            activities.user_uuid = users.uuid
+        ORDER BY activities.created_at DESC
+        LIMIT 40
+    ) array_row) as activities
+FROM public.users
+WHERE
+    users.handle = %(handle)s
+```
+
+from the `ProfileHeading.css`, paste the new one
+
+```css
+.profile_heading {
+    padding-bottom: 0px;
+}
+
+.profile_heading .avatar-avatar {
+    position: absolute;
+    bottom: -74px;
+    left: 16px;
+    width: 150px;
+    height: 150px;
+    border-radius: 999px;
+    border: solid 8px var(--fg);
+}
+
+.profile_heading .banner {
+    position: relative;
+    height: 200px;
+}
+
+.profile_heading .info {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    padding: 16px;
+
+}
+
+.profile_heading .info .id {
+    padding-top: 70px;
+    flex-grow: 1;
+}
+
+.profile_heading .info .id .display_name {
+    font-size: 24px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+}
+
+.profile_heading .info .id .handle {
+    font-size: 16px;
+    color: rgb(255, 255, 255, 0.7);
+}
+
+.profile_heading .cruds_count {
+    font-size: 14px;
+    color: rgb(255, 255, 255, 0.3);
+}
+
+.profile_heading .bio {
+    padding: 16px;
+    color: rgb(255, 255, 255);
+}
+```
 
 
 
