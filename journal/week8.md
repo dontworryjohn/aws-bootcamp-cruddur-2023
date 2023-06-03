@@ -2245,6 +2245,7 @@ aws lambda publish-layer-version \
 ```
 This code will generate a file called lambda-layer that contains the jwt and will be published to the lambda layer
 
+Go to the  `CruddurAvatarUpload` lambda, under the section layers click `Add a layer` and follow the following screenshot
 ![lambda layer](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/jwt.jpg)
 
 Since our Lambda works with another service, it needs to give some additional permission
