@@ -2547,7 +2547,7 @@ add the following code
 
 # Rendering Avatar using Cloudfront
 
-Create 2 files called `ProfileAvatar.js` and `ProfileAvatar.css` under the `frontend-react-js/src/components
+Create 2 files called `ProfileAvatar.js` and `ProfileAvatar.css` under the `frontend-react-js/src/components`
 
 paste the code for the `ProfileAvatar.js`
 ```js
