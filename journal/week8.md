@@ -2614,7 +2614,7 @@ export default function ProfileInfo(props) {
         <button onClick={signOut}>Sign Out</button> 
       </div>
       <div className="profile-info" onClick={click_pop}>
-        <ProfileAvatar id={props.user.cognito_user_uuid}>
+        <ProfileAvatar id={props.user.cognito_user_uuid} />
         <div className="profile-desc">
           <div className="profile-display-name">{props.user.display_name || "My Name" }</div>
           <div className="profile-username">@{props.user.handle || "handle"}</div>
@@ -2623,6 +2623,7 @@ export default function ProfileInfo(props) {
       </div>
     </div>
   )
+}
 ```
 
 from the `ProfileHeading.js`
@@ -2704,7 +2705,7 @@ from the `ProfileHeading.css`, paste the new one
     padding-bottom: 0px;
 }
 
-.profile_heading .avatar-avatar {
+.profile_heading .profile-avatar {
     position: absolute;
     bottom: -74px;
     left: 16px;
