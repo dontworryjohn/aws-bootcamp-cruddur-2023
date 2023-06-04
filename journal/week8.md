@@ -1,6 +1,31 @@
 # Week 8 — Serverless Image Processing
 
 This week the team will be talking about CDK
+- [Cost](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/journal/week8.md#cost)
+- [CDK](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/journal/week8.md#cdk)
+- [Cloudfront Network Distribution](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/journal/week8.md#cloudfront-network-distribution)
+- [Implementation User Profile Page](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/journal/week8.md#implementation-user-profile-page)
+- [Implementation of Migration Backend Endpoint](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/journal/week8.md#implementation-of-migration-backend-endpoint-and-profile-form)
+- [Implementation Avatar Uploading](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/journal/week8.md#implementation-avatar-uploading)
+- [Rendering Avatar using Cloudfront](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/journal/week8.md#rendering-avatar-using-cloudfront)
+
+# Cost
+
+In terms of cost, CDK does not charge for the usage of the service. You only pay for the resources created in the AWS CDK.
+
+Please see below the resources used:
+
+- S3: Free for the first 12 months. AWS gives 5GB storage, 20,000 Get Requests and 2,000 Put Requests
+
+- Lambda: Always free. AWS gives 1 million free requests per month and up to 3.2 million seconds of compute time per month.
+
+- Api Gateway: Free for the first 12 months. AWS gives million API calls received per month.
+
+- Amazon Cloudwatch: Always Free. 10 Custom Metrics and alarms, 1.000.000 API Requests,5GB of Log Data Ingestion and 5GB of Log Data Archive, 3 Dashboards with up to 50 Metrics Each per Month
+
+- Cloudfront: Always Free. AWS provides with 1 TB of data transfer out per month, 10.000.000 HTTP or HTTPS Requests per month, 2.000.000 CloudFront Function invocations per month.
+
+- SNS: Always Free. AWS offers 1.000.000 Publishes, 100.000 HTTP/S Deliveries and 1.000 Email Deliveries
 
 # CDK
 This section will illustrate the steps to create a CDK project.
@@ -2767,4 +2792,8 @@ from the `ProfileHeading.css`, paste the new one
 When i have to investigate, i check on my cloudwatch log groups to see if the lambda works.
 In specific check the log for the `CruddurAvatarUpload` and `CruddurApiGatewayLambdaAuthorizer`
 
+
+
+## Reference:
+- [AWS cost](https://aws.amazon.com/free/)
 
