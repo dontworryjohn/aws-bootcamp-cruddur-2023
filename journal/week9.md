@@ -1,1 +1,55 @@
 # Week 9 — CI/CD with CodePipeline, CodeBuild and CodeDeploy
+
+This week the team will be talking about CI/CD Pipeline.
+
+# Cost
+
+CodeCommit: Depending on the number of users, AWS does not charge if you have 5 active users. If you pass the limit, the cost is $1 every month.
+AWS offers the following:
+
+For the first 5 Acive users
+- 5,000 repositories per account; up to 25,000 upon request
+- 50 GB-month of storage
+- 10,000 Git requests/month
+
+for each additional user beyond the first 5
+5,000 repositories per account; up to 25,000 upon request
+10 GB-month of storage per active user
+2,000 Git requests/month per active user
+
+Codebuild: Pay as you go model price depending of execution time.
+
+Codedeploy: There is no additional charge for code deployments to Amazon EC2. If you deploy to on premises servers, the cost is $0.02 per on-premises server update.
+
+CodePipeline: Free tier allows to have 1 active pipeline per month. AWS charges $1 per active pipeline per month (for example if you have 3 pipelines but 1 has code, you will be charged for 1). You could incur to extra costs such as s3 or triggering extra cost
+
+# Security
+
+## Amazon Side - Security Best Practice
+
+- Business compliance: It means that a company adheres to the applicable rules and laws. For example, the service must be available within the scope region.
+
+- Amazon Organization SCP: restrict the actions of who can create, delete, and modify the production CI/CD pipeline. For Example limiting the number of users, setting role vs IAM users
+
+- AWS CloudTrail: monitoring to trigger alerts for malicious activities (e.i changes to the Production Pipeline)
+
+- GuardDuty is enabled for monitoring suspicious DNS comms and automated for autoremediation
+
+- AWS Config Rules is enabled in the account and region of CodeBuild
+
+## Application Side - Security Best Practice
+
+- Access Control: Roles and IAM users with the least privilege for making changes in the CICD pipeline.
+
+- Security of the CICD pipeline: For example, if secrets are being shared and/or if the secret manager is being used, the integrity of the container registry and therefore it  is not tampered with, controlling a none AWS CICD pipeline (vulnrability)
+
+- Security in the CICD pipeline: Use of tools such as SCA, SAST, Secret Scanner, DAST implemented in the CICD pipeline 
+
+- Security of the CICD pipeline entry points: Make sure there is no way to bypass the CICD to make production changes
+
+- Enable Encryption in Transit using TLS/SSL certification
+
+- Use trusted source control (for example Github) for sending changes to the CICD pipeline
+
+- Develop a process for continuously verifying if there is a change that may compromise the known state of a CICD pipeline
+
