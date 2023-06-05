@@ -17,11 +17,11 @@ for each additional user beyond the first 5
 10 GB-month of storage per active user
 2,000 Git requests/month per active user
 
-Codebuild: Pay as you go model price depending of execution time.
+Codebuild: Pay as you go model price depending on execution time.
 
 Codedeploy: There is no additional charge for code deployments to Amazon EC2. If you deploy to on premises servers, the cost is $0.02 per on-premises server update.
 
-CodePipeline: Free tier allows to have 1 active pipeline per month. AWS charges $1 per active pipeline per month (for example if you have 3 pipelines but 1 has code, you will be charged for 1). You could incur to extra costs such as s3 or triggering extra cost
+CodePipeline: Free tier allows to have 1 active pipeline per month. AWS charges $1 per active pipeline per month (for example if you have 3 pipelines but 1 has code, you will be charged for 1). You could incur to extra costs such as s3 or trigger extra cost
 
 # Security
 
@@ -41,7 +41,7 @@ CodePipeline: Free tier allows to have 1 active pipeline per month. AWS charges 
 
 - Access Control: Roles and IAM users with the least privilege for making changes in the CICD pipeline.
 
-- Security of the CICD pipeline: For example, if secrets are being shared and/or if the secret manager is being used, the integrity of the container registry and therefore it  is not tampered with, controlling a none AWS CICD pipeline (vulnrability)
+- Security of the CICD pipeline: For example, if secrets are being shared and/or if the secret manager is being used, the integrity of the container registry and therefore it  is not tampered with, controlling a none AWS CICD pipeline (vulnerability)
 
 - Security in the CICD pipeline: Use of tools such as SCA, SAST, Secret Scanner, DAST implemented in the CICD pipeline 
 
