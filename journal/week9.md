@@ -99,5 +99,4 @@ artifacts:
     - imagedefinitions.json
 ```
 
-Note: Use yours env var for the following values `AWS_COGNITO_USER_POOL_CLIENT_ID`, `AWS_COGNITO_USER_POOL_ID`, `BACKEND_URL`, and `FRONTEND_URL`
-
+Note: In the variable sections, change `AWS_ACCOUNT_ID` and `AWS_DEFAULT_REGION` with your account id and your region
