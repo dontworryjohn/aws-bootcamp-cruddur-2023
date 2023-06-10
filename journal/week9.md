@@ -99,3 +99,5 @@ artifacts:
 ```
 
 Note: In the variable sections, change `AWS_ACCOUNT_ID` and `AWS_DEFAULT_REGION` with your account id and your region
+
+Follow the [link](https://scribehow.com/shared/How_to_Create_a_CodePipeline_with_AWS_and_GitHub__8ogyyQ1nRRus4U2EpRF1Jw) to create the codepipeline and the codebuild
