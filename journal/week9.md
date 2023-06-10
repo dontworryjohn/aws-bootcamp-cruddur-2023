@@ -75,7 +75,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...          
-      - docker build -t backend-flask .
+      - docker build -t backend-flask-prod .
       - "docker tag $REPO_NAME $IMAGE_URL/$REPO_NAME"
   post_build:
     commands:
@@ -88,15 +88,11 @@ phases:
 
 env:
   variables:
-    AWS_ACCOUNT_ID: $AWS_ACCOUNT_ID
+    AWS_ACCOUNT_ID: 238967891447
     CONTAINER_NAME: backend-flask
-    IMAGE_URL: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+    IMAGE_URL: 238967891447.dkr.ecr.eu-west-2.amazonaws.com
     REPO_NAME: backend-flask:latest
   
-
-artifacts:
-  files:
-    - imagedefinitions.json
 ```
 
 Note: In the variable sections, change `AWS_ACCOUNT_ID` and `AWS_DEFAULT_REGION` with your account id and your region
