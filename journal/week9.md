@@ -65,8 +65,6 @@ create first the `buildspec.yml` under the `backend-flask`:
 version: 0.2
 phases:
   install:
-    runtime-versions:
-      docker: 20
     commands:
       - echo "cd into $CODEBUILD_SRC_DIR/backend-flask"
       - cd $CODEBUILD_SRC_DIR/backend-flask
