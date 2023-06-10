@@ -76,7 +76,7 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker image...          
       - docker build -t backend-flask-prod .
-      - docker tag $REPO_NAME $IMAGE_URL/$REPO_NAME
+      - docker tag $REPO_NAME $IMAGE_URL:latest
   post_build:
     commands:
       - echo Build completed on `date`
@@ -92,7 +92,7 @@ env:
     AWS_DEFAULT_REGION: eu-west-2
     CONTAINER_NAME: backend-flask
     IMAGE_URL: 238967891447.dkr.ecr.eu-west-2.amazonaws.com
-    REPO_NAME: backend-flask:latest
+    REPO_NAME: backend-flask-prod:latest
   
 artifacts:
   files:
