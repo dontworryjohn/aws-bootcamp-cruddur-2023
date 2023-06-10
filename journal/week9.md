@@ -101,3 +101,12 @@ artifacts:
 Note: In the variable sections, change `AWS_ACCOUNT_ID` and `AWS_DEFAULT_REGION` with your account id and your region
 
 Follow the [link](https://scribehow.com/shared/How_to_Create_a_CodePipeline_with_AWS_and_GitHub__8ogyyQ1nRRus4U2EpRF1Jw) to create the codepipeline and the codebuild
+
+
+
+To test if our pipeline works when changes are commited, from app.py modify the health-check with the following
+```py
+@app.route('/api/health-check')
+def health_check():
+  return {'success': True 'ver': 1}, 200
+```
