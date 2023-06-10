@@ -77,11 +77,13 @@ phases:
       - echo Building the Docker image...          
       - docker build -t backend-flask-prod .
       - docker tag $REPO_NAME $IMAGE_URL:latest
+      - echo "docker tag $REPO_NAME $IMAGE_URL:latest"
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image..
-      - docker push $IMAGE_URL/$REPO_NAME
+      - docker push $IMAGE_URL:latest
+      - echo "push $IMAGE_URL:latest"
       - cd $CODEBUILD_SRC_DIR
       - echo "imagedefinitions.json > [{\"name\":\"$CONTAINER_NAME\",\"imageUri\":\"$IMAGE_URL/$REPO_NAME\"}]" > imagedefinitions.json
       - printf "[{\"name\":\"$CONTAINER_NAME\",\"imageUri\":\"$IMAGE_URL/$REPO_NAME\"}]" > imagedefinitions.json
@@ -94,6 +96,7 @@ env:
     IMAGE_URL: 238967891447.dkr.ecr.eu-west-2.amazonaws.com
     REPO_NAME: backend-flask-prod:latest
   
+
 artifacts:
   files:
     - imagedefinitions.json
