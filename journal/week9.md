@@ -89,24 +89,10 @@ phases:
 env:
   variables:
     AWS_ACCOUNT_ID: $AWS_ACCOUNT_ID
-    AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
     CONTAINER_NAME: backend-flask
     IMAGE_URL: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
     REPO_NAME: backend-flask:latest
-    AWS_COGNITO_USER_POOL_CLIENT_ID: 3870k3kbsr6tbkj6bltab924bp
-    AWS_COGNITO_USER_POOL_ID: eu-west-2_rNUe2sEXo
-    BACKEND_URL: https://api.johnbuen.co.uk
-    FRONTEND_URL: https://johnbuen.co.uk
-    OTEL_SERVICE_NAME: backend-flask
-    OTEL_EXPORTER_OTLP_ENDPOINT: https://api.honeycomb.io
-
-
-  parameter-store:
-    AWS_ACCESS_KEY_ID: /cruddur/backend-flask/AWS_ACCESS_KEY_ID
-    AWS_SECRET_ACCESS_KEY: /cruddur/backend-flask/AWS_SECRET_ACCESS_KEY
-    CONNECTION_URL: /cruddur/backend-flask/CONNECTION_URL
-    ROLLBAR_ACCESS_TOKEN: /cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN
-    OTEL_EXPORTER_OTLP_HEADERS: /cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS
+  
 
 artifacts:
   files:
