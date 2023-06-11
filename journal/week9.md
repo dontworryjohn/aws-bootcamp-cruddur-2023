@@ -2,6 +2,10 @@
 
 This week the team will be talking about CI/CD Pipeline.
 
+-  [Cost](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/journal/week9.md#cost)
+- [Security](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/journal/week9.md#security)
+- [CICD Implementation](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/journal/week9.md#implementation-codepipeline)
+
 # Cost
 
 CodeCommit: Depending on the number of users, AWS does not charge if you have 5 active users. If you pass the limit, the cost is $1 every month.
@@ -55,10 +59,16 @@ CodePipeline: Free tier allows to have 1 active pipeline per month. AWS charges 
 
 ## Implementation Codepipeline
 
-In this implementation, we want to make automate the process of deploying our code rather than doing it all manually.
-The service that we will be using is Codepipeline.
+In this implementation, we want to automate the process of deploying our code rather than doing it all manually.
+The services that we will be using are Codepipeline and CodeBuilding.
+When the code is merged from main branch to the prod branch, the pipeline will be triggered.
 
-create first the `buildspec.yml` under the `backend-flask`:
+Find below the diagram:
+![codepipeline](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/codepipeline.jpg?raw=true)
+
+
+
+Create first the `buildspec.yml` under the `backend-flask`:
 
 ```yaml
 # Buildspec runs in the build stage of your pipeline.
@@ -100,13 +110,48 @@ artifacts:
 
 Note: In the variable sections, change `AWS_ACCOUNT_ID` and `AWS_DEFAULT_REGION` with your account id and your region
 
+Created also a branch called `prod`. You will need this during the creation of the Codepipeline
+
 Follow the [link](https://scribehow.com/shared/How_to_Create_a_CodePipeline_with_AWS_and_GitHub__8ogyyQ1nRRus4U2EpRF1Jw) to create the codepipeline and the codebuild
 
+Make sure to attach a policy to the `Codebuild role` with the following json policy:
 
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ECRPermissions",
+            "Effect": "Allow",
+            "Action": [
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:GetRepositoryPolicy",
+                "ecr:DescribeRepositories",
+                "ecr:ListImages",
+                "ecr:DescribeImages",
+                "ecr:BatchGetImage",
+                "ecr:InitiateLayerUpload",
+                "ecr:UploadLayerPart",
+                "ecr:CompleteLayerUpload",
+                "ecr:PutImage",
+                "ecr:BatchDeleteImage"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
 
-To test if our pipeline works when changes are commited, from app.py modify the health-check with the following
+To test if our pipeline works when changes are commited, from `app.py` modify the health-check with the following
 ```py
 @app.route('/api/health-check')
 def health_check():
-  return {'success': True 'ver': 1}, 200
+  return {'success': True, 'ver': 1}, 200
 ```
+
+Once it is commited to the main, merge it to the `prod `branch` and wait once the image is deployed on your ecs backend flask.
+
+If everything works fine, you will have an image similar of this
+![codepipeline](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/codepipeline.jpg?raw=true)
