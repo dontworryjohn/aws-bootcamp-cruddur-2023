@@ -154,4 +154,4 @@ def health_check():
 Once it is commited to the main, merge it to the `prod `branch` and wait once the image is deployed on your ecs backend flask.
 
 If everything works fine, you will have an image similar of this
-![codepipeline](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/codepipeline.jpg?raw=true)
+![result](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/codepipelineresult.jpg?raw=true)
