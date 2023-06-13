@@ -108,7 +108,7 @@ artifacts:
     - imagedefinitions.json
 ```
 
-Note: In the variable sections, change `AWS_ACCOUNT_ID` and `AWS_DEFAULT_REGION` with your account id and your region
+Note: In the variable sections, change `AWS_ACCOUNT_ID` and `AWS_DEFAULT_REGION` and `IMAGE_URL` with your account id and your region
 
 Created also a branch called `prod`. You will need this during the creation of the Codepipeline
 
