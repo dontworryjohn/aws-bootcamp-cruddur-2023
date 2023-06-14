@@ -5,6 +5,10 @@ Description: |
 Resources:
   ECSCluster: #LogicalName
     Type: 'AWS::ECS::Cluster'
+    Properties:
+      ClusterName: MyCluster
+      CapacityProviders:
+        - FARGATE
 #Parameters:
 #Mappings:
 #Resources:

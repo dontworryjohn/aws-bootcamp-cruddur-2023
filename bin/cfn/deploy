@@ -7,6 +7,6 @@ CFN_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/template.yaml"
 aws cloudformation deploy \
   --stack-name "my-cluster" \
   --template-file $CFN_PATH \
-  #--s3-bucket "cfn-artifacts-randomname" \
+  --s3-bucket "cfn-artifacts-randomname" \
   --no-execute-changeset \
   --capabilities CAPABILITY_NAMED_IAM
