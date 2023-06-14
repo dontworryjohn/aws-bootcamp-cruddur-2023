@@ -11,7 +11,7 @@ Handler operations are: `CREATE`, `UPDATE`, `DELETE`, `READ`, or `LIST` actions 
 
 ## CFN Implementation
 
-create a file called `template.yaml`  under the `aws/cfn`
+create a file called `template.yaml`  under the `aws/cfn` with the following struture
 
 ```yaml
 AWSTempleteFormatVersion: 2010-09-09
@@ -34,8 +34,11 @@ Resources:
 
 
 ```
+Note: 
+- Some aws services wants such as `buildspec` (codebuild) wants the `.yml` extension. Other service like cloudformation wants the `.yaml` exstension.
+- For some sample, you can reference the  [aws templates](https://aws.amazon.com/cloudformation/resources/templates/)
 
-to deploy the cloudformation, create a folder called  `cfn` and inside call the script `deploy`
+To deploy the cloudformation, create a folder called  `cfn` and inside call the script `deploy`
 ```bash
 #! /usr/bin/env bash
 set -e # stop execution of the script if it fails
