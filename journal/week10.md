@@ -35,7 +35,7 @@ Resources:
 
 ```
 Note: 
-- Some aws services wants such as `buildspec` (codebuild) wants the `.yml` extension. Other service like cloudformation wants the `.yaml` exstension.
+- Some aws services wants the extension `.yml`. An example is `buildspec` (codebuild). Other service like cloudformation wants the `.yaml` exstension.
 - For some sample, you can reference the  [aws templates](https://aws.amazon.com/cloudformation/resources/templates/)
 
 To deploy the cloudformation, create a folder called  `cfn` and inside call the script `deploy`
@@ -57,10 +57,10 @@ aws cloudformation deploy \
 Note: 
 - the   `--no-execute-changeset` will validate the code but not execute it.
 - Once you run the command, the cli will create a script to check the out come. you can use the code generated or check it on the cloudformation via console.
-- changeset in the console is useful to understand the behaviour of the change and to see if there is a change in your infrastructure (i.e a critical database run in production. By seeing changeset you know if the resource will be removed). check also the Update requires voice in the [documentation](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-service.html)
-- check the tab `replacement` if it is `true`
+- changeset in the console is useful to understand the behaviour of the change and to see if there is a differnet in your infrastructure (i.e a critical database run in production. By seeing changeset you know if the resource will be removed). check also the Update requires voice in the [documentation](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-service.html)
+- check the tab `replacement` if it is `true`. this helps to see if one part of the stack will be replaced.
 
-from the aws console if the stack is what you expect, click on `execute change set`
+from the aws console, check the stack deploy and if what you have deployed.click on `execute change set`
 
 Install cfn lint using the following command
 ```bash
@@ -125,7 +125,7 @@ aws_ecs_cluster_configuration {
 
 ```
 
-Note: cfn-guard is an open-source command line interface (CLI) that checks CloudFormation templates for policy compliance using a simple, policy-as-code, declarative language.
+Note: cfn-guard is an open-source command line interface (CLI) that checks CloudFormation templates for policy compliance using a simple, policy-as-code, declarative language. for more details refer to the followin [link](https://github.com/aws-cloudformation/cloudformation-guard)
 
 to install cfn-guard 
 ```bash
