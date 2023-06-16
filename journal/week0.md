@@ -15,6 +15,13 @@ You will need to register for the following services:
 
 Once you registered with all of the services, you can go for the assignment for week 0.
 
+# Choosing the right region to deploy the services
+
+In real life, you need to select the region based on specific criteria such as latency, compliance, and availability of the service.
+
+An easy way to identify the latency is [Cloud Ping](https://www.cloudping.info/)
+
+
 
 # Week 0 — Billing, Architecture, Security
 
