@@ -22,6 +22,13 @@ In real life, you need to select the region based on specific criteria such as l
 An easy way to identify the latency is [Cloud Ping](https://www.cloudping.info/)
 
 
+# Ec2 Princing
+
+I found this link on my bookmarks and it breaks downs the cost of each instance in each region
+[](https://instances.vantage.sh/)
+
+
+
 
 # Week 0 — Billing, Architecture, Security
 
