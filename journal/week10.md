@@ -9,7 +9,8 @@ Handler operations are: `CREATE`, `UPDATE`, `DELETE`, `READ`, or `LIST` actions 
 
 ## Security
 
-## CFN Implementation
+## CFN Live Streaming
+
 
 create a file called `template.yaml`  under the `aws/cfn` with the following struture
 
@@ -38,21 +39,39 @@ Note:
 - Some aws services wants the extension `.yml`. An example is `buildspec` (codebuild). Other service like cloudformation wants the `.yaml` exstension.
 - For some sample, you can reference the  [aws templates](https://aws.amazon.com/cloudformation/resources/templates/)
 
+
+Create an s3 bucket in the same region using the following command:
+
+```bash
+export RANDOM_STRING=$(aws secretsmanager get-random-password --exclude-punctuation --exclude-uppercase --password-length 6 --output text --query RandomPassword)
+aws s3 mb s3://cfn-artifacts-$RANDOM_STRING
+
+export CFN_BUCKET="cfn-artifacts-$RANDOM_STRING"
+
+gp env CFN_BUCKET="cfn-artifacts-$RANDOM_STRING"
+```
+Note: This command create an S3 Bucket called `cfn-artifacts-xxxxxx`.
+the xxxxxx will be generated randomly by the secret manager.
+
 To deploy the cloudformation, create a folder called  `cfn` and inside call the script `deploy`
 ```bash
 #! /usr/bin/env bash
 set -e # stop execution of the script if it fails
 
-CFN_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/template.yaml"
+#This script will pass the value of the main root in case you use a local dev
+export THEIA_WORKSPACE_ROOT=$(pwd)
+echo $THEIA_WORKSPACE_ROOT
+
+
+CFN_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/networking/template.yaml"
 
 cfn-lint $CFN_PATH
 aws cloudformation deploy \
-  --stack-name "my-cluster" \
+  --stack-name "Cruddur" \
   --template-file $CFN_PATH \
-  --s3-bucket "cfn-artifacts-randomname" \
+  --s3-bucket cfn-artifacts-$RANDOM_STRING \
   --no-execute-changeset \
   --capabilities CAPABILITY_NAMED_IAM
-
 ```
 Note: 
 - the   `--no-execute-changeset` will validate the code but not execute it.
@@ -154,7 +173,236 @@ cfn-guard validate -r ecs-cluster.guard
 ```
 Note: make sure to be in the directory where is the file
 
-create a bucket in the region called `cfn-artifacts-randomname` in the same region where is your service. in my case in eu-west-2
+
+
+
+## Creation of CFN Network Template
+
+create a file called `template.yaml` under the folder `aws/cfn/networking`
+this file will contain the structure of our network layer such as VPC, Internet Gateway, Route tables and 3 Subnets
+
+```yaml
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  VpcCidrBlock:
+    Type: String
+    Default: 10.0.0.0/16
+  SubnetCidrBlocks:
+    Description: "Comma-delimited list of CIDR blocks for our private and public subnets"
+    Type: CommaDelimitedList
+    Default: >
+      10.0.0.0/22,
+      10.0.4.0/22,
+      10.0.8.0/22,
+      10.0.12.0/22,
+      10.0.16.0/22, 
+      10.0.20.0/22
+  Az1:
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: eu-west-2a
+  Az2:
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: eu-west-2b
+  Az3:
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: eu-west-2c
+# VPC
+Resources:
+  VPC:
+  #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-vpc.html
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCidrBlock
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}VPC"
+  IGW:
+    #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-internetgateway.html
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}IGW"
+  AttachIGW:
+    #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-vpc-gateway-attachment.html
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref IGW
+  RouteTable:
+    #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-routetable.html
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}RT"
+  RouteToIGW:
+    #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-route.html
+    Type: AWS::EC2::Route
+    DependsOn: AttachIGW
+    Properties:
+      RouteTableId: !Ref RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref IGW
+    #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-subnet.html
+  SubnetPub1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: !Select [0, !Ref SubnetCidrBlocks]
+      AvailabilityZone: !Ref Az1
+      VpcId: !Ref VPC
+      EnableDns64: false
+      MapPublicIpOnLaunch: true #public subnet
+      Tags:
+      - Key: Name
+        Value: !Sub "${AWS::StackName}SubnetPub1"
+  SubnetPub2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: !Select [1, !Ref SubnetCidrBlocks]
+      AvailabilityZone: !Ref Az2
+      VpcId: !Ref VPC
+      EnableDns64: false
+      MapPublicIpOnLaunch: true #public subnet
+      Tags:
+      - Key: Name
+        Value: !Sub "${AWS::StackName}SubnetPub2"
+  SubnetPub3:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock:  !Select [2, !Ref SubnetCidrBlocks]
+      AvailabilityZone: !Ref Az3
+      VpcId: !Ref VPC
+      EnableDns64: false
+      MapPublicIpOnLaunch: true #public subnet
+      Tags:
+      - Key: Name
+        Value: !Sub "${AWS::StackName}SubnetPub3"
+  SubnetPri1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock:  !Select [3, !Ref SubnetCidrBlocks]
+      AvailabilityZone: !Ref Az1
+      VpcId: !Ref VPC
+      EnableDns64: false
+      MapPublicIpOnLaunch: false #private subnet
+      Tags:
+      - Key: Name
+        Value: !Sub "${AWS::StackName}SubnetPri1"
+  SubnetPri2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock:  !Select [4, !Ref SubnetCidrBlocks]
+      AvailabilityZone: !Ref Az2
+      VpcId: !Ref VPC
+      EnableDns64: false
+      MapPublicIpOnLaunch: false #private subnet
+      Tags:
+      - Key: Name
+        Value: !Sub "${AWS::StackName}SubnetPri2"
+  SubnetPri3:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock:  !Select [5, !Ref SubnetCidrBlocks]
+      AvailabilityZone: !Ref Az3
+      VpcId: !Ref VPC
+      EnableDns64: false
+      MapPublicIpOnLaunch: false #privte subnet
+      Tags:
+      - Key: Name
+        Value: !Sub "${AWS::StackName}SubnetPri3"
+  SubnetPub1RTAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref SubnetPub1
+      RouteTableId: !Ref RouteTable
+  SubnetPub2RTAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref SubnetPub2
+      RouteTableId: !Ref RouteTable
+  SubnetPub3RTAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref SubnetPub3
+      RouteTableId: !Ref RouteTable
+  SubnetPri1RTAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref SubnetPri1
+      RouteTableId: !Ref RouteTable
+  SubnetPri2RTAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref SubnetPri2
+      RouteTableId: !Ref RouteTable
+  SubnetPri3RTAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref SubnetPri3
+      RouteTableId: !Ref RouteTable
+
+Outputs:
+  VpcId:
+    Value: !Ref VPC
+    Export:
+      Name: VpcId
+  VpcCidrBlock:
+    Value: !GetAtt VPC.CidrBlock
+    Export:
+      Name: VpcCidrBlock
+  SubnetCidrBlocks:
+    Value: !Join [",", !Ref SubnetCidrBlocks]
+    Export:
+      Name: SubnetCidrBlocks
+  SubnetIds:
+    Value: !Join
+      - ","
+      - - !Ref SubnetPub1
+        - !Ref SubnetPub2
+        - !Ref SubnetPub3
+        - !Ref SubnetPri1
+        - !Ref SubnetPri2
+        - !Ref SubnetPri3
+    Export:
+      Name: SubnetIds
+  AvailabilityZones:
+    Value: !Join
+      - ","
+      - - !Ref Az1
+        - !Ref Az2
+        - !Ref Az3
+    Export:
+      Name: AvailabilityZones
+
+```
+
+If you want to get the list of your region:
+
+```bash
+aws ec2 describe-availability-zones --region $AWS_DEFAULT_REGION
+```
+Note: If you have set `$AWS_DEFAULT_REGION`, this is the region that you have inserted in your env vars either locally or on Gitpod/Codespace
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

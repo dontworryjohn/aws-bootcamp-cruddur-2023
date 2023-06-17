@@ -1,0 +1,17 @@
+#! /usr/bin/env bash
+set -e # stop execution of the script if it fails
+
+#This script will pass the value of the main root
+export THEIA_WORKSPACE_ROOT=$(pwd)
+
+
+CFN_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/networking/template.yaml"
+
+
+cfn-lint $CFN_PATH
+aws cloudformation deploy \
+  --stack-name "Cruddur" \
+  --template-file $CFN_PATH \
+  --s3-bucket "cfn-artifacts-$RANDOM_STRING" \
+  --no-execute-changeset \
+  --capabilities CAPABILITY_NAMED_IAM
