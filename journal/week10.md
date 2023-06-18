@@ -2,6 +2,9 @@
 
 This week the team will be talking about Cloudformation.
 
+The following link will show the diagram architecture
+[CFN Architecture](https://drive.google.com/file/d/1frViHBbn4g0lxnrz9VyypsriJ06nIb6h/view?usp=sharing)
+
 ## Cost
 In Cloudformation, you only pay for what you use, with no minimum fees and no required upfront commitment.
 If you are using a registry extension with cloudformation, you incur charges per handler operation.,
@@ -179,7 +182,7 @@ Note: make sure to be in the directory where is the file
 ## Creation of CFN Network Template
 
 create a file called `template.yaml` under the folder `aws/cfn/networking`
-this file will contain the structure of our network layer such as VPC, Internet Gateway, Route tables and 3 Subnets
+this file will contain the structure of our network layer such as VPC, Internet Gateway, Route tables and 6 Public/Private Subnets, route table, and the outpost.
 
 ```yaml
 AWSTemplateFormatVersion: 2010-09-09
