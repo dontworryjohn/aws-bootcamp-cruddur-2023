@@ -15,7 +15,7 @@ Handler operations are: `CREATE`, `UPDATE`, `DELETE`, `READ`, or `LIST` actions 
 ## CFN Live Streaming
 
 
-create a file called `template.yaml`  under the `aws/cfn` with the following struture
+create a file called `template.yaml`  under the `aws/cfn` with the following structure
 
 ```yaml
 AWSTempleteFormatVersion: 2010-09-09
@@ -39,8 +39,7 @@ Resources:
 
 ```
 Note: 
-- Some aws services wants the extension `.yml`. An example is `buildspec` (codebuild). Other service like cloudformation wants the `.yaml` exstension.
-- For some sample, you can reference the  [aws templates](https://aws.amazon.com/cloudformation/resources/templates/)
+- Some aws services want the extension `.yml`. An example is `buildspec` (codebuild). Other services like cloudformation want the `.yaml`` extension. For some samples, you can reference the  [aws templates](https://aws.amazon.com/cloudformation/resources/templates/)
 
 
 Create an s3 bucket in the same region using the following command:
@@ -53,8 +52,7 @@ export CFN_BUCKET="cfn-artifacts-$RANDOM_STRING"
 
 gp env CFN_BUCKET="cfn-artifacts-$RANDOM_STRING"
 ```
-Note: This command create an S3 Bucket called `cfn-artifacts-xxxxxx`.
-the xxxxxx will be generated randomly by the secret manager.
+Note: This command creates an S3 Bucket called `cfn-artifacts-xxxxxx`. The xxxxxx will be generated randomly by the secret manager.
 
 To deploy the cloudformation, create a folder called  `cfn` and inside call the script `deploy`
 ```bash
@@ -66,7 +64,7 @@ export THEIA_WORKSPACE_ROOT=$(pwd)
 echo $THEIA_WORKSPACE_ROOT
 
 
-CFN_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/networking/template.yaml"
+CFN_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/template.yaml"
 
 cfn-lint $CFN_PATH
 aws cloudformation deploy \
@@ -78,11 +76,11 @@ aws cloudformation deploy \
 ```
 Note: 
 - the   `--no-execute-changeset` will validate the code but not execute it.
-- Once you run the command, the cli will create a script to check the out come. you can use the code generated or check it on the cloudformation via console.
-- changeset in the console is useful to understand the behaviour of the change and to see if there is a differnet in your infrastructure (i.e a critical database run in production. By seeing changeset you know if the resource will be removed). check also the Update requires voice in the [documentation](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-service.html)
+- Once you run the command, the cli will create a script to check the outcome. you can use the code generated or check it on the cloud formation via the console.
+- changeset in the console is useful to understand the behaviour of the change and to see if there is a difference in your infrastructure (i.e a critical database run in production. By seeing the changeset you know if the resource will be removed). check also the Update requires voice in the [documentation](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-service.html)
 - check the tab `replacement` if it is `true`. this helps to see if one part of the stack will be replaced.
 
-from the aws console, check the stack deploy and if what you have deployed.click on `execute change set`
+from the aws console, check the stack deploy and see what has been deployed. click on `execute` change set`
 
 Install cfn lint using the following command
 ```bash
@@ -147,7 +145,7 @@ aws_ecs_cluster_configuration {
 
 ```
 
-Note: cfn-guard is an open-source command line interface (CLI) that checks CloudFormation templates for policy compliance using a simple, policy-as-code, declarative language. for more details refer to the followin [link](https://github.com/aws-cloudformation/cloudformation-guard)
+Note: cfn-guard is an open-source command line interface (CLI) that checks CloudFormation templates for policy compliance using a simple, policy-as-code, declarative language. for more details refer to the following [link](https://github.com/aws-cloudformation/cloudformation-guard)
 
 to install cfn-guard 
 ```bash
@@ -179,10 +177,10 @@ Note: make sure to be in the directory where is the file
 
 
 
-## Creation of CFN Network Template
+## CFN Network Template
 
-create a file called `template.yaml` under the folder `aws/cfn/networking`
-this file will contain the structure of our network layer such as VPC, Internet Gateway, Route tables and 6 Public/Private Subnets, route table, and the outpost.
+Create a file called `template.yaml` under the path `aws/cfn/networking`
+This file will contain the structure of our network layer such as VPC, Internet Gateway, Route tables and 6 Public/Private Subnets, route table, and the outpost.
 
 ```yaml
 AWSTemplateFormatVersion: 2010-09-09
@@ -392,7 +390,27 @@ aws ec2 describe-availability-zones --region $AWS_DEFAULT_REGION
 ```
 Note: If you have set `$AWS_DEFAULT_REGION`, this is the region that you have inserted in your env vars either locally or on Gitpod/Codespace
 
+Change the script create before
 
+```bash
+#! /usr/bin/env bash
+set -e # stop execution of the script if it fails
+
+#This script will pass the value of the main root in case you use a local dev
+export THEIA_WORKSPACE_ROOT=$(pwd)
+echo $THEIA_WORKSPACE_ROOT
+
+
+CFN_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/networking/template.yaml"
+
+cfn-lint $CFN_PATH
+aws cloudformation deploy \
+  --stack-name "Cruddur" \
+  --template-file $CFN_PATH \
+  --s3-bucket cfn-artifacts-$RANDOM_STRING \
+  --no-execute-changeset \
+  --capabilities CAPABILITY_NAMED_IAM
+```
 
 
 
