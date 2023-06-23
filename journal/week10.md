@@ -68,10 +68,11 @@ CFN_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/template.yaml"
 
 cfn-lint $CFN_PATH
 aws cloudformation deploy \
-  --stack-name "Cruddur" \
+  --stack-name "CrdNet" \
   --template-file $CFN_PATH \
   --s3-bucket cfn-artifacts-$RANDOM_STRING \
   --no-execute-changeset \
+  --tags group=cruddur-cluster \
   --capabilities CAPABILITY_NAMED_IAM
 ```
 Note: 
@@ -184,7 +185,18 @@ This file will contain the structure of our network layer such as VPC, Internet 
 
 ```yaml
 AWSTemplateFormatVersion: 2010-09-09
-
+Description: |
+  Base networking components for the stack
+  - VPC
+    - sets DNS hostname for EC2 Instances
+    - Only IPV4, IPV6 is disabled
+  - InternetGateway
+  - RouteTable
+    - Route to IGW
+    - Route to Local
+  - 6 Subnet Explicity Associated to Route Table
+    - 3 Public Subnets numbered 1 to 3
+    - 3 Private Subnets numbered 1 to 3
 Parameters:
   VpcCidrBlock:
     Type: String
@@ -352,15 +364,15 @@ Outputs:
   VpcId:
     Value: !Ref VPC
     Export:
-      Name: VpcId
+      Name: !Sub "${AWS::StackName}VpcId"
   VpcCidrBlock:
     Value: !GetAtt VPC.CidrBlock
     Export:
-      Name: VpcCidrBlock
+      Name: !Sub "${AWS::StackName}VpcCidrBlock"
   SubnetCidrBlocks:
     Value: !Join [",", !Ref SubnetCidrBlocks]
     Export:
-      Name: SubnetCidrBlocks
+      Name: !Sub "${AWS::StackName}SubnetCidrBlocks"
   SubnetIds:
     Value: !Join
       - ","
@@ -371,7 +383,7 @@ Outputs:
         - !Ref SubnetPri2
         - !Ref SubnetPri3
     Export:
-      Name: SubnetIds
+      Name: !Sub "${AWS::StackName}SubnetIds"
   AvailabilityZones:
     Value: !Join
       - ","
@@ -379,7 +391,8 @@ Outputs:
         - !Ref Az2
         - !Ref Az3
     Export:
-      Name: AvailabilityZones
+      Name: !Sub "${AWS::StackName}AvailabilityZones"
+
 
 ```
 
@@ -405,13 +418,41 @@ CFN_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/networking/template.yaml"
 
 cfn-lint $CFN_PATH
 aws cloudformation deploy \
-  --stack-name "Cruddur" \
+  --stack-name "CrdNet" \
   --template-file $CFN_PATH \
   --s3-bucket cfn-artifacts-$RANDOM_STRING \
   --no-execute-changeset \
+  --tags group=cruddur-cluster \
   --capabilities CAPABILITY_NAMED_IAM
 ```
 
+
+## CFN Cluster Template
+
+First, create a bash script called `cluster-deploy` under `/bin/cfn`
+```bash
+#! /usr/bin/env bash
+set -e # stop execution of the script if it fails
+
+#This script will pass the value of the main root
+export THEIA_WORKSPACE_ROOT=$(pwd)
+
+
+CFN_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/cluster/template.yaml"
+
+
+cfn-lint $CFN_PATH
+aws cloudformation deploy \
+  --stack-name "CrdCluster" \
+  --template-file $CFN_PATH \
+  --s3-bucket "cfn-artifacts-$RANDOM_STRING" \
+  --no-execute-changeset \
+  --tags group=cruddur-cluster \
+  --capabilities CAPABILITY_NAMED_IAM
+```
+
+Create a file called `template.yaml` under the path `aws/cfn/cluster`
+This file will contain the structure of our containers such as the frontend and the backend container, target groups, application load balancer, and the outpost.
 
 
 

@@ -5,14 +5,14 @@ set -e # stop execution of the script if it fails
 export THEIA_WORKSPACE_ROOT=$(pwd)
 
 
-CFN_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/networking/template.yaml"
+CFN_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/cluster/template.yaml"
 
 
 cfn-lint $CFN_PATH
 aws cloudformation deploy \
-  --stack-name "CrdNet" \
+  --stack-name "CrdCluster" \
   --template-file $CFN_PATH \
   --s3-bucket "cfn-artifacts-$RANDOM_STRING" \
   --no-execute-changeset \
-  --tags group=cruddur-network \
+  --tags group=cruddur-cluster \
   --capabilities CAPABILITY_NAMED_IAM
