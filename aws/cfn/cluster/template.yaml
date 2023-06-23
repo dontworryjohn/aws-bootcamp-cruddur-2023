@@ -103,7 +103,7 @@ Resources:
         - !Ref ALBSecurityGroup
       Subnets:
         Fn::Split:
-          - ",",
+          - ","
           - Fn::ImportValue:
               !Sub "${NetworkingStack}SubnetIds"
 
