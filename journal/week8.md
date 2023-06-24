@@ -2298,7 +2298,7 @@ Follow the link
 
 Make sure to add also the Env Var for the lambda similar to the example below
 
-[image](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/implementation-Avatar-uploading/images/uploadbucketname.png)
+[image](https://github.com/dontworryjohn/aws-bootcamp-cruddur-2023/blob/main/images/uploadbucketname.png)
 
 >Note: Change the value of the bucket with yours.
 
