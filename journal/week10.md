@@ -373,17 +373,23 @@ Outputs:
     Value: !Join [",", !Ref SubnetCidrBlocks]
     Export:
       Name: !Sub "${AWS::StackName}SubnetCidrBlocks"
-  SubnetIds:
+  PublicSubnetIds:
     Value: !Join
       - ","
       - - !Ref SubnetPub1
         - !Ref SubnetPub2
         - !Ref SubnetPub3
-        - !Ref SubnetPri1
+    Export:
+      Name: !Sub "${AWS::StackName}PublicSubnetIds"
+
+  PrivateSubnetIds:
+    Value: !Join
+      - ","
+      - - !Ref SubnetPri1
         - !Ref SubnetPri2
         - !Ref SubnetPri3
     Export:
-      Name: !Sub "${AWS::StackName}SubnetIds"
+      Name: !Sub "${AWS::StackName}PrivateSubnetIds"
   AvailabilityZones:
     Value: !Join
       - ","
@@ -552,12 +558,12 @@ Resources:
       IpAddressType: ipv4
       Scheme: internet-facing
       SecurityGroups:  
-        - !Ref ALBSecurityGroup
+        - !GettAtt ALBSecurityGroup.GroupId
       Subnets:
         Fn::Split:
           - ","
           - Fn::ImportValue:
-              !Sub "${NetworkingStack}SubnetIds"
+              !Sub "${NetworkingStack}PublicSubnetIds"
 
       LoadBalancerAttributes:
         - Key: routing.http2.enabled
@@ -623,6 +629,9 @@ Resources:
     Properties: 
       GroupDescription: Allow Ingress traffic from the internet
       GroupName: !Sub "${AWS::StackName}AlbSg"
+      VpcId: 
+        Fn::ImportValue:
+            !Sub ${NetworkingStack}VpcId
       SecurityGroupIngress: 
         - IpProtocol: tcp
           FromPort: 443

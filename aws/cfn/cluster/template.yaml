@@ -6,6 +6,7 @@ Description: |
   - ALB
     - Ipv4 only
     - internet facing
+    - Certificate in ACM
   - ALB security group
   - HTTPS Listener
     - send naked domain to frontend target group
@@ -100,12 +101,12 @@ Resources:
       IpAddressType: ipv4
       Scheme: internet-facing
       SecurityGroups:  
-        - !Ref ALBSecurityGroup
+        - !GetAtt ALBSecurityGroup.GroupId
       Subnets:
         Fn::Split:
           - ","
           - Fn::ImportValue:
-              !Sub "${NetworkingStack}SubnetIds"
+              !Sub "${NetworkingStack}PublicSubnetIds"
 
       LoadBalancerAttributes:
         - Key: routing.http2.enabled
@@ -171,6 +172,9 @@ Resources:
     Properties: 
       GroupDescription: Allow Ingress traffic from the internet
       GroupName: !Sub "${AWS::StackName}AlbSg"
+      VpcId: 
+        Fn::ImportValue:
+            !Sub ${NetworkingStack}VpcId
       SecurityGroupIngress: 
         - IpProtocol: tcp
           FromPort: 443
