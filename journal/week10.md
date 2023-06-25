@@ -570,8 +570,9 @@ Resources:
           Value: true
         - Key: routing.http.preserve_host_header.enabled
           Value: false
+          #Turn on in case you need to protect the ALB
         - Key: deletion_protection.enabled
-          Value: true
+          Value: false
         - Key: load_balancing.cross_zone.enabled
           Value: true
         # for logs purposes
