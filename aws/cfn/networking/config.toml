@@ -1,0 +1,4 @@
+[deploy]
+bucket = 'cfn-artifacts-39r1pe'
+region = 'eu-west-2'
+stack_name = 'CrdNet'

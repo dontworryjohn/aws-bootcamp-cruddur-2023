@@ -4,15 +4,25 @@ set -e # stop execution of the script if it fails
 #This script will pass the value of the main root
 export THEIA_WORKSPACE_ROOT=$(pwd)
 
-
 CFN_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/networking/template.yaml"
+CONFIG_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/networking/config.toml"
+echo $CONFIG_PATH
+
+cfn-lint $CFN_PATH
+
+BUCKET=$(cfn-toml key deploy.bucket -t $CONFIG_PATH)
+REGION=$(cfn-toml key deploy.region -t $CONFIG_PATH)
+STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
+#PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
+
 
 
 cfn-lint $CFN_PATH
 aws cloudformation deploy \
-  --stack-name "CrdNet" \
+  --stack-name $STACK_NAME \
   --template-file $CFN_PATH \
-  --s3-bucket "cfn-artifacts-$RANDOM_STRING" \
+  --s3-bucket $BUCKET \
+  --region $REGION \
   --no-execute-changeset \
   --tags group=cruddur-network \
   --capabilities CAPABILITY_NAMED_IAM

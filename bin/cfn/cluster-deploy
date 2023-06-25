@@ -6,13 +6,23 @@ export THEIA_WORKSPACE_ROOT=$(pwd)
 
 
 CFN_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/cluster/template.yaml"
-
+CONFIG_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/cluster/config.toml"
+echo $CONFIG_PATH
 
 cfn-lint $CFN_PATH
+
+BUCKET=$(cfn-toml key deploy.bucket -t $CONFIG_PATH)
+REGION=$(cfn-toml key deploy.region -t $CONFIG_PATH)
+STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
+PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
+
+
 aws cloudformation deploy \
-  --stack-name "CrdCluster" \
+  --stack-name $STACK_NAME \
   --template-file $CFN_PATH \
-  --s3-bucket "cfn-artifacts-$RANDOM_STRING" \
+  --s3-bucket $BUCKET \
+  --region $REGION \
   --no-execute-changeset \
   --tags group=cruddur-cluster \
+  --parameter-overrides $PARAMETERS \
   --capabilities CAPABILITY_NAMED_IAM

@@ -35,3 +35,5 @@ cd /workspaces/aws-bootcamp-cruddur-2023/thumbing-serverless-cdk && cp .env.exam
 #Install Sharp and ClientS3
 cd /workspaces/aws-bootcamp-cruddur-2023/aws/lambdas/process-images && npm i sharp && npm i @aws-sdk/client-s3;
 
+#CFN
+pip install cfn-lint && cargo install cfn-guard && gem install cfn-toml
