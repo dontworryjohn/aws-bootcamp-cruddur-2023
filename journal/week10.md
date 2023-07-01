@@ -464,6 +464,7 @@ Description: |
   - ALB
     - Ipv4 only
     - internet facing
+    - Certificate in ACM
   - ALB security group
   - HTTPS Listener
     - send naked domain to frontend target group
@@ -558,7 +559,7 @@ Resources:
       IpAddressType: ipv4
       Scheme: internet-facing
       SecurityGroups:  
-        - !GettAtt ALBSecurityGroup.GroupId
+        - !GetAtt ALBSecurityGroup.GroupId
       Subnets:
         Fn::Split:
           - ","
@@ -570,7 +571,6 @@ Resources:
           Value: true
         - Key: routing.http.preserve_host_header.enabled
           Value: false
-          #Turn on in case you need to protect the ALB
         - Key: deletion_protection.enabled
           Value: false
         - Key: load_balancing.cross_zone.enabled
@@ -629,7 +629,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties: 
       GroupDescription: Allow Ingress traffic from the internet
-      GroupName: !Sub "${AWS::StackName}AlbSg"
+      GroupName: !Sub "${AWS::StackName}ALBSecurityGroup"
       VpcId: 
         Fn::ImportValue:
             !Sub ${NetworkingStack}VpcId
@@ -695,7 +695,15 @@ Resources:
         Fn::ImportValue:
            !Sub ${NetworkingStack}VpcId
 
-#Outputs:
+Outputs:
+  ClusterName:
+    Value: !Ref FargateCluster
+    Export:
+      Name: !Sub "${AWS::StackName}ClusterName"
+  ALBSecurityGroupId:
+    Value: !GetAtt  ALBSecurityGroup.GroupId
+    Export:
+      Name: !Sub "${AWS::StackName}ALBSecurityGroupId"
 ```
 
 ## CFN-Toml tool
@@ -818,6 +826,26 @@ stack_name = 'CrdNet'
 
 Note: on the `config.toml` the value to pass must be hardcoded.
 You can pass here the parameters rather than the  `cfn template`
+
+
+## CFN Service Template
+
+In this part, we will be creating the service layer
+
+First, create a file called `template.yaml` under `/aws/cfn/service`
+
+```yaml
+
+```
+
+
+
+
+
+
+
+
+
 
 
 

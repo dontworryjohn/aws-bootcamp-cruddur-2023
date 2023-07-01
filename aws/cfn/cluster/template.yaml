@@ -114,7 +114,7 @@ Resources:
         - Key: routing.http.preserve_host_header.enabled
           Value: false
         - Key: deletion_protection.enabled
-          Value: true
+          Value: false
         - Key: load_balancing.cross_zone.enabled
           Value: true
         # for logs purposes
@@ -171,7 +171,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties: 
       GroupDescription: Allow Ingress traffic from the internet
-      GroupName: !Sub "${AWS::StackName}AlbSg"
+      GroupName: !Sub "${AWS::StackName}ALBSecurityGroup"
       VpcId: 
         Fn::ImportValue:
             !Sub ${NetworkingStack}VpcId
@@ -237,4 +237,12 @@ Resources:
         Fn::ImportValue:
            !Sub ${NetworkingStack}VpcId
 
-#Outputs:
+Outputs:
+  ClusterName:
+    Value: !Ref FargateCluster
+    Export:
+      Name: !Sub "${AWS::StackName}ClusterName"
+  ALBSecurityGroupId:
+    Value: !GetAtt  ALBSecurityGroup.GroupId
+    Export:
+      Name: !Sub "${AWS::StackName}ALBSecurityGroupId"
