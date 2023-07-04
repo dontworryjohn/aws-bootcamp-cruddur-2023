@@ -12,6 +12,21 @@ Handler operations are: `CREATE`, `UPDATE`, `DELETE`, `READ`, or `LIST` actions 
 
 ## Security
 
+Amazon Side - Security Best Practice
+- Compliance standard is what your business requires from IaC service and is available in the region you need to operate
+- Amazon Organization SCP - restrict action (create, delete, modification) on production template/resource.
+- AWS Cloudtrail is enabled & monitored to trigger alerts for malicious activity.
+- AWS Audit Manager, IAM Access Analyzer
+
+Application Side - Security Best Practice
+
+- Use the linting to avoid hardcoded secrets and fix eventually indentation
+- IAM to control who can access the CFN template
+- Security of the cloudformation. Configuration access
+- Security in the cloudformation.
+- Security of the cloudformation entry point.
+- Develop a process for continuously verifying if there is a change that may break the cicd pipeline
+
 ## CFN Live Streaming
 
 
