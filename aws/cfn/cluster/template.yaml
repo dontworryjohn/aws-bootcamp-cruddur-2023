@@ -243,7 +243,7 @@ Resources:
            !Sub ${NetworkingStack}VpcId
       Tags:
         - Key: target-group-name
-          Value: frontend
+          Value: Frontend
 
 Outputs:
   ClusterName:
