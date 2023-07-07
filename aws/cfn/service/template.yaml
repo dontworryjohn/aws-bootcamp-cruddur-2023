@@ -271,3 +271,9 @@ Resources:
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/CloudWatchFullAccess"
         - "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
+
+Outputs:
+  ServiceSecurityGroupId:
+    Value: !GetAtt  ServiceSG.GroupId
+    Export:
+      Name: !Sub "${AWS::StackName}ServiceSecurityGroupId"

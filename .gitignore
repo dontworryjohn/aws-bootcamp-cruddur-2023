@@ -7,3 +7,4 @@ session-manager-plugin.deb
 node_modules
 cdk.out
 Week8Note.md
+bin/backend/create-service
