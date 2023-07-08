@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  Database in RDS Postgres component for the application
+  - RDS Instance
+  - Database Security Group
+
+Parameters:
+  BackupRetentionPeriod:
+    Type: Number
+    Default: 0
+  DBInstanceClass:
+    Type: String
+    Default: db.t4g.micro
+  DBInstanceIdentifier:
+    Type:
+    Default:
+  DBName:
+    Type:
+    Default:
+  DBSubnetGroupName:
+    Type:
+    Default:
+  DeletionProtection:
+    Type:
+    Default:
+  EngineVersion:
+    Type:
+    Default:
+Resources:
+  #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbinstance.html
+  Type: AWS::RDS::DBInstance
+  # Remember to change this back to snapshot for production
+  # cant use !Ref on DeletionPolicy and Condition Stacks
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html
+  #DeletionPolicy: 'Snapshot'
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatereplacepolicy.html
+  #UpdateReplacePolicy: 'Snapshot'
+  Properties:
+    AllocatedStorage: '20'
+    AllowMajorVersionUpgrade: true
+    AutoMinorVersionUpgrade: true
+    BackupRetentionPeriod: !Ref  BackupRetentionPeriod
+    DBInstanceClass: !Ref DBInstanceClass
+    DBInstanceIdentifier: !Ref DBInstanceIdentifier
+    DBName: !Ref DBName
+    DBSubnetGroupName: !Ref DBSubnetGroup
+    DeletionProtection: !Ref DeletionProtection
+    EnablePerformanceInsights: true
+    Engine: postgres
+    EngineVersion: !Ref EngineVersion
+
+Outputs:
+     
