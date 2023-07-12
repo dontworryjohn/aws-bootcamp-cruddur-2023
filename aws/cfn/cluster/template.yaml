@@ -186,6 +186,22 @@ Resources:
           ToPort: 80
           CidrIp: '0.0.0.0/0'
           Description: CONNECTION HTTP
+  # Need to create this SG before to pass it to the database SG
+  ServiceSG:
+    #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-security-group.html
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      GroupDescription: SG for the Fargate SG for cruddur
+      GroupName: !Sub "${AWS::StackName}ServSG"
+      VpcId: 
+        Fn::ImportValue:
+            !Sub ${NetworkingStack}VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          SourceSecurityGroupId: !GetAtt ALBSecurityGroup.GroupId
+          FromPort: 5432
+          ToPort: 5432
+          Description: RDS Connection
   BackendTG:
     #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
@@ -254,6 +270,10 @@ Outputs:
     Value: !GetAtt  ALBSecurityGroup.GroupId
     Export:
       Name: !Sub "${AWS::StackName}ALBSecurityGroupId"
+  ServiceSecurityGroupId:
+    Value: !GetAtt  ServiceSG.GroupId
+    Export:
+      Name: !Sub "${AWS::StackName}ServiceSecurityGroupId"
   BackendTargetGroup:
     Value: !Ref BackendTG
     Export:

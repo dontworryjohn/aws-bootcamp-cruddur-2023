@@ -658,6 +658,22 @@ Resources:
           ToPort: 80
           CidrIp: '0.0.0.0/0'
           Description: CONNECTION HTTP
+  # Need to create this SG before to pass it to the database SG
+  ServiceSG:
+    #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-security-group.html
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      GroupDescription: SG for the Fargate SG for cruddur
+      GroupName: !Sub "${AWS::StackName}ServSG"
+      VpcId: 
+        Fn::ImportValue:
+            !Sub ${NetworkingStack}VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          SourceSecurityGroupId: !GetAtt ALBSecurityGroup.GroupId
+          FromPort: 5432
+          ToPort: 5432
+          Description: RDS Connection
   BackendTG:
     #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
@@ -726,6 +742,10 @@ Outputs:
     Value: !GetAtt  ALBSecurityGroup.GroupId
     Export:
       Name: !Sub "${AWS::StackName}ALBSecurityGroupId"
+  ServiceSecurityGroupId:
+    Value: !GetAtt  ServiceSG.GroupId
+    Export:
+      Name: !Sub "${AWS::StackName}ServiceSecurityGroupId"
   BackendTargetGroup:
     Value: !Ref BackendTG
     Export:
@@ -1146,6 +1166,12 @@ Resources:
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/CloudWatchFullAccess"
         - "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
+
+Outputs:
+  ServiceSecurityGroupId:
+    Value: !GetAtt  ServiceSG.GroupId
+    Export:
+      Name: !Sub "${AWS::StackName}ServiceSecurityGroupId"
 ```
 
  create a bash script called service-deploy under /bin/cfn
@@ -1188,9 +1214,175 @@ aws cloudformation deploy \
 
 
 
+In this part, we will be creating the RDS database layer
+
+First, create a file called `template.yaml` under `/aws/cfn/db`
+
+```yaml
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  Database in RDS Postgres component for the application
+  - RDS Instance
+  - Database Security Group
+  - DB Subnetgroup
+
+Parameters:
+  NetworkingStack:
+    Type: String
+    Description: This is the base layer of networking components
+    Default: CrdNet
+  ClusterStack:
+    Type: String
+    Description: This is the Cluster Layer 
+    Default: CrdCluster
+  BackupRetentionPeriod:
+    Type: Number
+    Default: 0
+  DBInstanceClass:
+    Type: String
+    Default: db.t4g.micro
+  DBInstanceIdentifier:
+    Type: String
+    Default: cruddur-instance
+  DBName:
+    Type: String
+    Default: cruddur
+  DeletionProtection:
+  #set this in on true for production
+    Type: String
+    AllowedValues:
+         - true
+         - false
+    Default: false
+  EngineVersion:
+    Type: String
+    #  DB Proxy only supports very specific versions of Postgres
+    #  https://stackoverflow.com/questions/63084648/which-rds-db-instances-are-supported-for-db-proxy
+    Default: '15.3'
+  MasterUsername:
+    Type: String
+
+  MasterUserPassword:
+    Type: String
+    NoEcho: true 
+
+Resources:
+  RDSPostgresSG:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-security-group.html
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub "${AWS::StackName}RDSSG"
+      GroupDescription: Security Group RDS
+      VpcId:
+        Fn::ImportValue:
+          !Sub ${NetworkingStack}VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          SourceSecurityGroupId:
+            Fn::ImportValue:
+              !Sub ${ClusterStack}ServiceSecurityGroupId
+          FromPort: 5432
+          ToPort: 5432
+          Description: ALB HTTP
+  DBSubnetGroup:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbsubnetgroup.html
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupName: !Sub "${AWS::StackName}DBSubnetGroup"
+      DBSubnetGroupDescription: !Sub "${AWS::StackName}DBSubnetGroup"
+      SubnetIds: { 'Fn::Split' : [ ','  , { "Fn::ImportValue": { "Fn::Sub": "${NetworkingStack}PublicSubnetIds" }}] }
+  
+
+  Database:
+    #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbinstance.html
+    Type: AWS::RDS::DBInstance
+    # Remember to change this back to snapshot for production
+    # cant use !Ref on DeletionPolicy and Condition Stacks
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html
+    #DeletionPolicy: 'Snapshot'
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatereplacepolicy.html
+    #UpdateReplacePolicy: 'Snapshot'
+    Properties:
+      AllocatedStorage: '20'
+      AllowMajorVersionUpgrade: true
+      AutoMinorVersionUpgrade: true
+      BackupRetentionPeriod: !Ref  BackupRetentionPeriod
+      DBInstanceClass: !Ref DBInstanceClass
+      DBInstanceIdentifier: !Ref DBInstanceIdentifier
+      DBName: !Ref DBName
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      DeletionProtection: !Ref DeletionProtection
+      EnablePerformanceInsights: true
+      Engine: postgres
+      EngineVersion: !Ref EngineVersion
 
 
+# Must be 1 to 63 letters or numbers.
+# First character must be a letter.
+# Can't be a reserved word for the chosen database engine.
+      MasterUsername:  !Ref MasterUsername
+      # Constraints: Must contain from 8 to 128 characters.
+      MasterUserPassword: !Ref MasterUserPassword
+      PubliclyAccessible: true
+      VPCSecurityGroups:
+        - !GetAtt RDSPostgresSG.GroupId
+#Outputs:
+#  ServiceSecurityGroupId:
+#    Value: !GetAtt ServiceSG.GroupId
+#    Export:
+#      Name: !Sub "${AWS::StackName}ServiceSecurityGroupId"
+```
 
+ create a bash script called service-deploy under /bin/cfn
+
+```bash
+#! /usr/bin/env bash
+set -e # stop execution of the script if it fails
+
+#This script will pass the value of the main root
+export THEIA_WORKSPACE_ROOT=$(pwd)
+
+
+CFN_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/db/template.yaml"
+CONFIG_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/db/config.toml"
+echo $CONFIG_PATH
+
+cfn-lint $CFN_PATH
+
+BUCKET=$(cfn-toml key deploy.bucket -t $CONFIG_PATH)
+REGION=$(cfn-toml key deploy.region -t $CONFIG_PATH)
+STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
+PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
+
+
+aws cloudformation deploy \
+  --stack-name $STACK_NAME \
+  --template-file $CFN_PATH \
+  --s3-bucket $BUCKET \
+  --region $REGION \
+  --no-execute-changeset \
+  --tags group=cruddur-database \
+  --parameter-overrides $PARAMETERS MasterUserPassword=$DB_PASSWORD \
+  --capabilities CAPABILITY_NAMED_IAM
+```
+Note: In the bin file, the `DB_PASSWORD` env var is passed.For example, if you need to pass another  value you can do something like this: 
+```bash
+--parameter-overrides $PARAMETERS MasterUserPassword=$DB_PASSWORD MyKey3=MyValue3 \
+```
+
+launch the following command to generate a random password for rds 
+```bash
+export DB_PASSWORD=$(aws secretsmanager get-random-password \
+--exclude-punctuation \
+--password-length 41 --require-each-included-type \
+--output text \
+--query RandomPassword)
+
+echo $DB_PASSWORD
+
+#save the env var on gitpod
+gp env MasterUserPassword=$DB_PASSWORD
+```
 
 
 
