@@ -36,7 +36,7 @@ Parameters:
     Default: "/"
   FrontendHealthCheckPort: 
     Type: String
-    Default: 3000
+    Default: 80
   FrontendHealthCheckProtocol:
     Type: String
     Default: HTTP
@@ -199,9 +199,9 @@ Resources:
       SecurityGroupIngress:
         - IpProtocol: tcp
           SourceSecurityGroupId: !GetAtt ALBSecurityGroup.GroupId
-          FromPort: 5432
-          ToPort: 5432
-          Description: RDS Connection
+          FromPort: !Ref BackendPort
+          ToPort: !Ref BackendPort
+          Description: Container Backend
   BackendTG:
     #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html
     Type: AWS::ElasticLoadBalancingV2::TargetGroup

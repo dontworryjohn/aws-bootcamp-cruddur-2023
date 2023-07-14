@@ -72,22 +72,22 @@ Parameters:
     Default:  "arn:aws:ssm:eu-west-2:238967891447:parameter/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS"
 
 Resources:
-  ServiceSG:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupName: !Sub "${AWS::StackName}ALBSecurityGroup"
-      GroupDescription: Security Group from ALB and Targetgroup
-      VpcId: 
-        Fn::ImportValue: 
-          !Sub "${NetworkingStack}VpcId"
-      SecurityGroupIngress: 
-        - IpProtocol: tcp
-          SourceSecurityGroupId:
-            Fn::ImportValue:
-              !Sub "${ClusterStack}ALBSecurityGroupId"
-          FromPort: 4567
-          ToPort: 4567
-          Description: ALB HTTP
+  #ServiceSG:
+  #  Type: AWS::EC2::SecurityGroup
+  #  Properties:
+  #    GroupName: !Sub "${AWS::StackName}ALBSecurityGroup"
+  #    GroupDescription: Security Group from ALB and Targetgroup
+  #    VpcId: 
+  #      Fn::ImportValue: 
+  #        !Sub "${NetworkingStack}VpcId"
+  #    SecurityGroupIngress: 
+  #      - IpProtocol: tcp
+  #        SourceSecurityGroupId:
+  #          Fn::ImportValue:
+  #            !Sub "${ClusterStack}ALBSecurityGroupId"
+  #        FromPort: 4567
+  #        ToPort: 4567
+  #        Description: ALB HTTP
 
   FargateService:
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-service.html
@@ -114,7 +114,8 @@ Resources:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
           SecurityGroups:
-            - !GetAtt ServiceSG.GroupId
+            - Fn::ImportValue:
+                !Sub "${ClusterStack}ServiceSecurityGroupId"
           Subnets:
             Fn::Split:
               - ","
@@ -272,8 +273,8 @@ Resources:
         - "arn:aws:iam::aws:policy/CloudWatchFullAccess"
         - "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
 
-Outputs:
-  ServiceSecurityGroupId:
-    Value: !GetAtt  ServiceSG.GroupId
-    Export:
-      Name: !Sub "${AWS::StackName}ServiceSecurityGroupId"
+#Outputs:
+#  ServiceSecurityGroupId:
+#    Value: !GetAtt  ServiceSG.GroupId
+#    Export:
+#      Name: !Sub "${AWS::StackName}ServiceSecurityGroupId"

@@ -508,7 +508,7 @@ Parameters:
     Default: "/"
   FrontendHealthCheckPort: 
     Type: String
-    Default: 3000
+    Default: 80
   FrontendHealthCheckProtocol:
     Type: String
     Default: HTTP
@@ -671,9 +671,9 @@ Resources:
       SecurityGroupIngress:
         - IpProtocol: tcp
           SourceSecurityGroupId: !GetAtt ALBSecurityGroup.GroupId
-          FromPort: 5432
-          ToPort: 5432
-          Description: RDS Connection
+          FromPort: !Ref BackendPort
+          ToPort: !Ref BackendPort
+          Description: Container Backend
   BackendTG:
     #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
@@ -967,22 +967,22 @@ Parameters:
     Default:  "arn:aws:ssm:eu-west-2:238967891447:parameter/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS"
 
 Resources:
-  ServiceSG:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupName: !Sub "${AWS::StackName}ALBSecurityGroup"
-      GroupDescription: Security Group from ALB and Targetgroup
-      VpcId: 
-        Fn::ImportValue: 
-          !Sub "${NetworkingStack}VpcId"
-      SecurityGroupIngress: 
-        - IpProtocol: tcp
-          SourceSecurityGroupId:
-            Fn::ImportValue:
-              !Sub "${ClusterStack}ALBSecurityGroupId"
-          FromPort: 4567
-          ToPort: 4567
-          Description: ALB HTTP
+  #ServiceSG:
+  #  Type: AWS::EC2::SecurityGroup
+  #  Properties:
+  #    GroupName: !Sub "${AWS::StackName}ALBSecurityGroup"
+  #    GroupDescription: Security Group from ALB and Targetgroup
+  #    VpcId: 
+  #      Fn::ImportValue: 
+  #        !Sub "${NetworkingStack}VpcId"
+  #    SecurityGroupIngress: 
+  #      - IpProtocol: tcp
+  #        SourceSecurityGroupId:
+  #          Fn::ImportValue:
+  #            !Sub "${ClusterStack}ALBSecurityGroupId"
+  #        FromPort: 4567
+  #        ToPort: 4567
+  #        Description: ALB HTTP
 
   FargateService:
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-service.html
@@ -1009,7 +1009,8 @@ Resources:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
           SecurityGroups:
-            - !GetAtt ServiceSG.GroupId
+            - Fn::ImportValue:
+                !Sub "${ClusterStack}ServiceSecurityGroupId"
           Subnets:
             Fn::Split:
               - ","
@@ -1167,11 +1168,11 @@ Resources:
         - "arn:aws:iam::aws:policy/CloudWatchFullAccess"
         - "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
 
-Outputs:
-  ServiceSecurityGroupId:
-    Value: !GetAtt  ServiceSG.GroupId
-    Export:
-      Name: !Sub "${AWS::StackName}ServiceSecurityGroupId"
+#Outputs:
+#  ServiceSecurityGroupId:
+#    Value: !GetAtt  ServiceSG.GroupId
+#    Export:
+#      Name: !Sub "${AWS::StackName}ServiceSecurityGroupId"
 ```
 
  create a bash script called service-deploy under /bin/cfn
@@ -1283,7 +1284,7 @@ Resources:
               !Sub ${ClusterStack}ServiceSecurityGroupId
           FromPort: 5432
           ToPort: 5432
-          Description: ALB HTTP
+          Description: Security Group Cluster
   DBSubnetGroup:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbsubnetgroup.html
     Type: AWS::RDS::DBSubnetGroup
@@ -1383,9 +1384,7 @@ echo $DB_PASSWORD
 #save the env var on gitpod
 gp env MasterUserPassword=$DB_PASSWORD
 ```
-
-
-
+Note: if you are using VSCode Local and you dont save the variable generated using the script above, make sure to relaunch it again  as you might have error regarding the master password blank
 
 
 

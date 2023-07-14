@@ -62,7 +62,7 @@ Resources:
               !Sub ${ClusterStack}ServiceSecurityGroupId
           FromPort: 5432
           ToPort: 5432
-          Description: ALB HTTP
+          Description: Security Group Cluster
   DBSubnetGroup:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbsubnetgroup.html
     Type: AWS::RDS::DBSubnetGroup
