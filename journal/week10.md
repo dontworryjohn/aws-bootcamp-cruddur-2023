@@ -3,7 +3,7 @@
 This week the team will be talking about Cloudformation.
 
 The following link will show the diagram architecture
-[CFN Architecture](https://drive.google.com/file/d/1frViHBbn4g0lxnrz9VyypsriJ06nIb6h/view?usp=sharing)
+[CFN Architecture](https://viewer.diagrams.net/?tags=%7B%7D&highlight=0000ff&layers=1&nav=1&title=CFN%20Diagram.drawio#Uhttps%3A%2F%2Fdrive.google.com%2Fuc%3Fid%3D1frViHBbn4g0lxnrz9VyypsriJ06nIb6h%26export%3Ddownload)
 
 ## Cost
 In Cloudformation, you only pay for what you use, with no minimum fees and no required upfront commitment.
