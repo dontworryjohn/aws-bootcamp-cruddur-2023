@@ -1,0 +1,16 @@
+#! /usr/bin/env bash
+set -e # stop execution of the script if it fails
+
+#This script will pass the value of the main root
+export THEIA_WORKSPACE_ROOT=$(pwd)
+TEMPLATE_PATH="$THEIA_WORKSPACE_ROOT/.aws-sam/build/template.yaml"
+OUTPUT_TEMPLATE_PATH="$THEIA_WORKSPACE_ROOT/.aws-sam/build/packaged.yaml"
+ARTIFACTS_BUCKET="cfn-artifacts-39r1pe"
+CONFIG_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/ddb/config.toml"
+
+sam package \
+--s3-bucket $ARTIFACTS_BUCKET \
+--config-file $CONFIG_PATH \
+--output-template-file $OUTPUT_TEMPLATE_PATH \
+--template-file $TEMPLATE_PATH \
+--s3-prefix "ddb"

@@ -22,6 +22,7 @@ aws cloudformation deploy \
   --stack-name $STACK_NAME \
   --template-file $CFN_PATH \
   --s3-bucket $BUCKET \
+  --s3-prefix cruddur-network \
   --region $REGION \
   --no-execute-changeset \
   --tags group=cruddur-network \

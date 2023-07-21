@@ -8,6 +8,9 @@ FUNC_DIR="$THEIA_WORKSPACE_ROOT/aws/lambdas/cruddur-messaging-stream/"
 TEMPLATE_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/ddb/template.yaml"
 CONFIG_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/ddb/config.toml"
 ARTIFACTS_BUCKET="cfn-artifacts-39r1pe"
+
+sam validate -t $TEMPLATE_PATH
+
 #https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-build.html
 sam build \
 --config-file $CONFIG_PATH \
@@ -21,6 +24,7 @@ OUTPUT_TEMPLATE_PATH="$THEIA_WORKSPACE_ROOT/.aws-sam/build/packaged.yaml"
 #https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-package.html
 sam package \
 --s3-bucket $ARTIFACTS_BUCKET \
+--s3-prefix cruddur-ddb \
 --config-file $CONFIG_PATH \
 --output-template-file $OUTPUT_TEMPLATE_PATH \
 --template-file $TEMPLATE_PATH \

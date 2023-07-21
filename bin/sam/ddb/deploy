@@ -1,0 +1,15 @@
+#! /usr/bin/env bash
+set -e # stop execution of the script if it fails
+
+#This script will pass the value of the main root
+export THEIA_WORKSPACE_ROOT=$(pwd)
+
+PACKAGED_TEMPLATE_PATH="$THEIA_WORKSPACE_ROOT/.aws-sam/build/packaged.yaml"
+CONFIG_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/ddb/config.toml"
+sam deploy \
+  --template-file  $PACKAGED_TEMPLATE_PATH \
+  --config-file $CONFIG_PATH \
+  --stack-name "CrdDdb" \
+  --tags group=cruddur-ddb \
+  --no-execute-changeset \
+  --capabilities CAPABILITY_NAMED_IAM
