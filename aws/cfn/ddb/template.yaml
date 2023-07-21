@@ -7,7 +7,7 @@ Description: |
 Parameters:
   PythonRuntime:
     Type: String
-    Default: python3.9
+    Default: python3.10
   MemorySize:
     Type: String
     Default: 128

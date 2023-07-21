@@ -11,9 +11,9 @@ CONFIG_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/ddb/config.toml"
 sam build \
 --config-file $CONFIG_PATH \
 --template $TEMPLATE_PATH \
-#--parameter-overrides \
 --build-dir $FUNC_DIR \
---build-base $FUNC_DIR \
+--base-dir $FUNC_DIR
+#--parameter-overrides \
 
 
 
