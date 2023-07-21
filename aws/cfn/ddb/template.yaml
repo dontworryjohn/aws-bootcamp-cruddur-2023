@@ -58,7 +58,7 @@ Resources:
     Properties:
       Architectures:
         - arm64
-      #CodeUri:
+      #CodeUri: cruddur-messaging-stream
       #InlineCode:
       PackageType: Zip
       Handler: lambda_handler
