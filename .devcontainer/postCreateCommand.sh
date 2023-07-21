@@ -22,6 +22,14 @@ sudo dpkg -i session-manager-plugin.deb
 session-manager-plugin
 cd /workspaces/aws-bootcamp-cruddur-2023/backend-flask
 
+#install sam 
+cd /workspaces
+wget https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip
+unzip aws-sam-cli-linux-x86_64.zip -d sam-installation
+sudo ./sam-installation/install
+cd /workspaces/aws-bootcamp-cruddur-2023/
+
+
 #ECR Login
 source  "/workspaces/aws-bootcamp-cruddur-2023/bin/ecr/login"
 

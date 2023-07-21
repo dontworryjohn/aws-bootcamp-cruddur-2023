@@ -1,0 +1,23 @@
+#! /usr/bin/env bash
+set -e # stop execution of the script if it fails
+
+#This script will pass the value of the main root
+export THEIA_WORKSPACE_ROOT=$(pwd)
+
+FUNC_DIR="$THEIA_WORKSPACE_ROOT/aws/lambdas/cruddur-messaging-stream/"
+TEMPLATE_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/ddb/template.yaml"
+CONFIG_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/ddb/config.toml"
+#https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-build.html
+sam build \
+--config-file $CONFIG_PATH \
+--template $TEMPLATE_PATH \
+#--parameter-overrides \
+--build-dir $FUNC_DIR \
+--build-base $FUNC_DIR \
+
+
+
+#https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-package.html
+#sam package \
+#https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-deploy.html
+#sam deploy

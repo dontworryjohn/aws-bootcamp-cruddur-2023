@@ -2,8 +2,8 @@
 
 This week the team will be talking about Cloudformation.
 
-The following link will show the diagram architecture
-[CFN Architecture](https://viewer.diagrams.net/?tags=%7B%7D&highlight=0000ff&layers=1&nav=1&title=CFN%20Diagram.drawio#Uhttps%3A%2F%2Fdrive.google.com%2Fuc%3Fid%3D1frViHBbn4g0lxnrz9VyypsriJ06nIb6h%26export%3Ddownload)
+The following link will show the 
+[diagram architecture](https://viewer.diagrams.net/?tags=%7B%7D&highlight=0000ff&layers=1&nav=1&title=CFN%20Diagram.drawio#Uhttps%3A%2F%2Fdrive.google.com%2Fuc%3Fid%3D1frViHBbn4g0lxnrz9VyypsriJ06nIb6h%26export%3Ddownload)
 
 ## Cost
 In Cloudformation, you only pay for what you use, with no minimum fees and no required upfront commitment.
@@ -1386,7 +1386,30 @@ gp env MasterUserPassword=$DB_PASSWORD
 ```
 Note: if you are using VSCode Local and you dont save the variable generated using the script above, make sure to relaunch it again  as you might have error regarding the master password blank
 
+## CFN DYNAMODB USING SAM
 
+In this part, we will be creating the Dynamodb using SAM
+
+If you are installing locally, follow the [link](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html) to install sam in your machine. 
+
+
+
+If you are using Gitpod, insert the following code on you `gipod.yml` file
+
+```yaml
+  - name: aws-sam
+    init: |
+      cd /workspace
+      wget https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip
+      unzip aws-sam-cli-linux-x86_64.zip -d sam-installation
+      sudo ./sam-installation/install
+      cd $THEIA_WORKSPACE_ROOT
+```
+
+Create a file called `template.yaml` under `/aws/cfn/ddb`
+
+```yaml
+```
 
 
 ## Debug

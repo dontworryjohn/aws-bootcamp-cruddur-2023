@@ -1,0 +1,32 @@
+{
+    "configurations": [
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
+            "name": "ddb:ProcessDynamoDBStream",
+            "invokeTarget": {
+                "target": "template",
+                "templatePath": "${workspaceFolder}/aws/cfn/ddb/template.yaml",
+                "logicalId": "ProcessDynamoDBStream"
+            },
+            "lambda": {
+                "payload": {},
+                "environmentVariables": {}
+            }
+        },
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
+            "name": "ddb:ProcessDynamoDBStream",
+            "invokeTarget": {
+                "target": "template",
+                "templatePath": "${workspaceFolder}/aws/cfn/ddb/template.yaml",
+                "logicalId": "ProcessDynamoDBStream"
+            },
+            "lambda": {
+                "payload": {},
+                "environmentVariables": {}
+            }
+        }
+    ]
+}
