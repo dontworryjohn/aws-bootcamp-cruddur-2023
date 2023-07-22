@@ -40,4 +40,4 @@ aws cloudformation deploy \
   --no-execute-changeset \
   --tags group=cruddur-cicd \
   --capabilities CAPABILITY_NAMED_IAM \
-  --parameter-overrides $PARAMETERS
+  --parameter-overrides $PARAMETERS ArtifactBucketName=$CICD_BUCKET

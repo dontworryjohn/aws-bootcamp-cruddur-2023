@@ -16,7 +16,7 @@ Parameters:
     Default: "backend-flask"
   CodeBuildImage:
     Type: String
-    Default: aws/codebuild/amazonlinux-x86_64-standard:4.0
+    Default: aws/codebuild/amazonlinux2-x86_64-standard:4.0
   CodeBuildComputeType:
     Type: String
     Default: BUILD_GENERAL1_SMALL
