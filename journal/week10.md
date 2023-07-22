@@ -1386,6 +1386,19 @@ gp env MasterUserPassword=$DB_PASSWORD
 ```
 Note: if you are using VSCode Local and you dont save the variable generated using the script above, make sure to relaunch it again  as you might have error regarding the master password blank
 
+Create the file config.toml under the aws/cfn/db
+```s
+[deploy]
+bucket = 'cfn-artifacts-39r1pe'
+region = 'eu-west-2'
+stack_name = 'CrdDB'
+
+[parameters]
+NetworkingStack = 'CrdNet'
+ClusterStack = 'CrdCluster'
+MasterUsername = 'cruddurroot'
+```
+
 ## CFN DYNAMODB USING SAM
 
 In this part, we will be creating the Dynamodb using SAM
@@ -1409,8 +1422,201 @@ If you are using Gitpod, insert the following code on you `gipod.yml` file
 Create a file called `template.yaml` under `/aws/cfn/ddb`
 
 ```yaml
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: |
+  - DynamoDB Table
+  - DynamoDB Stream
+
+Parameters:
+  PythonRuntime:
+    Type: String
+    Default: python3.10
+  MemorySize:
+    Type: String
+    Default: 128
+  Timeout:
+    Type: Number
+    Default: 3
+Resources:
+  DynamoDBTable:
+    #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      AttributeDefinitions:
+        - AttributeName: message_group_uuid
+          AttributeType: S
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+      TableClass: STANDARD
+      KeySchema: 
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      BillingMode: PROVISIONED
+      # active in production
+      DeletionProtectionEnabled: false
+      GlobalSecondaryIndexes:
+          - IndexName: message-group-sk-index
+            KeySchema:
+                  - AttributeName: message_group_uuid
+                    KeyType: HASH
+                  - AttributeName: sk
+                    KeyType: RANGE
+            Projection:
+                  ProjectionType: ALL
+            ProvisionedThroughput: 
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+  ProcessDynamoDBStream:
+    #https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Type: AWS::Serverless::Function
+    Properties:
+      #CodeUri: .
+      #InlineCode:
+      PackageType: Zip
+      Handler: lambda_handler
+      Runtime: !Ref PythonRuntime
+      Role: !GetAtt ExecutionRole.Arn
+      MemorySize: !Ref MemorySize
+      Timeout: !Ref Timeout
+      Events:
+        Stream:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt DynamoDBTable.StreamArn
+            BatchSize: 1
+            # To Check
+            StartingPosition: LATEST
+
+
+  LambdaLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    Properties:
+      LogGroupName: "/aws/lambda/cruddur-messaging-stream00"
+      RetentionInDays: 14
+  LambdaLogStream:
+    Type: "AWS::Logs::LogStream"
+    Properties:
+      LogGroupName: !Ref LambdaLogGroup
+      LogStreamName: "LambdaExecution"
+  
+  ExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: CrdDdbStreamExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: 'lambda.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: LambdaExecutionPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: logs:CreateLogGroup
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*"
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${LambdaLogGroup}:*"
+              - Effect: Allow
+                Action:
+                  - ec2:CreateNetworkInterface
+                  - ec2:DeleteNetworkInterface
+                  - ec2:DescribeNetworkInterfaces
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - dynamodb:DescribeStream
+                  - dynamodb:GetRecords
+                  - dynamodb:GetShardIterator
+                  - dynamodb:ListStreams
+                Resource: "*"
+```
+Note: Lambda now supports python 3.10. Make sure to have this version installed in your local dev. if you have a higher version not supported by lambda, you need to create a container
+
+
+Create the file config.toml under the aws/cfn/ddb
+
+```s
+version=0.1
+[default.build.parameters]
+region= "eu-west-2"
+
+[default.package.parameters]
+region= "eu-west-2"
+
+[default.deploy.parameters]
+region= "eu-west-2"
 ```
 
+create the script to build, package and deploy SAM.
+called the file `ddb-deploy` under the `/bin/cfn`
+```bash
+#! /usr/bin/env bash
+set -e # stop execution of the script if it fails
+
+#This script will pass the value of the main root
+export THEIA_WORKSPACE_ROOT=$(pwd)
+
+FUNC_DIR="$THEIA_WORKSPACE_ROOT/aws/lambdas/cruddur-messaging-stream/"
+TEMPLATE_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/ddb/template.yaml"
+CONFIG_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/ddb/config.toml"
+ARTIFACTS_BUCKET="cfn-artifacts-39r1pe"
+
+sam validate -t $TEMPLATE_PATH
+
+#https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-build.html
+sam build \
+--config-file $CONFIG_PATH \
+--template-file $TEMPLATE_PATH \
+--base-dir $FUNC_DIR
+#--parameter-overrides \
+
+
+TEMPLATE_PATH="$THEIA_WORKSPACE_ROOT/.aws-sam/build/template.yaml"
+OUTPUT_TEMPLATE_PATH="$THEIA_WORKSPACE_ROOT/.aws-sam/build/packaged.yaml"
+#https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-package.html
+sam package \
+--s3-bucket $ARTIFACTS_BUCKET \
+--s3-prefix cruddur-ddb \
+--config-file $CONFIG_PATH \
+--output-template-file $OUTPUT_TEMPLATE_PATH \
+--template-file $TEMPLATE_PATH \
+--s3-prefix "ddb"
+
+PACKAGED_TEMPLATE_PATH="$THEIA_WORKSPACE_ROOT/.aws-sam/build/packaged.yaml"
+#https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-deploy.html
+sam deploy \
+  --template-file  $PACKAGED_TEMPLATE_PATH \
+  --config-file $CONFIG_PATH \
+  --stack-name "CrdDdb" \
+  --tags group=cruddur-ddb \
+  --no-execute-changeset \
+  --capabilities CAPABILITY_NAMED_IAM
+
+```
+
+from the `lambdas` directory, create a new folder called `cruddur-messaging-stream`, insert there the lambda `cruddur-messaging-stream` and rename it as `lambda_handler.py
+`
 
 ## Debug
 
