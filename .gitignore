@@ -10,3 +10,4 @@ Week8Note.md
 bin/backend/create-service
 .aws-sam
 build.toml
+tmp/*

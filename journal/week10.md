@@ -1618,6 +1618,19 @@ sam deploy \
 from the `lambdas` directory, create a new folder called `cruddur-messaging-stream`, insert there the lambda `cruddur-messaging-stream` and rename it as `lambda_handler.py
 `
 
+## CFN CICD
+
+Create a s3 bucket for the artifacts 
+```sh
+export RANDOM_STRING=$(aws secretsmanager get-random-password --exclude-punctuation --exclude-uppercase --password-length 6 --output text --query RandomPassword)
+aws s3 mb s3://codepipeline-cruddur-artifacts-$RANDOM_STRING
+
+export CICD_BUCKET="codepipeline-cruddur-artifacts-$RANDOM_STRING"
+
+gp env CICD_BUCKET="codepipeline-cruddur-artifacts-$RANDOM_STRING"
+```
+
+
 ## Debug
 
 to debug try to check `cloudtrail` to see the error

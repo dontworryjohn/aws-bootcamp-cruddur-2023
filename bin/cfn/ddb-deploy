@@ -28,7 +28,7 @@ sam package \
 --config-file $CONFIG_PATH \
 --output-template-file $OUTPUT_TEMPLATE_PATH \
 --template-file $TEMPLATE_PATH \
---s3-prefix "ddb"
+--s3-prefix "cruddur-ddb"
 
 PACKAGED_TEMPLATE_PATH="$THEIA_WORKSPACE_ROOT/.aws-sam/build/packaged.yaml"
 #https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-deploy.html
