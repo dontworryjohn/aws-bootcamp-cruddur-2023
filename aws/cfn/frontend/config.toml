@@ -1,0 +1,11 @@
+[deploy]
+bucket = 'cfn-artifacts-39r1pe'
+region = 'eu-west-2'
+stack_name = 'CrdSrvFrontend'
+
+[parameters]
+CertificateArn = 'arn:aws:acm:us-east-1:238967891447:certificate/207de746-dc41-4d4d-8113-c8535a2d65b8'
+WWWBucketName = 'www.johnbuen.co.uk'
+RootBucketName = 'johnbuen.co.uk'
+
+

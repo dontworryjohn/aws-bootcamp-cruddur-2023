@@ -1,0 +1,93 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  - Cloudfront Distribution
+  - S3 Bucket for www.
+  - S3 Bucket for naked domain
+  - Bucket policy
+
+
+
+Parameters:
+  CertificateArn:
+    Type: String
+  WWWBucketName:
+    Type: String
+  RootBucketName:
+    Type: String
+
+Resources:
+  RootBucketPolicy:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref RootBucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - 's3:GetObject'
+            Effect: Allow
+            Resource: !Sub 'arn:aws:s3:::${RootBucket}/*'
+            Principal: '*'
+  WWWBucket:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref WWWBucketName
+      WebsiteConfiguration:
+        RedirectAllRequestsTo:
+          HostName: !Ref RootBucketName
+  RootBucket:
+    Type: AWS::S3::Bucket
+    #DeletionPolicy: Retain
+    Properties:
+      BucketName: !Ref RootBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicPolicy: false
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+  RootBucketDomain:
+    Type: AWS::Route53::RecordSet
+    Properties:
+          HostedZoneId: !Sub ${RootBucketName}.
+          Name: !Sub ${RootBucketName}.
+          Type: A
+          AliasTarget:
+               DNSName: !GetAtt Distribution.DomainName
+               HostedZoneId:  Z068114413E5NVVE9KQFH
+  WwwBucketDomain:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Sub ${RootBucketName}.
+      Name: !Sub ${WWWBucketName}.
+      Type: A
+      AliasTarget:
+           DNSName: !GetAtt Distribution.DomainName
+           HostedZoneId: Z068114413E5NVVE9KQFH
+  Distribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Aliases:
+               - johnbuen.co.uk
+               - www.johnbuen.co.uk
+          Comment: Frontend React JS for Cruddur
+          Enabled: true
+          HttpVersion: http2and3
+          DefaultRootObject: index.html
+          Origins:
+            - DomainName: !GetAtt RootBucket.DomainName
+              Id: RootBucketOrigin
+              S3OriginConfig: {}
+          DefaultCacheBehavior:
+            TargetOriginId: RootBucketOrigin
+            ForwardedValues:
+              QueryString: false
+              Cookies:
+                Forward: none
+            ViewerProtocolPolicy: redirect-to-https
+          ViewerCertificate:
+            AcmCertificateArn: !Ref CertificateArn
+            SslSupportMethod: sni-only
+          
+
