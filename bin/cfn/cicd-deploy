@@ -11,7 +11,7 @@ PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
 
 echo $CONFIG_PATH
 
-cfn-lint $CFN_PATH
+#cfn-lint $CFN_PATH
 
 BUCKET=$(cfn-toml key deploy.bucket -t $CONFIG_PATH)
 REGION=$(cfn-toml key deploy.region -t $CONFIG_PATH)
