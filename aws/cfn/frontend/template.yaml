@@ -49,21 +49,23 @@ Resources:
   RootBucketDomain:
     Type: AWS::Route53::RecordSet
     Properties:
-          HostedZoneId: !Sub ${RootBucketName}.
+          HostedZoneName: !Sub ${RootBucketName}.
           Name: !Sub ${RootBucketName}.
           Type: A
           AliasTarget:
-               DNSName: !GetAtt Distribution.DomainName
-               HostedZoneId:  Z068114413E5NVVE9KQFH
+            DNSName: !GetAtt Distribution.DomainName
+            # Specify Z2FDTNDATAQYW2. This is always the hosted zone ID when you create an alias record that routes traffic to a CloudFront distribution.
+            HostedZoneId: Z2FDTNDATAQYW2
   WwwBucketDomain:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneId: !Sub ${RootBucketName}.
+      HostedZoneName: !Sub ${RootBucketName}.
       Name: !Sub ${WWWBucketName}.
       Type: A
       AliasTarget:
            DNSName: !GetAtt Distribution.DomainName
-           HostedZoneId: Z068114413E5NVVE9KQFH
+           # Specify Z2FDTNDATAQYW2. This is always the hosted zone ID when you create an alias record that routes traffic to a CloudFront distribution.
+           HostedZoneId: Z2FDTNDATAQYW2
   Distribution:
       Type: AWS::CloudFront::Distribution
       Properties:
@@ -89,5 +91,9 @@ Resources:
           ViewerCertificate:
             AcmCertificateArn: !Ref CertificateArn
             SslSupportMethod: sni-only
+          CustomErrorResponses:
+            - ErrorCode: 403
+              ResponseCode: 200
+              ResponsePagePath: /index.html
           
 
