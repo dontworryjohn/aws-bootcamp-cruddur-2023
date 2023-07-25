@@ -1931,7 +1931,8 @@ Resources:
                     - !GetAtt CodeBuildBakeImageStack.Outputs.CodeBuildProjectName
 ```
 
-create the script called `cicd-deploy` under `bin/cfn/cicd-deploy
+create the script called `cicd-deploy` under `bin/cfn`
+
 ```sh
 #! /usr/bin/env bash
 #set -e # stop execution of the script if it fails
@@ -1978,7 +1979,160 @@ aws cloudformation deploy \
   --parameter-overrides $PARAMETERS ArtifactBucketName=$CICD_BUCKET
 ```
 
+## CFN Frontend
 
+In this last part, we will be creating the buckets for the frontend, Cloudfront distribution and the record set for route53
+
+create the `config.toml` under the following structure `/aws/cfn/frontend`
+```s
+
+[deploy]
+bucket = 'cfn-artifacts-39r1pe'
+region = 'eu-west-2'
+stack_name = 'CrdSrvFrontend'
+
+[parameters]
+CertificateArn = 'arn:aws:acm:us-east-1:238967891447:certificate/207de746-dc41-4d4d-8113-c8535a2d65b8'
+WWWBucketName = 'www.johnbuen.co.uk'
+RootBucketName = 'johnbuen.co.uk'
+```
+
+create the `template.yaml` under the following structure `/aws/cfn/frontend`
+```yaml
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  - Cloudfront Distribution
+  - S3 Bucket for www.
+  - S3 Bucket for naked domain
+  - Bucket policy
+
+
+
+Parameters:
+  CertificateArn:
+    Type: String
+  WWWBucketName:
+    Type: String
+  RootBucketName:
+    Type: String
+
+Resources:
+  RootBucketPolicy:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref RootBucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - 's3:GetObject'
+            Effect: Allow
+            Resource: !Sub 'arn:aws:s3:::${RootBucket}/*'
+            Principal: '*'
+  WWWBucket:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref WWWBucketName
+      WebsiteConfiguration:
+        RedirectAllRequestsTo:
+          HostName: !Ref RootBucketName
+  RootBucket:
+    Type: AWS::S3::Bucket
+    #DeletionPolicy: Retain
+    Properties:
+      BucketName: !Ref RootBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicPolicy: false
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+  RootBucketDomain:
+    Type: AWS::Route53::RecordSet
+    Properties:
+          HostedZoneName: !Sub ${RootBucketName}.
+          Name: !Sub ${RootBucketName}.
+          Type: A
+          AliasTarget:
+            DNSName: !GetAtt Distribution.DomainName
+            # Specify Z2FDTNDATAQYW2. This is always the hosted zone ID when you create an alias record that routes traffic to a CloudFront distribution.
+            HostedZoneId: Z2FDTNDATAQYW2
+  WwwBucketDomain:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Sub ${RootBucketName}.
+      Name: !Sub ${WWWBucketName}.
+      Type: A
+      AliasTarget:
+           DNSName: !GetAtt Distribution.DomainName
+           # Specify Z2FDTNDATAQYW2. This is always the hosted zone ID when you create an alias record that routes traffic to a CloudFront distribution.
+           HostedZoneId: Z2FDTNDATAQYW2
+  Distribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Aliases:
+               - johnbuen.co.uk
+               - www.johnbuen.co.uk
+          Comment: Frontend React JS for Cruddur
+          Enabled: true
+          HttpVersion: http2and3
+          DefaultRootObject: index.html
+          Origins:
+            - DomainName: !GetAtt RootBucket.DomainName
+              Id: RootBucketOrigin
+              S3OriginConfig: {}
+          DefaultCacheBehavior:
+            TargetOriginId: RootBucketOrigin
+            ForwardedValues:
+              QueryString: false
+              Cookies:
+                Forward: none
+            ViewerProtocolPolicy: redirect-to-https
+          ViewerCertificate:
+            AcmCertificateArn: !Ref CertificateArn
+            SslSupportMethod: sni-only
+          CustomErrorResponses:
+            - ErrorCode: 403
+              ResponseCode: 200
+              ResponsePagePath: /index.html
+```
+
+>Note: For the hostedzoneId, set `Z2FDTNDATAQYW2`. This is always the hosted zone ID when you create an alias record that routes traffic to a CloudFront distribution.
+
+create the script called `frontend` under `bin/cfn`
+```bash
+#! /usr/bin/env bash
+set -e # stop execution of the script if it fails
+
+#This script will pass the value of the main root
+export THEIA_WORKSPACE_ROOT=$(pwd)
+
+
+CFN_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/frontend/template.yaml"
+CONFIG_PATH="$THEIA_WORKSPACE_ROOT/aws/cfn/frontend/config.toml"
+echo $CONFIG_PATH
+
+cfn-lint $CFN_PATH
+
+BUCKET=$(cfn-toml key deploy.bucket -t $CONFIG_PATH)
+REGION=$(cfn-toml key deploy.region -t $CONFIG_PATH)
+STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
+PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
+
+
+aws cloudformation deploy \
+  --stack-name $STACK_NAME \
+  --template-file $CFN_PATH \
+  --s3-bucket $BUCKET \
+  --s3-prefix cruddur-frontend \
+  --region $REGION \
+  --no-execute-changeset \
+  --tags group=cruddur-frontend \
+  --parameter-overrides $PARAMETERS \
+  --capabilities CAPABILITY_NAMED_IAM
+
+```
 
 ## Debug
 
